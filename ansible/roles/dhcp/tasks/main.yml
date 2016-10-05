@@ -1,0 +1,11 @@
+---
+- name: Install DHCP server
+  apt: name=isc-dhcp-server state=present
+
+- name: Install configuration template
+  template: src=dhcpd.conf
+            dest=/etc/dhcp/dhcpd.conf
+
+- name: Start the DHCP service
+  service: name=isc-dhcp-server enabled=true
+...

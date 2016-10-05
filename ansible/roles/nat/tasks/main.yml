@@ -1,0 +1,39 @@
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2106 to:192.168.154.6:2106
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2202 to:192.168.154.2:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2203 to:192.168.154.3:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2204 to:192.168.154.4:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2205 to:192.168.154.5:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2206 to:192.168.154.6:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2207 to:192.168.154.7:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2208 to:192.168.154.8:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2209 to:192.168.154.9:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:2210 to:192.168.154.10:22
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8085 to:192.168.154.5:80
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8485 to:192.168.154.5:443
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8086 to:192.168.154.6:80
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8486 to:192.168.154.6:443
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8090 to:192.168.154.10:3000
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8082 to:192.168.154.2:80
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8084 to:192.168.154.4:80
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8089 to:192.168.154.9:80
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8482 to:192.168.154.2:443
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8484 to:192.168.154.4:443
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8489 to:192.168.154.9:443
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:8483 to:192.168.154.3:3004
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:5000 to:192.168.154.10:5000
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:xmpp-client to:192.168.154.10:5222
+DNAT       tcp  --  anywhere             anywhere             tcp dpt:xmpp-server to:192.168.154.10:5269
+DNAT       tcp  --  anywhere             anywhere             tcp dpts:2116:2196 to:192.168.154.6:2116-2196
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     udp  --  anywhere             anywhere             multiport dports openvpn
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+MASQUERADE  all  --  anywhere             anywhere

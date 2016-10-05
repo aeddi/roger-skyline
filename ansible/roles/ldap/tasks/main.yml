@@ -1,0 +1,17 @@
+- name: configure slapd
+  debconf:
+    name='slapd' question='slapd/password1' value='{{ldap_root_passwd}}' vtype='password'
+  debconf:
+    name='slapd' question='slapd/password2' value='{{ldap_root_passwd}}' vtype='password'
+  debconf:
+    name='slapd' question='slapd/backend' value='MDB' vtype='string'
+  debconf:
+    name='slapd' question='slapd/move_old_database' value='false' vtype='boolean'
+  debconf:
+    name='slapd' question='slapd/domain' value='slash16.local' vtype='string'
+
+- name: install slapd
+  apt:
+    name=slapd state=present
+  notify:
+    - start ldap

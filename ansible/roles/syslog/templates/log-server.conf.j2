@@ -1,0 +1,11 @@
+#  /etc/rsyslog.d/log-server.conf
+#
+
+$template TmplAuth, "/var/log/%HOSTNAME%/%PROGRAMNAME%.log" 
+
+authpriv.*   ?TmplAuth
+*.info,mail.none,authpriv.none,cron.none   ?TmplMsg
+
+# provides TCP syslog reception
+$ModLoad imtcp
+$InputTCPServerRun {{ syslog_port }}

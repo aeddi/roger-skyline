@@ -1,0 +1,11 @@
+---
+
+- name: Ensure rsyslog is installed
+  apt: name=rsyslog state=present
+
+- name: Rsyslog - Listen to remote logging
+  template:
+    src=log-server.conf.j2
+    dest=/etc/rsyslog.d/log-server.conf
+
+...

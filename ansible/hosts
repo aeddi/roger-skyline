@@ -1,0 +1,44 @@
+# dhcp, nat, pat, dns, vpn
+[gateway]
+	srv1
+
+# load balancers
+[load_balancers]
+	srv2
+	srv3
+
+# mail
+[mail]
+	srv2
+
+# xmpp
+[xmpp]
+	srv3
+
+# nginx, django
+[web_workers]
+	srv4
+	srv5
+
+# postgresql
+[databases]
+	srv6
+	srv7
+
+[dbmaster]
+	srv6
+
+[dbslave]
+	srv7
+
+# backup, ftp, git
+[storage]
+	srv8
+
+# monitoring, syslog, ldap
+[adminsys]
+	srv9
+
+# preprod, ansible
+[prepod]
+	srv10

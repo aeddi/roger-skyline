@@ -1,0 +1,13 @@
+#  /etc/rsyslog.d/remote-logging.conf
+#
+# Configure remote logging
+#
+
+########################
+#### REMOTE LOGGING ####
+########################
+
+# The remote logger itself
+# '@' -> UDP connection
+# '@@' -> TCP connection
+@@{{ syslog_host }}:{{ syslog_port }}

@@ -1,0 +1,63 @@
+---
+###################
+# User Management
+###################
+- name: Create user {{ user }}
+  user: name={{ user }}
+        comment="{{ user }} user"
+        shell=/bin/bash
+
+- name: Install sudo utility
+  apt: name=sudo state=present
+
+- name: Add {{ user }} to sudoers
+  template: src=sudoers-user.j2
+            dest=/etc/sudoers.d/{{ user }}-sudoer
+            validate='visudo -cf %s'
+
+- name: Add master public key to {{ user }} authorized_keys
+  authorized_key: user={{ user }}
+                  key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+###################
+# Misc. tools
+###################
+- name: Install usefull system tools
+  apt: name="{{ item }}" state=present
+  with_items:
+    - vim
+    - htop
+    - git
+    - tig
+    - ncdu
+
+- name: Install vim template
+  template: src=vimrc
+            dest=/etc/vim/vimrc
+
+###################
+# Time management
+###################
+- name: Set local timezone
+  copy: content={{ timezone }}
+        dest=/etc/timezone
+  notify: update tzdata
+
+- name: Install NTP
+  apt: name=ntp state=present
+
+- name: Start the NTP service
+  service: name=ntp state=started enabled=true
+
+##################
+# Logging
+##################
+- name: Ensure rsyslog is present
+  apt: name=rsyslog state=present
+
+- name: Basic rsyslog configuration
+  template: src=remote-logging.conf.j2
+            dest=/etc/rsyslog.d/remote-logging.conf
+
+# TODO: Handler: restart
+...

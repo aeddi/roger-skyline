@@ -1,0 +1,16 @@
+---
+- name: Install DNS server
+  apt: name=bind9 state=present
+
+#- name: Install configuration template
+#  template: src=
+#            dest=
+#
+#  /etc/bind/db.10.8.0
+#  /etc/bind/db.192.168.154
+#  /etc/bind/db.slash16.local
+#  /etc/bind/named.conf
+
+- name: Start the DNS service
+  service: name=bind9 enabled=true
+...

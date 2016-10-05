@@ -1,0 +1,20 @@
+---
+- name: Apply common configuration to all hosts
+  hosts: all
+  remote_user: root
+
+  pre_tasks:
+    - name: Update apt cache for further installs
+      apt: update_cache=yes
+
+  roles:
+    - common
+
+
+- name: Setup admin sys related tools on dedicated server
+  hosts: adminsys
+  remote_user: ansible
+  roles:
+    - { role: ldap, become: true }
+    - syslog
+...

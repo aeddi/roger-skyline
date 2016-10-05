@@ -1,0 +1,16 @@
+set t_Co=256
+syntax on
+set number
+set backspace=indent,eol,start
+set nocompatible
+set ttyfast
+
+filetype plugin indent on
+set tabstop=2
+set shiftwidth=2
+set expandtab
+
+" Save as sudo
+command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
+command Wq :execute ':W' | :q
+command WQ :Wq

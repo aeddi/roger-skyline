@@ -1,0 +1,4 @@
+user: ansible
+timezone: 'Europe/Paris'
+syslog_host: srv9.slash16.local
+syslog_port: 514
