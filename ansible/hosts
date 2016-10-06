@@ -40,5 +40,5 @@
 	srv9
 
 # preprod, ansible
-[prepod]
+[preprod]
 	srv10

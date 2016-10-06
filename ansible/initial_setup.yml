@@ -6,15 +6,17 @@
   pre_tasks:
     - name: Update apt cache for further installs
       apt: update_cache=yes
+      tags: update_apt
 
   roles:
-    - common
+    - { role: common, tags: common }
 
 
 - name: Setup admin sys related tools on dedicated server
   hosts: adminsys
   remote_user: ansible
+
   roles:
-    - { role: ldap, become: true }
-    - syslog
+    - { role: ldap, become: true , tags: ldap }
+    - { role: syslog, tags: syslog } 
 ...

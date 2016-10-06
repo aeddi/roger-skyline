@@ -1,17 +1,40 @@
-- name: configure slapd
+- name: configure slapd package installation
   debconf:
     name='slapd' question='slapd/password1' value='{{ldap_root_passwd}}' vtype='password'
   debconf:
+    name='slapd' question='slapd/internal/generated_adminpw' value='{{ldap_root_passwd}}' vtype='password'
+  debconf:
     name='slapd' question='slapd/password2' value='{{ldap_root_passwd}}' vtype='password'
+  debconf:
+    name='slapd' question='slapd/internal/adminpw' value='{{ldap_root_passwd}}' vtype='password'
   debconf:
     name='slapd' question='slapd/backend' value='MDB' vtype='string'
   debconf:
     name='slapd' question='slapd/move_old_database' value='false' vtype='boolean'
   debconf:
     name='slapd' question='slapd/domain' value='slash16.local' vtype='string'
-
-- name: install slapd
+ 
+- name: install slapd package
   apt:
     name=slapd state=present
-  notify:
-    - start ldap
+
+- name: enable slapd
+  service:
+    name=slapd enabled=yes
+
+- name: copy files
+  copy:
+    src=ldap.conf dest=/etc/ldap/ldap.conf
+  copy:
+    src=slapd dest=/etc/default/slapd
+  copy:
+    src=olcSSL.ldif dest=/root/olcSSL.ldif
+
+- name: configure ssl
+  command: chown openldap:openldap /root/olcSSL.ldif
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /root/olcSSL.ldif -w ldap
+      
+
+- name: restart slapd
+  service:
+    name=slapd state=restarted

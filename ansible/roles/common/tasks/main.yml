@@ -59,5 +59,23 @@
   template: src=remote-logging.conf.j2
             dest=/etc/rsyslog.d/remote-logging.conf
 
+##################
+# Some fix
+##################
+- name: Disable tx on eth1 DHCP interface
+  command: ethtool -K eth1 tx off
+  when: "'gateway' not in group_names and 'state' == 'on'"
+
+- name: Make the change persistent
+  lineinfile: dest=/etc/network/interfaces
+              insertafter="^iface eth1 inet dhcp$"
+              line="pre-up /sbin/ethtool -K eth1 tx off"
+  when: "'gateway' not in group_names"
+
+- name: Disable debian specific cron setup that spam rsyslog
+  lineinfile: dest=/etc/pam.d/common-session-noninteractive
+              insertbefore="^session\\s+required\\s+pam_permit.so$"
+              line="session [success=1 default=ignore] pam_succeed_if.so service in cron quiet use_uid"
+
 # TODO: Handler: restart
 ...
