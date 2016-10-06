@@ -32,7 +32,7 @@
 
 - name: configure ssl
   command: chown openldap:openldap /root/olcSSL.ldif
-  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /root/olcSSL.ldif -w ldap
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /root/olcSSL.ldif
       
 
 - name: restart slapd

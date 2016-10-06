@@ -30,6 +30,7 @@
     - git
     - tig
     - ncdu
+    - ethtool
 
 - name: Install vim template
   template: src=vimrc
@@ -39,8 +40,8 @@
 # Time management
 ###################
 - name: Set local timezone
-  copy: content={{ timezone }}
-        dest=/etc/timezone
+  lineinfile: dest=/etc/timezone
+              line="{{ timezone }}"
   notify: update tzdata
 
 - name: Install NTP
@@ -63,14 +64,16 @@
 # Some fix
 ##################
 - name: Disable tx on eth1 DHCP interface
+  when: "'gateway' not in group_names"
   command: ethtool -K eth1 tx off
-  when: "'gateway' not in group_names and 'state' == 'on'"
+  register: output
+  changed_when: output.stdout != ''
 
 - name: Make the change persistent
+  when: "'gateway' not in group_names"
   lineinfile: dest=/etc/network/interfaces
               insertafter="^iface eth1 inet dhcp$"
               line="pre-up /sbin/ethtool -K eth1 tx off"
-  when: "'gateway' not in group_names"
 
 - name: Disable debian specific cron setup that spam rsyslog
   lineinfile: dest=/etc/pam.d/common-session-noninteractive

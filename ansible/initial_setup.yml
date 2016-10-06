@@ -12,11 +12,21 @@
     - { role: common, tags: common }
 
 
+- name: Setup gateway
+  hosts: gateway
+  remote_user: root
+
+  roles:
+    #- { role: dhcp, tags: dhcp }
+    - { role: nat, tags: nat }
+    #- { role: dns, tags: dns }
+
+
 - name: Setup admin sys related tools on dedicated server
   hosts: adminsys
   remote_user: ansible
 
   roles:
-    - { role: ldap, become: true , tags: ldap }
+    - { role: ldap, become: true, tags: ldap }
     - { role: syslog, tags: syslog } 
 ...
