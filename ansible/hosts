@@ -1,44 +1,44 @@
 # dhcp, nat, pat, dns, vpn
 [gateway]
-	srv1
+	192.168.54.1
 
 # load balancers
 [load_balancers]
-	srv2
-	srv3
+	192.168.54.2
+	192.168.54.3
 
 # mail
 [mail]
-	srv2
+	192.168.54.2
 
 # xmpp
 [xmpp]
-	srv3
+	192.168.54.3
 
 # nginx, django
 [web_workers]
-	srv4
-	srv5
+	192.168.54.4
+	192.168.54.5
 
 # postgresql
 [databases]
-	srv6
-	srv7
+	192.168.54.6
+	192.168.54.7
 
 [dbmaster]
-	srv6
+	192.168.54.6
 
 [dbslave]
-	srv7
+	192.168.54.7
 
 # backup, ftp, git
 [storage]
-	srv8
+	192.168.54.8
 
 # monitoring, syslog, ldap
 [adminsys]
-	srv9
+	192.168.54.9
 
 # preprod, ansible
 [preprod]
-	srv10
+	192.168.54.10

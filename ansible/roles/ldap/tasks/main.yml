@@ -17,6 +17,12 @@
 - name: install slapd package
   apt:
     name=slapd state=present
+  apt:
+    name=ldap-utils state=present
+  apt:
+    name=ssl-cert state=present
+  apt:
+    name=gnutls-bin state=present
 
 - name: enable slapd
   service:
@@ -29,8 +35,14 @@
     src=slapd dest=/etc/default/slapd
   copy:
     src=olcSSL.ldif dest=/root/olcSSL.ldif
+  copy:
+    src=ssl/templates dest=/etc/ssl
 
 - name: configure ssl
+  command: certtool -p --outfile /etc/ssl/private/ca_server.key
+  command: certtool -s --load-privkey /etc/ssl/private/ca_server.key --template /etc/ssl/templates/ca_server.conf --outfile /etc/ssl/certs/ca_server.pem
+  command: certtool -p --sec-param high --outfile /etc/ssl/private/ldap_server.key
+  command: certtool -c --load-privkey /etc/ssl/private/ldap_server.key --load-ca-certificate /etc/ssl/certs/ca_server.pem --load-ca-privkey /etc/ssl/private/ca_server.key --template /etc/ssl/templates/ldap_server.conf --outfile /etc/ssl/certs/ldap_server.pem
   command: chown openldap:openldap /root/olcSSL.ldif
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /root/olcSSL.ldif
       

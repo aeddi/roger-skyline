@@ -17,7 +17,7 @@
   remote_user: root
 
   roles:
-    #- { role: dhcp, tags: dhcp }
+    - { role: dhcp, tags: dhcp }
     - { role: nat, tags: nat }
     #- { role: dns, tags: dns }
 
