@@ -1,0 +1,73 @@
+---
+- name: Check if mysql-server is installed
+  shell: dpkg-query -W mysql-server 2> /dev/null || true
+  register: mysql
+  changed_when: mysql.stdout == ''
+
+- name: Set MySQL password (1st prompt)
+  debconf: name='mysql-server-5.5' question='mysql-server/root_password' value={{ mysql_passwd }} vtype='password'
+  when: mysql.stdout == ''
+
+- name: Set MySQL password (2nd prompt)
+  debconf: name='mysql-server-5.5' question='mysql-server/root_password_again' value={{ mysql_passwd }} vtype='password'
+  when: mysql.stdout == ''
+
+- name: Install Zabbix servers (PHP & MySQL) and pip
+  apt: name="{{ item }}" state=present
+  with_items:
+    - php5-mysql
+    - zabbix-frontend-php
+    - zabbix-server-mysql
+    - python-pip
+    - python-dev
+    - libmysqlclient-dev
+
+- name: Install the Python MySQLB module
+  pip: name=MySQL-python executable=/usr/bin/pip
+
+- name: Add Zabbix MySQL database
+  mysql_db: name=zabbix state=present login_user=root login_password='{{ mysql_passwd }}'
+
+- name: Add Zabbix MySQL user
+  mysql_user: name=zabbix password=zabbix priv=zabbix.*:ALL login_user=root login_password='{{ mysql_passwd }}'
+
+- name: Import Zabbix MySQL schema dump (1/3)
+  mysql_db: name=zabbix state=import target=/usr/share/zabbix-server-mysql/schema.sql login_user=zabbix login_password=zabbix
+  ignore_errors: true
+
+- name: Import Zabbix MySQL images dump (2/3)
+  mysql_db: name=zabbix state=import target=/usr/share/zabbix-server-mysql/images.sql login_user=zabbix login_password=zabbix
+  ignore_errors: true
+
+- name: Import Zabbix MySQL data dump (3/3)
+  mysql_db: name=zabbix state=import target=/usr/share/zabbix-server-mysql/data.sql login_user=zabbix login_password=zabbix
+  ignore_errors: true
+
+- name: Activate Zabbix server
+  template: src=zabbix-server
+            dest=/etc/default/zabbix-server
+  notify: Restart Zabbix server
+
+- name: Install Zabbix server config
+  template: src=zabbix_server.conf
+            dest=/etc/zabbix/zabbix_server.conf
+  notify: Restart Zabbix server
+
+- name: Install Zabbix Apache config
+  template: src=zabbix-server.conf
+            dest=/etc/apache2/conf-available/zabbix-server.conf
+  notify: Apply Zabbix/Apache2 config
+
+- name: Install PHP Zabbix config
+  template: src=php.ini
+            dest=/etc/php5/apache2/php.ini
+  notify: Restart Apache2
+
+- name: Install Zabbix PHP config
+  template: src=zabbix.conf.php
+            dest=/etc/zabbix/zabbix.conf.php
+  notify: Restart Zabbix server
+
+- name: Enable the Zabbix server
+  service: name=zabbix-server enabled=true
+...

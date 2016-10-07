@@ -5,7 +5,13 @@
 - name: Install configuration template
   template: src=dhcpd.conf
             dest=/etc/dhcp/dhcpd.conf
+  notify: Restart DHCP service
 
-- name: Start the DHCP service
+- name: Limit DHCP to eth2
+  template: src=isc-dhcp-server
+            dest=/etc/default/isc-dhcp-server
+  notify: Restart DHCP service
+
+- name: Enable the DHCP service
   service: name=isc-dhcp-server enabled=true
 ...

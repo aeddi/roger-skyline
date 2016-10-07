@@ -28,9 +28,6 @@
     - vim
     - htop
     - git
-    - tig
-    - ncdu
-    - ethtool
 
 - name: Install vim template
   template: src=vimrc
@@ -42,12 +39,12 @@
 - name: Set local timezone
   lineinfile: dest=/etc/timezone
               line="{{ timezone }}"
-  notify: update tzdata
+  notify: Update tzdata
 
 - name: Install NTP
   apt: name=ntp state=present
 
-- name: Start the NTP service
+- name: Enable the NTP service
   service: name=ntp state=started enabled=true
 
 ##################
@@ -56,13 +53,79 @@
 - name: Ensure rsyslog is present
   apt: name=rsyslog state=present
 
+- name: Remove undesired files contained in rsyslog.d
+  shell: 'ls -d /etc/rsyslog.d/* |                                              \
+          egrep -v "(15-log-forwarding|30-log-server|60-local-logging).conf" |  \
+          xargs rm -rv 2> /dev/null || true'
+  register: output
+  changed_when: output.stdout
+  notify: Restart rsyslog
+
 - name: Basic rsyslog configuration
-  template: src=remote-logging.conf.j2
-            dest=/etc/rsyslog.d/remote-logging.conf
+  template: src=rsyslog/rsyslog.conf
+            dest=/etc/rsyslog.conf
+  notify: Restart rsyslog
+
+- name: Rsyslog remote logging
+  template: src=rsyslog/rsyslog.d/15-log-forwarding.conf.j2
+            dest=/etc/rsyslog.d/15-log-forwarding.conf
+  when: "'adminsys' not in group_names"
+  notify: Restart rsyslog
+
+- name: Rsyslog local logging
+  template: src=rsyslog/rsyslog.d/60-local-logging.conf
+            dest=/etc/rsyslog.d/60-local-logging.conf
+  notify: Restart rsyslog
 
 ##################
-# Some fix
+# Logging -- Rotation
 ##################
+- name: Ensure logrotate is present
+  apt: name=logrotate state=present
+
+- name: Logrotate global rules
+  template: src=logrotate/logrotate.conf
+            dest=/etc/logrotate.conf
+
+- name: Rules to rotate regular, local rsyslog logs
+  template: src=logrotate/logrotate.d/rsyslog
+            dest=/etc/logrotate.d/rsyslog
+
+##################
+# Zabbix monitoring
+##################
+- name: Install Zabbix agent
+  apt: name=zabbix-agent state=present
+
+- name: Add zabbix user to adm group (for syslog display)
+  user: name=zabbix groups=adm append=yes
+  notify: Restart Zabbix agent
+  when: "'gateway' not in group_names"
+
+- name: Setup hostanme in Zabbix agent config
+  lineinfile: dest=/etc/zabbix/zabbix_agentd.conf
+              line="Hostname=Agent Zabbix - srv{{ inventory_hostname.split('.')[-1] }}"
+  notify: Restart Zabbix agent
+
+- name: Setup Zabbix agent common config
+  lineinfile: dest=/etc/zabbix/zabbix_agentd.conf
+              regexp={{ item.regexp }}
+              line={{ item.line }}
+  with_items:
+    - { regexp: "^EnableRemoteCommands=", line: "EnableRemoteCommands=1" }
+    - { regexp: "^Server=", line: "Server=monitor.slash16.local" }
+    - { regexp: "^ServerActive=", line: "ServerActive=monitor.slash16.local" }
+  notify: Restart Zabbix agent
+
+- name: Enable Zabbix agent service
+  service: name=zabbix-agent enabled=true
+
+##################
+# Some fixes
+##################
+- name: Install ethtool utility
+  apt: name=ethtool state=present
+
 - name: Disable tx on eth1 DHCP interface
   when: "'gateway' not in group_names"
   command: ethtool -K eth1 tx off
@@ -80,5 +143,16 @@
               insertbefore="^session\\s+required\\s+pam_permit.so$"
               line="session [success=1 default=ignore] pam_succeed_if.so service in cron quiet use_uid"
 
-# TODO: Handler: restart
+ 
+##################
+# LDAP 
+##################
+- copy: src=ldap.conf dest=/etc/ldap/ldap.conf
+- copy: src=ssl/ca_certs.pem dest=/etc/ldap/ca_certs.pem
+
+##################
+# SSL
+##################
+- copy: src=ssl/ca_certs.key dest=/etc/ssl/private/ca_certs.key
+- copy: src=ssl/ca_certs.pem dest=/etc/ssl/certs/ca_certs.pem  
 ...

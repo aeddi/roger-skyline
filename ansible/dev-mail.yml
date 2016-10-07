@@ -1,0 +1,9 @@
+---
+
+- name: Setup mail
+  host: mail
+  remote_user: root
+  roles:
+    - { role: mail, tags: mail }
+
+...

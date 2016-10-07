@@ -1,11 +1,12 @@
 ---
-
-- name: Ensure rsyslog is installed
-  apt: name=rsyslog state=present
-
 - name: Rsyslog - Listen to remote logging
   template:
-    src=log-server.conf.j2
-    dest=/etc/rsyslog.d/log-server.conf
+    src=rsyslog/rsyslog.d/30-log-server.conf.j2
+    dest=/etc/rsyslog.d/30-log-server.conf
+  notify: Restart rsyslog
 
+- name: Rsyslog/Logrotate - logserver-specific rotation policy
+  template:
+    src=logrotate/logrotate.d/rsyslog-centralized
+    dest=/etc/logrotate.d/rsyslog-centralized
 ...

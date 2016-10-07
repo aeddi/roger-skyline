@@ -1,5 +1,10 @@
-- name: update tzdata
+---
+- name: Update tzdata
   command: dpkg-reconfigure --frontend noninteractive tzdata
 
 - name: Restart rsyslog
-  command: service rsyslog restart
+  service: name=rsyslog state=restarted
+
+- name: Restart Zabbix agent
+  service: name=zabbix-agent state=restarted
+...

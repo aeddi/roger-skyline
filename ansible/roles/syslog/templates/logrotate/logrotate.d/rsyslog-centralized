@@ -1,0 +1,40 @@
+
+/var/log/centralized/syslog
+{
+# Managing worth of 10 server, multiply max rots by 10 !
+	rotate 70
+	daily
+	missingok
+	notifempty
+	delaycompress
+	compressoptions "-9"
+	compress
+	postrotate
+		invoke-rc.d rsyslog rotate > /dev/null
+	endscript
+}
+
+/var/log/centralized/mail.info
+/var/log/centralized/mail.warn
+/var/log/centralized/mail.err
+/var/log/centralized/mail.log
+/var/log/centralized/daemon.log
+/var/log/centralized/kern.log
+/var/log/centralized/auth.log
+/var/log/centralized/user.log
+/var/log/centralized/lpr.log
+/var/log/centralized/cron.log
+/var/log/centralized/debug
+/var/log/centralized/messages
+{
+	rotate 40
+	weekly
+	missingok
+	delaycompress
+	compress
+	notifempty
+	sharedscripts
+	postrotate
+		invoke-rc.d rsyslog rotate > /dev/null
+	endscript
+}

@@ -1,0 +1,9 @@
+---
+
+# WIP WIP WIP WIP WIP
+
+- name: Packages
+  apt: name="{{ item }}" state=present
+  with_items: [dovecot-core dovecot-ldap postfix ssl-cert]
+
+...

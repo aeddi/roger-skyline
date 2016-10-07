@@ -11,6 +11,6 @@
 #  /etc/bind/db.slash16.local
 #  /etc/bind/named.conf
 
-- name: Start the DNS service
+- name: Enable the DNS service
   service: name=bind9 enabled=true
 ...

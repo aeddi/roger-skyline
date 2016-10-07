@@ -1,0 +1,8 @@
+- name: start slapd
+  service: name=slapd state=started
+
+- name: restart slapd
+  service: name=slapd state=restarted
+
+- name: enable slapd
+  service: name=slapd enabled=yes

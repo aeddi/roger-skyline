@@ -1,0 +1,9 @@
+---
+- name: Setup gateway
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - name: restart zabbix
+      service: name=zabbix-agent state=restarted
+...

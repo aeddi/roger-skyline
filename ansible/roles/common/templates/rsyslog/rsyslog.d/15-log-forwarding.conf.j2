@@ -1,0 +1,17 @@
+#  /etc/rsyslog.d/remote-logging.conf
+#
+# Configure remote logging
+#
+
+########################
+#### REMOTE LOGGING ####
+########################
+
+# The remote logger itself
+# '@' -> UDP connection
+# '@@' -> TCP connection
+# Only forward message from local origin to avoid duplication and recursive
+# loop.
+# Doc specifies that testing for 127.0.0.1 guaranties catching local
+# input from any module.
+if $fromhost-ip == "127.0.0.1" then @@(z5){{ syslog_host }}:{{ syslog_port }}

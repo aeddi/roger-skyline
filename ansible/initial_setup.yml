@@ -1,15 +1,21 @@
 ---
+- name: Update apt cache for further installs
+  hosts: all
+  remote_user: root
+  tags: update_apt
+
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+
+
 - name: Apply common configuration to all hosts
   hosts: all
   remote_user: root
-
-  pre_tasks:
-    - name: Update apt cache for further installs
-      apt: update_cache=yes
-      tags: update_apt
+  tags: common
 
   roles:
-    - { role: common, tags: common }
+    - common
 
 
 - name: Setup gateway
@@ -24,9 +30,10 @@
 
 - name: Setup admin sys related tools on dedicated server
   hosts: adminsys
-  remote_user: ansible
+  remote_user: root
 
   roles:
-    - { role: ldap, become: true, tags: ldap }
+    - { role: ldap, tags: ldap }
     - { role: syslog, tags: syslog } 
+    - { role: monitoring, tags: monitoring } 
 ...

@@ -1,2 +1,1 @@
-# Intentional bad port: prevent logging for now
-syslog_port: 513
+syslog_port: 514

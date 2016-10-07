@@ -1,0 +1,9 @@
+---
+- name: Setup ldap
+  hosts: adminsys
+  remote_user: root
+
+  roles:
+    - { role: ldap, tags: ldap }
+    #- { role: dns, tags: dns }
+...
