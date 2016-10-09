@@ -5,15 +5,15 @@
   changed_when: mysql.stdout == ''
 
 - name: Set MySQL password (1st prompt)
-  debconf: name='mysql-server-5.5' question='mysql-server/root_password' value={{ mysql_passwd }} vtype='password'
+  debconf: name='mysql-server-5.5' question='mysql-server/root_password' value={{mysql_passwd}} vtype='password'
   when: mysql.stdout == ''
 
 - name: Set MySQL password (2nd prompt)
-  debconf: name='mysql-server-5.5' question='mysql-server/root_password_again' value={{ mysql_passwd }} vtype='password'
+  debconf: name='mysql-server-5.5' question='mysql-server/root_password_again' value={{mysql_passwd}} vtype='password'
   when: mysql.stdout == ''
 
 - name: Install Zabbix servers (PHP & MySQL) and pip
-  apt: name="{{ item }}" state=present
+  apt: name="{{item}}" state=present
   with_items:
     - php5-mysql
     - zabbix-frontend-php
@@ -26,10 +26,10 @@
   pip: name=MySQL-python executable=/usr/bin/pip
 
 - name: Add Zabbix MySQL database
-  mysql_db: name=zabbix state=present login_user=root login_password='{{ mysql_passwd }}'
+  mysql_db: name=zabbix state=present login_user=root login_password='{{mysql_passwd}}'
 
 - name: Add Zabbix MySQL user
-  mysql_user: name=zabbix password=zabbix priv=zabbix.*:ALL login_user=root login_password='{{ mysql_passwd }}'
+  mysql_user: name=zabbix password=zabbix priv=zabbix.*:ALL login_user=root login_password='{{mysql_passwd}}'
 
 - name: Import Zabbix MySQL schema dump (1/3)
   mysql_db: name=zabbix state=import target=/usr/share/zabbix-server-mysql/schema.sql login_user=zabbix login_password=zabbix

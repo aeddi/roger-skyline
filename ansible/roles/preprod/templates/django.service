@@ -1,0 +1,12 @@
+[Unit]
+Description=Django with Gunicorn
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/opt/webapp
+ExecStart=/opt/webapp/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --pythonpath /opt/webapp/webapp webapp.wsgi
+
+[Install]
+WantedBy=multi-user.target

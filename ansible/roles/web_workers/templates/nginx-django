@@ -1,0 +1,15 @@
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+
+  server_name _;
+  access_log off;
+
+  location /static/ {
+          alias /opt/webapp/static/;
+  }
+
+  location / {
+          proxy_pass http://127.0.0.1:8000;
+  }
+}

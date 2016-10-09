@@ -1,0 +1,20 @@
+---
+- name: Save iptables filter rules in /etc
+  template: src=iptables.filter.rules.{{inventory_hostname.split('.')[-1]}}
+            dest=/etc/iptables.filter.rules
+
+- name: Load iptables filter rules
+  shell: 'LAST=`iptables -L -t filter`;                          \
+          iptables-restore -T filter /etc/iptables.filter.rules; \
+          CURR=`iptables -L -t filter`;                          \
+          diff <(echo "$CURR") <(echo "$LAST") || true'
+  args:
+    executable: /bin/bash
+  register: output
+  changed_when: output.stdout != ''
+
+- name: Make iptables filter rules persistent
+  lineinfile: dest=/etc/network/interfaces
+              insertafter=EOF
+              line="post-up iptables-restore -T filter /etc/iptables.filter.rules"
+...

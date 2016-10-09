@@ -9,22 +9,22 @@
               insertafter="^iface eth2 inet static$"
               line="pre-up /sbin/ethtool -K eth2 tx off"
 
-- name: Save iptables.rules in /etc
-  template: src=iptables.rules
-            dest=/etc/iptables.rules
+- name: Save iptables nat rules in /etc
+  template: src=iptables.nat.rules
+            dest=/etc/iptables.nat.rules
 
 - name: Load iptables rules
-  shell: 'LAST=`iptables -L -t nat`;             \
-          iptables-restore /etc/iptables.rules;  \
-          CURR=`iptables -L -t nat`;             \
+  shell: 'LAST=`iptables -L -t nat`;                       \
+          iptables-restore -T nat /etc/iptables.nat.rules; \
+          CURR=`iptables -L -t nat`;                       \
           diff <(echo "$CURR") <(echo "$LAST") || true'
   args:
     executable: /bin/bash
   register: output
   changed_when: output.stdout != ''
 
-- name: Make iptables rules persistent
+- name: Make iptables nat rules persistent
   lineinfile: dest=/etc/network/interfaces
               insertafter=EOF
-              line="post-up iptables-restore < /etc/iptables.rules"
+              line="post-up iptables-restore -T nat /etc/iptables.nat.rules"
 ...

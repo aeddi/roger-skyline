@@ -2,28 +2,28 @@
 ###################
 # User Management
 ###################
-- name: Create user {{ user }}
-  user: name={{ user }}
-        comment="{{ user }} user"
+- name: Create user {{user}}
+  user: name={{user}}
+        comment="{{user}} user"
         shell=/bin/bash
 
 - name: Install sudo utility
   apt: name=sudo state=present
 
-- name: Add {{ user }} to sudoers
+- name: Add {{user}} to sudoers
   template: src=sudoers-user.j2
-            dest=/etc/sudoers.d/{{ user }}-sudoer
+            dest=/etc/sudoers.d/{{user}}-sudoer
             validate='visudo -cf %s'
 
-- name: Add master public key to {{ user }} authorized_keys
-  authorized_key: user={{ user }}
-                  key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+- name: Add master public key to {{user}} authorized_keys
+  authorized_key: user={{user}}
+                  key="{{lookup('file', '~/.ssh/id_rsa.pub')}}"
 
 ###################
 # Misc. tools
 ###################
 - name: Install usefull system tools
-  apt: name="{{ item }}" state=present
+  apt: name="{{item}}" state=present
   with_items:
     - vim
     - htop
@@ -38,7 +38,7 @@
 ###################
 - name: Set local timezone
   lineinfile: dest=/etc/timezone
-              line="{{ timezone }}"
+              line="{{timezone}}"
   notify: Update tzdata
 
 - name: Install NTP
@@ -88,6 +88,7 @@
             dest=/etc/logrotate.conf
 
 - name: Rules to rotate regular, local rsyslog logs
+  when: "'adminsys' not in group_names"
   template: src=logrotate/logrotate.d/rsyslog
             dest=/etc/logrotate.d/rsyslog
 
@@ -104,13 +105,13 @@
 
 - name: Setup hostanme in Zabbix agent config
   lineinfile: dest=/etc/zabbix/zabbix_agentd.conf
-              line="Hostname=Agent Zabbix - srv{{ inventory_hostname.split('.')[-1] }}"
+              line="Hostname=Agent Zabbix - srv{{inventory_hostname.split('.')[-1]}}"
   notify: Restart Zabbix agent
 
 - name: Setup Zabbix agent common config
   lineinfile: dest=/etc/zabbix/zabbix_agentd.conf
-              regexp={{ item.regexp }}
-              line={{ item.line }}
+              regexp={{item.regexp}}
+              line={{item.line}}
   with_items:
     - { regexp: "^EnableRemoteCommands=", line: "EnableRemoteCommands=1" }
     - { regexp: "^Server=", line: "Server=monitor.slash16.local" }

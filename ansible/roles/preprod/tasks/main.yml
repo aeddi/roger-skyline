@@ -1,0 +1,57 @@
+---
+- name: Install needed apt packages
+  apt: name="{{item}}" state=present
+  with_items:
+    - python3-pip
+    - python3-dev
+    - virtualenv
+    - nginx
+    - gcc
+
+- name: Install virtualenv wrapper (ugly workaround)
+  copy: src=virtualenv3
+        dest=/usr/local/bin/virtualenv3
+        mode=0511
+
+- name: Install needed pip packages
+  pip: virtualenv=/opt/webapp
+       virtualenv_command=virtualenv3
+       name="{{item}}"
+  with_items:
+    - django
+    - gunicorn
+
+- name: Creates static directory
+  file: path=/opt/webapp/static state=directory
+
+- name: Setup Django service config
+  template: src=django.service
+            dest=/etc/systemd/system/django.service
+
+- name: Start and enable Django service
+  service: name=django state=started enabled=yes
+
+- name: Setup Django virtualhost
+  template: src=nginx-django
+            dest=/etc/nginx/sites-available/django
+
+- name: Enable Django virtualhost
+  file: src=/etc/nginx/sites-available/django 
+        dest=/etc/nginx/sites-enabled/django 
+        state=link
+  notify: Restart nginx service
+
+- name: Disable nginx default virtualhost
+  file: path=/etc/nginx/sites-available/default 
+        state=absent
+  notify: Restart nginx service
+
+- name: Setup server names bucket size in nginx.conf
+  lineinfile: dest=/etc/nginx/nginx.conf
+              insertafter='^http {$'
+              line="server_names_hash_bucket_size 64;"
+  notify: Restart nginx service
+
+- name: Start and enable nginx service
+  service: name=nginx state=started enabled=yes
+...

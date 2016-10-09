@@ -4,6 +4,6 @@
 
 - name: Packages
   apt: name="{{ item }}" state=present
-  with_items: [dovecot-core dovecot-ldap postfix ssl-cert]
+  with_items: [dovecot-core, dovecot-ldap, postfix, ssl-cert]
 
 ...

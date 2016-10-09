@@ -1,0 +1,2 @@
+IPTABLES
+- Virer l'ACCEPT sur 192.168.54.10 (utile uniquement pour le dev, le deploiement final se fera via la gateway)

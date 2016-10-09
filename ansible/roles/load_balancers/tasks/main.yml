@@ -1,0 +1,21 @@
+---
+- name: Install HAProxy & heartbeat
+  apt: name={{item}} state=present
+  with_items:
+    - haproxy
+    - heartbeat
+
+- name: Setup HAProxy config
+  template: src=haproxy.cfg.j2
+            dest=/etc/haproxy/haproxy.cfg
+  notify: Restart HAProxy service
+
+- name: Enable HAProxy config
+  lineinfile: dest=/etc/default/haproxy
+              regexp='^ENABLED='
+              line='ENABLED=1'
+  notify: Restart HAProxy service
+
+- name: Start and enable HAProxy service
+  service: name=haproxy state=started enabled=yes
+...

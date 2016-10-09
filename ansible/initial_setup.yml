@@ -18,6 +18,15 @@
     - common
 
 
+- name: Apply specific least privilege config to all hosts
+  hosts: all
+  remote_user: root
+  tags: leastpriv
+
+  roles:
+    - leastpriv
+
+
 - name: Setup gateway
   hosts: gateway
   remote_user: root
@@ -28,6 +37,22 @@
     #- { role: dns, tags: dns }
 
 
+- name: Setup HAProxy load_balancers
+  hosts: load_balancers
+  remote_user: root
+
+  roles:
+    - { role: load_balancers, tags: load_balancers }
+
+
+- name: Setup web workers (nginx + gunicorn + Django)
+  hosts: web_workers
+  remote_user: root
+
+  roles:
+    - { role: web_workers, tags: web_workers }
+
+
 - name: Setup admin sys related tools on dedicated server
   hosts: adminsys
   remote_user: root
@@ -36,4 +61,12 @@
     - { role: ldap, tags: ldap }
     - { role: syslog, tags: syslog } 
     - { role: monitoring, tags: monitoring } 
+
+
+- name: Setup preprod server with CI system
+  hosts: preprod
+  remote_user: root
+
+  roles:
+    - { role: preprod, tags: preprod }
 ...
