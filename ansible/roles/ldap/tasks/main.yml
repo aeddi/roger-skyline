@@ -1,22 +1,19 @@
 ---
 
-- name: Setup ldap.conf to allow ldapmodify
-  copy: src=ldap/ldap.conf dest=/etc/ldap/ldap.conf
-
 - name: Check if slapd is installed
-  shell: dpkg --get-selections | egrep '^slapd[[:space:]]*' | awk '{ print $2 }' || true
-  register: output
-  changed_when: output.stdout != 'install'
+  shell: dpkg --get-selections | egrep '^slapd[[:space:]]+' | awk '{ print $2 }' || true
+  register: slapd_installed
+  changed_when: slapd_installed.stdout != 'install'
 
 # Configure slapd pkg
 - name: Configure slapd Package
-  when: output.stdout != 'install'
+  when: slapd_installed.stdout != 'install'
   debconf: name=slapd question={{item.question}} value={{item.value}} vtype={{item.vtype}}
   with_items:
     - { question: 'slapd/password1', value: "{{ldap_passwd}}", vtype: 'password' }
-#    - { question: 'slapd/internal/generated_adminpw', value: '{{ldap_passwd}}', vtype: 'password' }
+    - { question: 'slapd/internal/generated_adminpw', value: '{{ldap_passwd}}', vtype: 'password' }
     - { question: 'slapd/password2', value: '{{ldap_passwd}}', vtype: 'password' }
-#    - { question: 'slapd/internal/adminpw', value: '{{ldap_passwd}}', vtype: 'password' }
+    - { question: 'slapd/internal/adminpw', value: '{{ldap_passwd}}', vtype: 'password' }
     - { question: 'slapd/domain', value: 'slash16.local', vtype: 'string' }
     - { question: 'slapd/no_configuration', value: 'false', vtype: 'boolean' }
     - { question: 'slapd/move_old_database', value: 'false', vtype: 'boolean' }
@@ -29,34 +26,38 @@
   with_items: [ slapd, ldap-utils, ssl-cert, gnutls-bin ]
   notify: Enable and start slapd
 
-# Configure admin password
-# Hint: cf. priopriete 'lineinfile:' ; exemple dans common/tasks/main.yml
-# - : echo -e '\x3A' :p
-# Idealement, merge et check [0] & [1]
-- name: Configure admin password [0]
-  shell: cat '/etc/ldap/slapd.d/cn=config/olcDatabase={0}config.ldif' | grep olcRootPW
-  register: result
-  ignore_errors: yes
-- name: Configure admin password [1]
-# [!] olcRootPW est un hash
-# cf tasks/NOTES
-  shell: python -c 'print "olcRootPW\x3A {{ldap_passwd}}"' >> '/etc/ldap/slapd.d/cn=config/olcDatabase={0}config.ldif'
-  when: result|failed
-  notify: Restart slapd
+- name: Setup ldap.conf to allow simple auth ldapmodify
+  copy: src=ldap/ldap.conf dest=/etc/ldap/ldap.conf
 
-# Maintenant: un handler.
-## Start slapd
-## Hint: devrait etre un handler, appeler avec la propriete 'notify: HANDLER NAME'
-#- name: Start slapd and make running persistent
-#  service: name=slapd state=started enabled=yes
-
-# Configure ldap ssl
+# Configure ldap ssl, network/IPC binding
 # Workaround to no SIMPLE/anon bind: edit SLAPD_SERVICES
 - name: Copy slapd Configuration file
   copy: src=slapd dest=/etc/default/slapd
   notify: Restart slapd
 
-#Idealement: check si c'est necessaires avant ;
+- name: Configure admin password (check)
+  shell: grep olcRootPW '/etc/ldap/slapd.d/cn=config/olcDatabase={0}config.ldif' || true
+  register: has_admin_pass
+  changed_when: has_admin_pass.stdout == ''
+
+- name: Put admin.ldif
+  when: has_admin_pass.stdout == ''
+  copy: src=ldap/members/admin_stub.ldif dest=/tmp/admin.ldif owner=root group=root mode=0600
+
+- name: Hash & salt admin password
+  when: has_admin_pass.stdout == ''
+  shell: slappasswd -s {{ ldap_passwd }}
+  register: slappasswd_result
+
+- name: Append hashed pass
+  when: has_admin_pass.stdout == ''
+  shell: /bin/echo -e 'olcRootPW\x3A {{ slappasswd_result.stdout }}' >> /tmp/admin.ldif
+
+- name: Set hashed olcRootPW
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -D cn=admin,dc=slash16,dc=local  -f /tmp/admin.ldif
+  when: has_admin_pass.stdout == ''
+
+#Idealement: check si c'est necessaire avant ;
 # Merge les etapes si raisonnablement possible
 # cf. :'changed_when: output.{stdout,...} == ...'
 - name: Give openldap access to the ldap key [0]
@@ -67,19 +68,13 @@
   command: chmod 640 /etc/ssl/private/cert.key
   notify: Restart slapd
 
-# (Assert: ) Requiere de pouvoir faire une query de type ldap:// en local
 - name: Configure ldap to use certificate [0]
   copy: src=ldap/certs.ldif dest=/tmp/certs.ldif owner=openldap group=openldap 
+
 - name: Configure ldap to use certificate [1] 
-  command: ldapmodify -x -D cn=admin,dc=slash16,dc=local -w {{ldap_passwd}} -f /tmp/certs.ldif
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/certs.ldif
   ignore_errors: yes
   notify: Restart slapd
-
-# Maintenant: un handler.
-## Restart slapd
-## Hint: devrait etre un handler, appeler avec la propriété 'notifyHANDLER NAME'
-#- name: Restart slapd
-#  service: name=slapd state=restarted
 
 # Configure ldap groups
 # TODO: si on considere que des services genre postfix doivent se bind, les ajouter.
@@ -88,8 +83,10 @@
   with_items:
     - { src: ldap/groups/people.ldif, dest: /tmp/people.ldif }
 - name: Configure ldap groups [1]
-  command: ldapadd -x -D cn=admin,dc=slash16,dc=local -w ldap -f {{item}}
-  with_items: [ /tmp/people.ldif, /tmp/service.ldif ]
+  command: ldapadd -x -D cn=admin,dc=slash16,dc=local -w {{ldap_passwd}} -f {{item}}
+  with_items:
+    - /tmp/people.ldif
+#   - /tmp/service.ldif
   ignore_errors: yes
 
 # Configure ldap members
@@ -102,6 +99,6 @@
     - { src: ldap/members/ffourati.ldif, dest: /tmp/ffourati.ldif }
     - { src: ldap/members/mcizo.ldif, dest: /tmp/mcizo.ldif }
 - name: Configure ldap member [1]
-  command: ldapadd -x -D cn=admin,dc=slash16,dc=local -w ldap -f {{item}}
+  command: ldapadd -x -w {{ldap_passwd}} -D cn=admin,dc=slash16,dc=local -f {{item}}
   with_items: [ /tmp/aeddi.ldif, /tmp/akazian.ldif, /tmp/ffourati.ldif, /tmp/gponsine.ldif, /tmp/mcizo.ldif ]
   ignore_errors: yes

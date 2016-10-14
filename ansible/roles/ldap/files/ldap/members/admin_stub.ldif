@@ -1,0 +1,17 @@
+#dn: dc=slash16,dc=local
+#objectClass: dcObject
+#objectclass: organization
+#o: slash16.local
+#dc: slash16
+#description: LDAP Root
+
+#dn: cn=admin,dc=slash16,dc=local
+dn: olcDatabase={0}config,cn=config
+changetype: modify
+#objectClass: simpleSecurityObject
+#objectClass: organizationalRole
+#cn: admin
+#description: LDAP administrator
+# Prior to use:
+# append 'userPassword: <password>'
+replace: olcRootPW
