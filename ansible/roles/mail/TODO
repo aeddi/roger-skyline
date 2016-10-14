@@ -1,0 +1,28 @@
+ensure A & MX  DNS records
+
+- iptables:
+25 (SMTP)
+80 (HTTP)
+110 (POP3)
+143 (IMAP)
+443 (HTTPS)
+636 (LDAPS)
+
+#ldap: add
+dn: uid=postfix,ou=service,dc=slash16,dc=local
+changetype: add
+objectClass: applicationProcess
+objectClass: posixAccount
+cn: postfix
+uid: postfix
+uidNumber: 113
+gidNumber: 119
+homeDirectory:
+
+#ldappasswd [priviledged bind details] 'uid=postfix,ou=service,dc=slash16,dc=local' -S <<< POSTFIXENTRYPASSWORD
+
+ldap_virtual_{aliases|recipients}.cf
+=> bind_dn
+=> bind_pw
+|| bind = no (?)
+# query_filter => user attributes: mail|mailAlias, mailEnabled=TRUE

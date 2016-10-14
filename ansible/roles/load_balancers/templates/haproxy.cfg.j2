@@ -20,7 +20,7 @@ defaults
         clitimeout      50000
         srvtimeout      50000
 
-listen webfarm lb{{inventory_hostname.split('.')[-1] | int - 1}}.slash16.local:80
+listen webfarm lb.slash16.local:80
        mode http
        stats enable
        stats auth {{stats_user}}:{{stats_password}}
@@ -28,6 +28,5 @@ listen webfarm lb{{inventory_hostname.split('.')[-1] | int - 1}}.slash16.local:8
        cookie JSESSIONID prefix
        option httpclose
        option forwardfor
-#       option httpchk HEAD /check.txt HTTP/1.0
        server webA web1.slash16.local:80 cookie A check
        server webB web2.slash16.local:80 cookie B check

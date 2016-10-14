@@ -13,8 +13,9 @@
 # Zabbix HTTP/S interface accessible from gateway only
 -A INPUT -s 192.168.154.254/32 -p tcp -m multiport --dport 80,443 -j ACCEPT 
 
-# LDAP accessible from gateway
+# LDAP accessible from gateway, mail
 -A INPUT -s 192.168.154.254/32 -p tcp -m tcp --dport 636 -j ACCEPT
+-A INPUT -s 192.168.154.2/32 -p tcp -m tcp --dport 636 -j ACCEPT
 
 # rsyslog server accessible from all other intra hosts
 -A INPUT -s 192.168.154.0/24 -p tcp -m tcp --dport 514 -j ACCEPT

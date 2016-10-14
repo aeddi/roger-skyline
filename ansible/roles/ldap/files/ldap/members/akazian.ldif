@@ -1,0 +1,9 @@
+dn: cn=akazian,ou=people,dc=slash16,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+gn: Axel
+sn: Kazian
+mail: akazian@student.42.fr
+userPassword: akazian

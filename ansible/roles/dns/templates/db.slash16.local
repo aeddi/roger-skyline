@@ -1,0 +1,68 @@
+$TTL 604800     ; 1 week
+$ORIGIN slash16.local.
+@       IN      SOA     ns.slash16.local. admin.slash16.local.        (
+                                       2016061401   ; Serial
+                                       3600         ; Refresh [1h]
+                                       600          ; Retry   [10m]
+                                       86400        ; Expire  [1d]
+                                       600 )        ; Negative Cache TTL [1h]
+
+; NS and MX records
+@	IN	NS	srv1.slash16.local.
+@	IN	MX	10	srv2.slash16.local.
+
+; Hosts base A records
+srv1.slash16.local.		IN	A	192.168.154.254
+srv3.slash16.local.		IN	A	192.168.154.3
+srv4.slash16.local.		IN	A	192.168.154.4
+srv5.slash16.local.		IN	A	192.168.154.5
+srv6.slash16.local.		IN	A	192.168.154.6
+srv7.slash16.local.		IN	A	192.168.154.7
+srv8.slash16.local.		IN	A	192.168.154.8
+srv9.slash16.local.		IN	A	192.168.154.9
+srv10.slash16.local.	IN	A	192.168.154.10
+
+; Loadbalancers virtual IP record
+lb.slash16.local.		  IN	A	192.168.154.16
+
+
+; Services on svr1
+gateway.slash16.local.  IN	CNAME	srv1
+dhcp.slash16.local.		  IN	CNAME	srv1
+ns.slash16.local.		    IN	CNAME	srv1
+vpn.slash16.local.		  IN	CNAME	srv1
+
+; Services on svr2
+mail.slash16.local.		  IN	A	192.168.154.2
+srv2.slash16.local.		  IN	CNAME	mail
+lb1.slash16.local.		  IN	CNAME	srv2
+
+; Services on svr3
+xmpp.slash16.local.	  	IN	CNAME	srv3
+lb2.slash16.local.		  IN	CNAME	srv3
+
+; Services on svr4
+web1.slash16.local.	   	IN	CNAME	srv4
+
+; Services on svr5
+web2.slash16.local.	  	IN	CNAME	srv5
+
+; Services on svr6
+db1.slash16.local.		  IN	CNAME	srv6
+
+; Services on svr7
+db2.slash16.local.		  IN	CNAME	srv7
+
+; Services on svr8
+backup.slash16.local.		IN	CNAME	srv8
+git.slash16.local.		  IN	CNAME	srv8
+ftp.slash16.local.		  IN	CNAME	srv8
+
+; Services on svr9
+monitor.slash16.local.  IN	CNAME	srv9
+syslog.slash16.local.		IN	CNAME	srv9
+ldap.slash16.local.		  IN	CNAME	srv9
+
+; Services on svr10
+preprod.slash16.local.  IN	CNAME	srv10
+automate.slash16.local.	IN	CNAME	srv10

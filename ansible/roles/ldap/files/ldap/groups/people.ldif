@@ -1,0 +1,4 @@
+dn: ou=people,dc=slash16,dc=local
+objectClass: organizationalUnit
+objectClass: top
+ou: people

@@ -1,0 +1,5 @@
+---
+- name: Create new user for replication role
+  postgresql_user: name=rails password={{pg_master_pswd}}
+                   role_attr_flags=REPLICATION
+...

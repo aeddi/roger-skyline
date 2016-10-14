@@ -1,34 +1,107 @@
-# Install Packages
-- apt: name=slapd state=present
-- apt: name=ldap-utils state=present
-- apt: name=ssl-cert state=present
-- apt: name=gnutls-bin state=present
+---
+
+- name: Setup ldap.conf to allow ldapmodify
+  copy: src=ldap/ldap.conf dest=/etc/ldap/ldap.conf
+
+- name: Check if slapd is installed
+  shell: dpkg --get-selections | egrep '^slapd[[:space:]]*' | awk '{ print $2 }' || true
+  register: output
+  changed_when: output.stdout != 'install'
 
 # Configure slapd pkg
-- debconf: name='slapd' question='slapd/password1' value='{{ldap_passwd}}' vtype='password'
-- debconf: name='slapd' question='slapd/internal/generated_adminpw' value='{{ldap_passwd}}' vtype='password'
-- debconf: name='slapd' question='slapd/password2' value='{{ldap_passwd}}' vtype='password'
-- debconf: name='slapd' question='slapd/internal/adminpw' value='{{ldap_passwd}}' vtype='password'
-- debconf: name='slapd' question='slapd/backend' value='MDB' vtype='string'
-- debconf: name='slapd' question='slapd/move_old_database' value='false' vtype='boolean'
-- debconf: name='slapd' question='slapd/domain' value='slash16.local' vtype='string'
+- name: Configure slapd Package
+  when: output.stdout != 'install'
+  debconf: name=slapd question={{item.question}} value={{item.value}} vtype={{item.vtype}}
+  with_items:
+    - { question: 'slapd/password1', value: "{{ldap_passwd}}", vtype: 'password' }
+#    - { question: 'slapd/internal/generated_adminpw', value: '{{ldap_passwd}}', vtype: 'password' }
+    - { question: 'slapd/password2', value: '{{ldap_passwd}}', vtype: 'password' }
+#    - { question: 'slapd/internal/adminpw', value: '{{ldap_passwd}}', vtype: 'password' }
+    - { question: 'slapd/domain', value: 'slash16.local', vtype: 'string' }
+    - { question: 'slapd/no_configuration', value: 'false', vtype: 'boolean' }
+    - { question: 'slapd/move_old_database', value: 'false', vtype: 'boolean' }
+    - { question: 'slapd/allow_ldap_v2', value: 'false', vtype: 'boolean' }
+    - { question: 'slapd/backend', value: 'MDB', vtype: 'string' }
+    - { question: 'slapd/purge_database', value: 'true', vtype: 'boolean' }
 
-# Create ldap cert and key
-- copy: src=ldap_server.conf dest=/etc/ssl/templates/ldap_server.conf
-- command: certtool -p --sec-param high --outfile /etc/ssl/private/ldap_server.key
-- command: certtool -c --load-privkey /etc/ssl/private/ldap_server.key --load-ca-certificate /etc/ssl/certs/ca_certs.pem --load-ca-privkey /etc/ssl/private/ca_certs.key --template /etc/ssl/templates/ldap_server.conf --outfile /etc/ssl/certs/ldap_server.pem
+- name: Install Packages
+  apt: name={{item}} state=present
+  with_items: [ slapd, ldap-utils, ssl-cert, gnutls-bin ]
+  notify: Enable and start slapd
+
+# Configure admin password
+# Hint: cf. priopriete 'lineinfile:' ; exemple dans common/tasks/main.yml
+# - : echo -e '\x3A' :p
+# Idealement, merge et check [0] & [1]
+- name: Configure admin password [0]
+  shell: cat '/etc/ldap/slapd.d/cn=config/olcDatabase={0}config.ldif' | grep olcRootPW
+  register: result
+  ignore_errors: yes
+- name: Configure admin password [1]
+# [!] olcRootPW est un hash
+# cf tasks/NOTES
+  shell: python -c 'print "olcRootPW\x3A {{ldap_passwd}}"' >> '/etc/ldap/slapd.d/cn=config/olcDatabase={0}config.ldif'
+  when: result|failed
+  notify: Restart slapd
+
+# Maintenant: un handler.
+## Start slapd
+## Hint: devrait etre un handler, appeler avec la propriete 'notify: HANDLER NAME'
+#- name: Start slapd and make running persistent
+#  service: name=slapd state=started enabled=yes
 
 # Configure ldap ssl
-- copy: src=slapd dest=/etc/default/slapd
+# Workaround to no SIMPLE/anon bind: edit SLAPD_SERVICES
+- name: Copy slapd Configuration file
+  copy: src=slapd dest=/etc/default/slapd
+  notify: Restart slapd
 
-- command: usermod -aG ssl-cert openldap
-- command: chown :ssl-cert /etc/ssl/private/ldap_server.key
-- command: chmod 640 /etc/ssl/private/ldap_server.key
+#Idealement: check si c'est necessaires avant ;
+# Merge les etapes si raisonnablement possible
+# cf. :'changed_when: output.{stdout,...} == ...'
+- name: Give openldap access to the ldap key [0]
+  command: usermod -aG ssl-cert openldap
+- name: Give openldap access to the ldap key [1]
+  command: chown :ssl-cert /etc/ssl/private/cert.key
+- name: Give openldap access to the ldap key [2]
+  command: chmod 640 /etc/ssl/private/cert.key
+  notify: Restart slapd
 
-- copy: src=addcerts.ldif dest=/root/addcerts.ldif
-- command: chown openldap:openldap /root/addcerts.ldif
-- command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /root/addcerts.ldif
+# (Assert: ) Requiere de pouvoir faire une query de type ldap:// en local
+- name: Configure ldap to use certificate [0]
+  copy: src=ldap/certs.ldif dest=/tmp/certs.ldif owner=openldap group=openldap 
+- name: Configure ldap to use certificate [1] 
+  command: ldapmodify -x -D cn=admin,dc=slash16,dc=local -w {{ldap_passwd}} -f /tmp/certs.ldif
+  ignore_errors: yes
+  notify: Restart slapd
 
-# Restart slapd
-- name: restart slapd
-  service: name=slapd state=restarted enabled=yes
+# Maintenant: un handler.
+## Restart slapd
+## Hint: devrait etre un handler, appeler avec la propriété 'notifyHANDLER NAME'
+#- name: Restart slapd
+#  service: name=slapd state=restarted
+
+# Configure ldap groups
+# TODO: si on considere que des services genre postfix doivent se bind, les ajouter.
+- name: Configure ldap groups [0]
+  copy: src={{item.src}} dest={{item.dest}} owner=openldap group=openldap
+  with_items:
+    - { src: ldap/groups/people.ldif, dest: /tmp/people.ldif }
+- name: Configure ldap groups [1]
+  command: ldapadd -x -D cn=admin,dc=slash16,dc=local -w ldap -f {{item}}
+  with_items: [ /tmp/people.ldif, /tmp/service.ldif ]
+  ignore_errors: yes
+
+# Configure ldap members
+- name: Configure ldap member [0]
+  copy: src={{item.src}} dest={{item.dest}} owner=openldap group=openldap
+  with_items:
+    - { src: ldap/members/aeddi.ldif, dest: /tmp/aeddi.ldif }
+    - { src: ldap/members/akazian.ldif, dest: /tmp/akazian.ldif }
+    - { src: ldap/members/gponsine.ldif, dest: /tmp/gponsine.ldif }
+    - { src: ldap/members/ffourati.ldif, dest: /tmp/ffourati.ldif }
+    - { src: ldap/members/mcizo.ldif, dest: /tmp/mcizo.ldif }
+- name: Configure ldap member [1]
+  command: ldapadd -x -D cn=admin,dc=slash16,dc=local -w ldap -f {{item}}
+  with_items: [ /tmp/aeddi.ldif, /tmp/akazian.ldif, /tmp/ffourati.ldif, /tmp/gponsine.ldif, /tmp/mcizo.ldif ]
+  ignore_errors: yes

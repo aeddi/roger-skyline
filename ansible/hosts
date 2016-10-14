@@ -25,10 +25,10 @@
 	192.168.54.6
 	192.168.54.7
 
-[dbmaster]
+[db_master]
 	192.168.54.6
 
-[dbslave]
+[db_slave]
 	192.168.54.7
 
 # backup, ftp, git

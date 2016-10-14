@@ -1,0 +1,13 @@
+---
+- name: Install PostgreSQL packages and pip
+  apt: name={{item}} state=present
+  with_items:
+    - postgresql
+    - postgresql-contrib
+    - postgresql-server-dev-all
+    - python-pip
+    - python-dev
+
+- name: Install the Python psycopg2 module
+  pip: name=psycopg2 executable=/usr/bin/pip
+...

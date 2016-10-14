@@ -54,4 +54,27 @@
 
 - name: Start and enable nginx service
   service: name=nginx state=started enabled=yes
+
+- name: Install PostgreSQL packages and pip
+  apt: name={{item}} state=present
+  with_items:
+    - postgresql
+    - postgresql-contrib
+    - postgresql-server-dev-all
+    - python-pip
+    - python-dev
+
+- name: Install the Python psycopg2 module
+  pip: name=psycopg2 executable=/usr/bin/pip
+
+- name: Start and enable postgresql service
+  service: name=postgresql state=started enabled=yes
+
+- name: Set db_read alias in /etc/hosts
+  lineinfile: dest=/etc/hosts
+              line="127.0.0.1  db_read"
+
+- name: Set db_write alias in /etc/hosts
+  lineinfile: dest=/etc/hosts
+              line="127.0.0.1  db_write"
 ...

@@ -1,0 +1,30 @@
+(Histoire d'eviter de davantage pourrir le YML.)
+
+Recueil d'indices pour reussir la configuration...
+Les scripts de config du paquet fournissent plein d'elements.
+(paquet dumped: (ici)srv10:/var/tmp/slapd_deb_spilled)
+Notamment (et entre autres:) control/config
+
+Sur une config fonctionnelle avec questionnaire a la mano (dpkg-reconfigure slapd):
+
+root@Groupe54_9:/etc/ldap# grep -riEn 'olcroot(dn|pw)' .
+./slapd.d/cn=config/olcDatabase={1}mdb.ldif:14:olcRootDN: cn=admin,dc=slash16,dc=local
+./slapd.d/cn=config/olcDatabase={1}mdb.ldif:15:olcRootPW:: e1NTSEF9dE54YVJnaGhFMDFjYklCSXZwdUNXK0hvbnAycUpIWnA=
+./slapd.d/cn=config/olcDatabase={0}config.ldif:8:olcRootDN: cn=admin,cn=config
+
+Le olcRootPW est un hash est non le mdp en clair.
+Je suppose qu'il faut hash notre string 'ldap' avec le bon algo est produire un
+output au bon format (base64?)
+
+D'apres le manuel en ligne d'openLDAP, crypt(3) est utilisee.
+
+UPDATE: Script de conf du paquet (ar x ...slapd...deb ; tar xf control.tar.xz ; less config ):
+A tout ce qu'il faut...
+# Usage: hash=`create_password_hash "$password"`
+
+        slappasswd -s "$1"
+}
+...
+
+Details possiblement utiles:
+http://www.openldap.org/doc/admin24/quickstart.html

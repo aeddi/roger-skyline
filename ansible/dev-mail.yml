@@ -4,6 +4,12 @@
   hosts: mail
   remote_user: root
   roles:
-    - { role: mail, tags: mail }
+    - role: mail
+      tags: mail
+#    - role: mail
+#      tags: mail_test
+#      tasks:
+#        - include: roles/mail/tasks/main.yml
+#        - include: roles/mail/tasks/dev_setup.yml
 
 ...

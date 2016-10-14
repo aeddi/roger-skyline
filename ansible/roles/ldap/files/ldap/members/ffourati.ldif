@@ -1,0 +1,9 @@
+dn: cn=ffourati,ou=people,dc=slash16,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+gn: Florian
+sn: Fouratier
+mail: ffourati@student.42.fr
+userPassword: ffourati

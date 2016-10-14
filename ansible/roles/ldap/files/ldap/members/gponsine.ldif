@@ -1,0 +1,9 @@
+dn: cn=gponsine,ou=people,dc=slash16,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+gn: Godefroy
+sn: Ponsinet
+mail: gponsine@student.42.fr
+userPassword: gponsine

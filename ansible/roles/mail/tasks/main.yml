@@ -2,8 +2,22 @@
 
 # WIP WIP WIP WIP WIP
 
-- name: Packages
+#- include: dev_clear.yml
+#  when: mail_test_mode != "true"
+
+- name: Purge exim4
+  apt: name="{{ item }}" state=absent purge=yes
+  with_items: [bsd-mailx, exim4, exim4-base, exim4-config, exim4-daemon-light]
+
+# Autodependency: ssl-cert
+- name: Mail-related packages
   apt: name="{{ item }}" state=present
-  with_items: [dovecot-core, dovecot-ldap, postfix, ssl-cert]
+  with_items: [dovecot-core, dovecot-ldap, postfix, postfix-pcre, postfix-ldap, ssl-cert]
+
+#- debug: "{{ mail_test_mode.defined }}"
+
+# Keep last
+- include: dev_setup.yml
+#  when: ($mail_test_mode.defined)
 
 ...

@@ -148,12 +148,17 @@
 ##################
 # LDAP 
 ##################
-- copy: src=ldap.conf dest=/etc/ldap/ldap.conf
-- copy: src=ssl/ca_certs.pem dest=/etc/ldap/ca_certs.pem
+- name: Copy LDAP client config
+  copy: src=ldap.conf dest=/etc/ldap/ldap.conf
 
 ##################
 # SSL
 ##################
-- copy: src=ssl/ca_certs.key dest=/etc/ssl/private/ca_certs.key
-- copy: src=ssl/ca_certs.pem dest=/etc/ssl/certs/ca_certs.pem  
+- name: Copy SSL certs and keys
+  copy: src={{item.src}} dest={{item.dest}}
+  with_items:
+    - { src: ssl/ca_cert.key, dest: /etc/ssl/private/ca_cert.key }
+    - { src: ssl/ca_cert.pem, dest: /etc/ssl/certs/ca_cert.pem }
+    - { src: ssl/cert.key, dest: /etc/ssl/private/cert.key }
+    - { src: ssl/cert.pem, dest: /etc/ssl/certs/cert.pem }
 ...

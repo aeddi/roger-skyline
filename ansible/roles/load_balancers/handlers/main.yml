@@ -1,4 +1,10 @@
 ---
 - name: Restart HAProxy service
   service: name=haproxy state=restarted
+
+- name: Reload sysctl config
+  command: sysctl -p
+
+- name: Restart heartbeat service
+  service: name=heartbeat state=restarted
 ...

@@ -18,4 +18,28 @@
 
 - name: Start and enable HAProxy service
   service: name=haproxy state=started enabled=yes
+
+- name: Allow HAProxy to bind on virtual IP
+  lineinfile: dest=/etc/sysctl.conf
+              line='net.ipv4.ip_nonlocal_bind=1'
+  notify: Reload sysctl config
+
+- name: Setup heartbeat authentification key
+  template: src=authkeys.j2
+            dest=/etc/ha.d/authkeys
+            mode=600
+  notify: Restart heartbeat service
+
+- name: Setup heartbeat network config
+  template: src=ha.cf.j2
+            dest=/etc/ha.d/ha.cf
+  notify: Restart heartbeat service
+
+- name: Setup heartbeat flag
+  template: src=haresources
+            dest=/etc/ha.d/haresources
+  notify: Restart heartbeat service
+
+- name: Start and enable heartbeat service
+  service: name=heartbeat state=started enabled=yes
 ...
