@@ -1,0 +1,11 @@
+dn: uid=dovecot,ou=services,dc=slash16,dc=local
+#changetype: add
+objectClass: applicationProcess
+objectClass: posixAccount
+cn: dovecot
+uid: dovecot
+uidNumber: 111
+gidNumber: 117
+# From package-generated /etc/passwd entry:
+homeDirectory: /usr/lib/dovecot
+userPassword: dovecot

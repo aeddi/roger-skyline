@@ -5,5 +5,5 @@ objectClass: person
 objectClass: top
 gn: Florian
 sn: Fouratier
-mail: ffourati@student.42.fr
+mail: ffourati@slash16.local
 userPassword: ffourati

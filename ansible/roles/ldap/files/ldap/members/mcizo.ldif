@@ -5,5 +5,5 @@ objectClass: person
 objectClass: top
 gn: Mathieu
 sn: Cizo
-mail: mcizo@student.42.fr
+mail: mcizo@slash16.local
 userPassword: mcizo

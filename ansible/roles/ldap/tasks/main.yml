@@ -35,14 +35,14 @@
   copy: src=slapd dest=/etc/default/slapd
   notify: Restart slapd
 
-- name: Configure admin password (check)
+- name: Check config-admin password existence
   shell: grep olcRootPW '/etc/ldap/slapd.d/cn=config/olcDatabase={0}config.ldif' || true
   register: has_admin_pass
   changed_when: has_admin_pass.stdout == ''
 
-- name: Put admin.ldif
+- name: Put confadmin.ldif
   when: has_admin_pass.stdout == ''
-  copy: src=ldap/members/admin_stub.ldif dest=/tmp/admin.ldif owner=root group=root mode=0600
+  copy: src=ldap/members/confadmin_stub.ldif dest=/tmp/confadmin.ldif owner=root group=root mode=0600
 
 - name: Hash & salt admin password
   when: has_admin_pass.stdout == ''
@@ -51,10 +51,10 @@
 
 - name: Append hashed pass
   when: has_admin_pass.stdout == ''
-  shell: /bin/echo -e 'olcRootPW\x3A {{ slappasswd_result.stdout }}' >> /tmp/admin.ldif
+  shell: /bin/echo -e 'olcRootPW\x3A {{ slappasswd_result.stdout }}' >> /tmp/confadmin.ldif
 
 - name: Set hashed olcRootPW
-  command: ldapmodify -Y EXTERNAL -H ldapi:/// -D cn=admin,dc=slash16,dc=local  -f /tmp/admin.ldif
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -D cn=admin,dc=slash16,dc=local  -f /tmp/confadmin.ldif
   when: has_admin_pass.stdout == ''
 
 #Idealement: check si c'est necessaire avant ;
@@ -74,7 +74,16 @@
 - name: Configure ldap to use certificate [1] 
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/certs.ldif
   ignore_errors: yes
-  notify: Restart slapd
+
+- name: Setting services ACL (LDIF copy)
+  copy: src={{item.src}} dest={{item.dest}} owner=root group=root mode=0600
+  with_items:
+    - { src: ldap/access/olcAccess.ldif, dest: /tmp/olcAccess.ldif }
+
+- name: Setting services ACL (modify)
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/olcAccess.ldif
+  with_items:
+    - { src: ldap/access/olcAccess.ldif, dest: /tmp/olcAccess.ldif }
 
 # Configure ldap groups
 # TODO: si on considere que des services genre postfix doivent se bind, les ajouter.
@@ -82,23 +91,34 @@
   copy: src={{item.src}} dest={{item.dest}} owner=openldap group=openldap
   with_items:
     - { src: ldap/groups/people.ldif, dest: /tmp/people.ldif }
+    - { src: ldap/groups/services.ldif, dest: /tmp/services.ldif }
 - name: Configure ldap groups [1]
   command: ldapadd -x -D cn=admin,dc=slash16,dc=local -w {{ldap_passwd}} -f {{item}}
   with_items:
     - /tmp/people.ldif
-#   - /tmp/service.ldif
+    - /tmp/services.ldif
   ignore_errors: yes
 
 # Configure ldap members
-- name: Configure ldap member [0]
-  copy: src={{item.src}} dest={{item.dest}} owner=openldap group=openldap
+- name: Configure ldap members and services (copy)
+  copy: src={{item.src}} dest={{item.dest}} owner=root group=root mode=0600
   with_items:
     - { src: ldap/members/aeddi.ldif, dest: /tmp/aeddi.ldif }
     - { src: ldap/members/akazian.ldif, dest: /tmp/akazian.ldif }
     - { src: ldap/members/gponsine.ldif, dest: /tmp/gponsine.ldif }
     - { src: ldap/members/ffourati.ldif, dest: /tmp/ffourati.ldif }
     - { src: ldap/members/mcizo.ldif, dest: /tmp/mcizo.ldif }
-- name: Configure ldap member [1]
+    - { src: ldap/services/postfix.ldif, dest: /tmp/postfix.ldif }
+    - { src: ldap/services/dovecot.ldif, dest: /tmp/dovecot.ldif }
+
+- name: Configure ldap member and services (add)
   command: ldapadd -x -w {{ldap_passwd}} -D cn=admin,dc=slash16,dc=local -f {{item}}
-  with_items: [ /tmp/aeddi.ldif, /tmp/akazian.ldif, /tmp/ffourati.ldif, /tmp/gponsine.ldif, /tmp/mcizo.ldif ]
+  with_items:
+    - /tmp/aeddi.ldif
+    - /tmp/akazian.ldif
+    - /tmp/ffourati.ldif
+    - /tmp/gponsine.ldif
+    - /tmp/mcizo.ldif
+    - /tmp/postfix.ldif
+    - /tmp/dovecot.ldif
   ignore_errors: yes

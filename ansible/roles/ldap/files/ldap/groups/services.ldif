@@ -1,0 +1,5 @@
+# services, slash16.local
+dn: ou=services,dc=slash16,dc=local
+objectClass: organizationalUnit
+objectClass: top
+ou: services

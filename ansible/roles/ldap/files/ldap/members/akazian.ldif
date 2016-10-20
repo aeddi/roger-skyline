@@ -5,5 +5,5 @@ objectClass: person
 objectClass: top
 gn: Axel
 sn: Kazian
-mail: akazian@student.42.fr
+mail: akazian@slash16.local
 userPassword: akazian

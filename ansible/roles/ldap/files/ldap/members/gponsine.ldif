@@ -5,5 +5,5 @@ objectClass: person
 objectClass: top
 gn: Godefroy
 sn: Ponsinet
-mail: gponsine@student.42.fr
+mail: gponsine@slash16.local
 userPassword: gponsine

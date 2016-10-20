@@ -1,0 +1,5 @@
+- daemon binding entries ? (postmap, ...)
+- anything git-related
+- entries: emails: @slash16.local (+additional schema:attributes if needed)
+- binding requirements ?
+- network access reachability (leastpriv in mind) ?

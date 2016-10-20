@@ -5,5 +5,5 @@ objectClass: person
 objectClass: top
 gn: Antoine
 sn: Eddi
-mail: aeddi@student.42.fr
+mail: aeddi@slash16.local
 userPassword: aeddi

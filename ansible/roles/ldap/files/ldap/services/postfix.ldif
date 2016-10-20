@@ -1,0 +1,11 @@
+dn: uid=postfix,ou=services,dc=slash16,dc=local
+#changetype: add
+objectClass: applicationProcess
+objectClass: posixAccount
+cn: postfix
+uid: postfix
+uidNumber: 113
+gidNumber: 119
+# From package-generated /etc/passwd entry:
+homeDirectory: /var/spool/postfix
+userPassword: postfix
