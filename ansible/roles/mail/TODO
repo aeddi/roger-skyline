@@ -26,3 +26,13 @@ ldap_virtual_{aliases|recipients}.cf
 => bind_pw
 || bind = no (?)
 # query_filter => user attributes: mail|mailAlias, mailEnabled=TRUE
+
+
+ - decide LDAP binding options (+LDAP data & settings)
+ - decide LDAP checks ('mailEnabled' attr ? + additional LDAP schemas)
+ - dovecot
+ - (sasl ?)
+ < mail dependend services
+    - rsyslog
+    - webapp
+    - ?

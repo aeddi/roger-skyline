@@ -1,8 +1,10 @@
-dn: cn=aeddi,ou=people,dc=slash16,dc=local
+dn: uid=aeddi,ou=people,dc=slash16,dc=local
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
 objectClass: top
+uid: aeddi
+cn: Antoine Eddi
 gn: Antoine
 sn: Eddi
 mail: aeddi@slash16.local

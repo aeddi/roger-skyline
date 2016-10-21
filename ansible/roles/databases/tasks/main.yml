@@ -10,4 +10,21 @@
 
 - name: Install the Python psycopg2 module
   pip: name=psycopg2 executable=/usr/bin/pip
+
+- name: Create Django database
+  postgresql_db: name=django_db
+  sudo_user: postgres
+  sudo: yes
+
+- name: Create Django database user
+  postgresql_user: name=django_user password=django_user
+                   db=django_db priv=ALL
+  sudo_user: postgres
+  sudo: yes
+
+- name: Set listening adresses in PostgreSQL configuration
+  lineinfile: dest=/etc/postgresql/9.4/main/postgresql.conf
+              regexp="^listen_addresses ="
+              line="listen_addresses = 'localhost,srv{{inventory_hostname.split('.')[-1]}}.slash16.local'"
+  notify: Restart PostgreSQL
 ...

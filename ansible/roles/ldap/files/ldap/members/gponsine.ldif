@@ -1,8 +1,10 @@
-dn: cn=gponsine,ou=people,dc=slash16,dc=local
+dn: uid=gponsine,ou=people,dc=slash16,dc=local
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
 objectClass: top
+uid: gponsine
+cn: Godefroy Ponsinet
 gn: Godefroy
 sn: Ponsinet
 mail: gponsine@slash16.local

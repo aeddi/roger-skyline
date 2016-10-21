@@ -57,6 +57,19 @@
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -D cn=admin,dc=slash16,dc=local  -f /tmp/confadmin.ldif
   when: has_admin_pass.stdout == ''
 
+
+# DEV************** Loglevel: show queries, results (/var/log/debug)
+- name: Set a friendly log level
+  args:
+    executable: /bin/bash
+  shell: ldapmodify -Y EXTERNAL -H ldapi:/// -D 'cn=admin,dc=slash16,dc=local' -f /dev/stdin <<< "{{ item }}"
+  with_items:
+    - |
+        dn: cn=config
+        changetype: modify
+        replace: olcLogLevel
+        olcLogLevel: filter stats stats
+
 #Idealement: check si c'est necessaire avant ;
 # Merge les etapes si raisonnablement possible
 # cf. :'changed_when: output.{stdout,...} == ...'
@@ -110,6 +123,7 @@
     - { src: ldap/members/mcizo.ldif, dest: /tmp/mcizo.ldif }
     - { src: ldap/services/postfix.ldif, dest: /tmp/postfix.ldif }
     - { src: ldap/services/dovecot.ldif, dest: /tmp/dovecot.ldif }
+    - { src: ldap/services/zabbix.ldif, dest: /tmp/zabbix.ldif }
 
 - name: Configure ldap member and services (add)
   command: ldapadd -x -w {{ldap_passwd}} -D cn=admin,dc=slash16,dc=local -f {{item}}
@@ -121,4 +135,5 @@
     - /tmp/mcizo.ldif
     - /tmp/postfix.ldif
     - /tmp/dovecot.ldif
+    - /tmp/zabbix.ldif
   ignore_errors: yes

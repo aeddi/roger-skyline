@@ -1,0 +1,11 @@
+dn: uid=Admin,ou=people,dc=slash16,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: Admin
+cn: Admin
+gn: Admin
+sn: Zabbix
+mail: admin@slash16.local
+userPassword: Admin

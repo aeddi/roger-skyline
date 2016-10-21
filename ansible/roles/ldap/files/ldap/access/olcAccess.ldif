@@ -6,7 +6,7 @@ replace: olcAccess
 olcAccess: {0}to attrs=userPassword,shadowLastChange
   by self write
   by anonymous auth
-  by dn.children="ou=services,dc=slash16,dc=local" compare
+  by dn.children="ou=services,dc=slash16,dc=local" read
   by * none
 olcAccess: {1}to dn.base="" by * read
 olcAccess: {2}to * by * read

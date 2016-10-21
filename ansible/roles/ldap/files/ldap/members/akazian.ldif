@@ -1,8 +1,10 @@
-dn: cn=akazian,ou=people,dc=slash16,dc=local
+dn: uid=akazian,ou=people,dc=slash16,dc=local
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
 objectClass: top
+uid: akazian
+cn: Axel Kazian
 gn: Axel
 sn: Kazian
 mail: akazian@slash16.local

@@ -1,6 +1,52 @@
 IPTABLES
-- Virer l'ACCEPT sur 192.168.54.10 (utile uniquement pour le dev, le deploiement final se fera via la gateway)
+- Supprimer le block de dev
+DONE / AEDDI - Vérifier que le PAT fonctionne correctement depuis l'école
+DONE / AEDDI - Vérifier que le NAT fonctionne toujours apres un reset de .1
 
 DNS
-- Finir le DNS...
-- Voir si le serial est bon partout
+AEDDI - Finir le DNS...
+AEDDI - Voir si le serial est bon partout
+AEDDI - Ajouter les DN pour les différents protocoles du service mail
+
+SSH
+AEDDI - Modifier le role common pour desactiver PermitRootLogin sur toutes les instances
+AEDDI - Faire en sorte de faire transiter toutes les connexions SSH via un user restreint (par ex l'user ansible)
+
+LDAP:
+- Gérer l'authentification LDAP pour le systeme de versionning
+- Gérer l'authentification LDAP pour le systeme de monitoring
+- Gérer l'authentification LDAP pour le systeme de mail
+
+SSL:
+AEDDI - Mettre en place le certif sur le serveur Apache de .9 (pour le monitoring)
+AEDDI - Mettre en place le certif sur le nginx de .10 (preprod)
+AEDDI - Mettre en place le certif sur les LBs en mode HTTPS endpoint
+- Mettre en place le certif sur le serveur HTTP du systeme de versionning
+- Mettre en place le certif sur les différents services mail
+
+DB:
+DONE / AEDDI - Finir le role ansible pour le setup des serveurs master/slave
+
+Automatisation:
+- Creer un role pour la mise en preprod (snapshot DB, git pull preprod code, lancement des tests unitaires)
+- Creer un role pour la mise en prod (merge preprod / prod, git pull prod code sur .4 et .5)
+
+Syslog:
+- Verifier quels services n'output pas leurs logs dessus par défaut et faire en sorte que ce soit le cas
+- Envoyer des mails pour les Emergency, Alert et Critical quand le service de mail sera en place
+
+Monitoring:
+AEDDI - Exporter la config Zabbix pour le role
+- Mettre en place une page de monitoring pour les services qui peuvent etre monitorés (c'est simple, la doc de zabbix file des exemples pour mettre en place du monitoring de serveur HTTP par ex, ça prend 5 min)
+
+Backup:
+- Mettre en place le service
+
+Mail:
+- Mettre en place le service
+
+Versionning:
+- Mettre en place le service
+
+Web app:
+- Faire la web app, voir avec aeddi pour la lecture / ecriture sur la DB

@@ -6,7 +6,7 @@
     - heartbeat
 
 - name: Setup HAProxy config
-  template: src=haproxy.cfg.j2
+  template: src=haproxy.cfg
             dest=/etc/haproxy/haproxy.cfg
   notify: Restart HAProxy service
 

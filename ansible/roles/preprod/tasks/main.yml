@@ -67,6 +67,17 @@
 - name: Install the Python psycopg2 module
   pip: name=psycopg2 executable=/usr/bin/pip
 
+- name: Create Django database
+  postgresql_db: name=django_db
+  sudo_user: postgres
+  sudo: yes
+
+- name: Create Django database user
+  postgresql_user: name=django_user password=django_user
+                   db=django_db priv=ALL
+  sudo_user: postgres
+  sudo: yes
+
 - name: Start and enable postgresql service
   service: name=postgresql state=started enabled=yes
 

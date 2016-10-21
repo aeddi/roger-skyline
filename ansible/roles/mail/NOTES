@@ -1,0 +1,10 @@
+http://acidx.net/wordpress/2014/06/installing-a-mailserver-with-postfix-dovecot-sasl-ldap-roundcube/
+
+# (part of dovecot)
+addgroup --system --gid 5000 vmail
+adduser --system --home /srv/vmail --uid 5000 --gid 5000 --disabled-password --disabled-login vmail
+
+
+# For authentication purpose:
+# service needs to filter (HENCE access) userPassword.
+# Thus, a service needs to BIND, and possess the proper ACL

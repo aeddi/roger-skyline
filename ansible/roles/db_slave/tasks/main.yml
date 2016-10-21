@@ -1,4 +1,40 @@
 ---
-- name: Test
-  apt: name=python-pip state=present
+- name: Stop PostgreSQL service before config & sync
+  service: name=postgresql state=stopped
+  sudo_user: root
+  sudo: yes
+
+- name: Delete current PostgreSQL slave folder
+  file: path=/var/lib/postgresql/9.4/main state=absent
+
+- name: Sync master and slave databases
+  shell: PGPASSWORD={{rep_pswd}} pg_basebackup -h 192.168.154.6 -D /var/lib/postgresql/9.4/main -U {{rep_user}} --xlog-method=stream
+
+- name: Enable hot standby in PostgreSQL configuration
+  lineinfile: dest=/etc/postgresql/9.4/main/postgresql.conf
+              regexp="^hot_standby ="
+              line="hot_standby = on"
+
+- name: Copy recovery template to PostgreSQL config
+  command: creates="/var/lib/postgresql/9.4/main/recovery.conf" cp /usr/share/postgresql/9.4/recovery.conf.sample /var/lib/postgresql/9.4/main/recovery.conf
+
+- name: Enable standby mode in PostgreSQL recovery configuration
+  lineinfile: dest=/var/lib/postgresql/9.4/main/recovery.conf
+              regexp="^standby_mode ="
+              line="standby_mode = on"
+
+- name: Enable connection to master server
+  lineinfile: dest=/var/lib/postgresql/9.4/main/recovery.conf
+              regexp="^primary_conninfo = 'host="
+              line="primary_conninfo = 'host=192.168.154.6 port=5432 user={{rep_user}} password={{rep_pswd}}'"
+
+- name: Set trigger file location
+  lineinfile: dest=/var/lib/postgresql/9.4/main/recovery.conf
+              regexp="^trigger_file = '"
+              line="trigger_file = '/tmp/postgresql.trigger.5432'"
+
+- name: Restart PostgreSQL service
+  service: name=postgresql state=started
+  sudo_user: root
+  sudo: yes
 ...
