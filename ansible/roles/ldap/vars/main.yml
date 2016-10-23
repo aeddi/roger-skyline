@@ -1,1 +1,37 @@
 ldap_passwd: ldap
+ldap_users:
+  - ou: people
+    user: aeddi
+    file: aeddi_stub.ldif
+    srcd: ldap/members/
+    destd: /tmp/
+  - ou: people
+    user: akazian
+    file: akazian_stub.ldif
+    srcd: ldap/members/
+    destd: /tmp/
+  - ou: people
+    user: gponsine
+    file: gponsine_stub.ldif
+    srcd: ldap/members/
+    destd: /tmp/
+  - ou: people
+    user: ffourati
+    file: ffourati_stub.ldif
+    srcd: ldap/members/
+    destd: /tmp/
+  - ou: people
+    user: mcizo
+    file: mcizo_stub.ldif
+    srcd: ldap/members/
+    destd: /tmp/
+  - ou: services
+    user: postfix
+    file: postfix_stub.ldif
+    srcd: ldap/services/
+    destd: /tmp/
+  - ou: services
+    user: dovecot
+    file: dovecot_stub.ldif
+    srcd: ldap/services/
+    destd: /tmp/

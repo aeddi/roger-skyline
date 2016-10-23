@@ -8,4 +8,3 @@ uidNumber: 111
 gidNumber: 117
 # From package-generated /etc/passwd entry:
 homeDirectory: /usr/lib/dovecot
-userPassword: dovecot

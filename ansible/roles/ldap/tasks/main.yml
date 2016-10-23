@@ -113,27 +113,17 @@
   ignore_errors: yes
 
 # Configure ldap members
-- name: Configure ldap members and services (copy)
-  copy: src={{item.src}} dest={{item.dest}} owner=root group=root mode=0600
-  with_items:
-    - { src: ldap/members/aeddi.ldif, dest: /tmp/aeddi.ldif }
-    - { src: ldap/members/akazian.ldif, dest: /tmp/akazian.ldif }
-    - { src: ldap/members/gponsine.ldif, dest: /tmp/gponsine.ldif }
-    - { src: ldap/members/ffourati.ldif, dest: /tmp/ffourati.ldif }
-    - { src: ldap/members/mcizo.ldif, dest: /tmp/mcizo.ldif }
-    - { src: ldap/services/postfix.ldif, dest: /tmp/postfix.ldif }
-    - { src: ldap/services/dovecot.ldif, dest: /tmp/dovecot.ldif }
-    - { src: ldap/services/zabbix.ldif, dest: /tmp/zabbix.ldif }
+- name: Configure ldap members and services (copy ldifs)
+  copy: src={{item.srcd}}{{item.file}} dest={{item.destd}}{{item.file}} owner=root group=root mode=0600
+  with_items: ldap_users
 
-- name: Configure ldap member and services (add)
-  command: ldapadd -x -w {{ldap_passwd}} -D cn=admin,dc=slash16,dc=local -f {{item}}
-  with_items:
-    - /tmp/aeddi.ldif
-    - /tmp/akazian.ldif
-    - /tmp/ffourati.ldif
-    - /tmp/gponsine.ldif
-    - /tmp/mcizo.ldif
-    - /tmp/postfix.ldif
-    - /tmp/dovecot.ldif
-    - /tmp/zabbix.ldif
-  ignore_errors: yes
+- name: Configure ldap members and services (copy script)
+  copy: src={{item}} dest=/tmp/{{item}} owner=root group=root mode=0700
+  with_items: [ ldap_exists.sh, ldapadd_with_ssha.sh ]
+
+- name: Configure ldap members and services (add)
+  shell: "ROOTPW={{ldap_passwd}} /tmp/ldapadd_with_ssha.sh {{item.destd}}{{item.file}} {{item.user}} {{item.ou}}"
+  register: added_user
+  changed_when: added_user.stdout != 'exists'
+  with_items: ldap_users
+

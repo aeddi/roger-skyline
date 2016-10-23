@@ -3,3 +3,15 @@
 - entries: emails: @slash16.local (+additional schema:attributes if needed)
 - binding requirements ?
 - network access reachability (leastpriv in mind) ?
+
+// ! \\ Achtung: MDP
+ - stockes en clair base64)
+    -> fournir hashes dans le ldif ( idealement: sortie de lappasswd -h "{SSHA}" -s <pass> )
+ - pas de politique de hashage
+    ->
+        olcDatabase=frontend,cn=config
+        add: olcPasswordHash
+        olcPasswordHash: {SSHA}
+      
+  => pose probleme sur les services qui obtiennent le hash pour travailler dessus
+    (et accessoirement ne supportent pas l'auth en clair)
