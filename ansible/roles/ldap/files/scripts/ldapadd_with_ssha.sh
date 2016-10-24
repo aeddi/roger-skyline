@@ -1,13 +1,13 @@
 #!/bin/bash
 
-if (($# < 2)); then
+if (($# < 2 || $@ > 3)); then
   echo "Usage: $0 <ldif> <UID> [OU]" >&2
   exit 1
 fi
 
 STUB_SUFFIX='_stub'
 TARGET_USER="$2"
-TARGET_PASS=$(slappasswd -h '{SSHA}' -s "TARGET_USER")
+TARGET_PASS=$(slappasswd -h '{SSHA}' -s "$TARGET_USER")
 LDIF_STUB="$1"
 BARE_STUB="${LDIF_STUB%.*}"
 LDIF="${BARE_STUB%$STUB_SUFFIX}.ldif"
