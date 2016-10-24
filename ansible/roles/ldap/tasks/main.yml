@@ -94,7 +94,7 @@
   ignore_errors: yes
 
 - name: Check ACLs
-  command: /tmp/check_acls.sh
+  command: /tmp/ldap_check_ACLs.sh
   register: acl_diff
   changed_when: acl_diff.stdout != ''
   ignore_errors: yes

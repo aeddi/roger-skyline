@@ -42,4 +42,4 @@ helper_scripts:
   - srcd: scripts/
     name: ldapadd_with_ssha.sh
   - srcd: scripts/
-    name: check_acls.sh
+    name: ldap_check_ACLs.sh
