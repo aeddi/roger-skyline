@@ -29,6 +29,11 @@
 - name: Setup ldap.conf to allow simple auth ldapmodify
   copy: src=ldap/ldap.conf dest=/etc/ldap/ldap.conf
 
+- name: Copy helper scripts
+  copy: src={{item.srcd}}{{item.name}} dest=/tmp/{{item.name}} owner=root group=root mode=0700
+  with_items: helper_scripts
+
+
 # Configure ldap ssl, network/IPC binding
 # Workaround to no SIMPLE/anon bind: edit SLAPD_SERVICES
 - name: Copy slapd Configuration file
@@ -88,12 +93,20 @@
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/certs.ldif
   ignore_errors: yes
 
+- name: Check ACLs
+  command: /tmp/check_acls.sh
+  register: acl_diff
+  changed_when: acl_diff.stdout != ''
+  ignore_errors: yes
+
 - name: Setting services ACL (LDIF copy)
+  when: acl_diff.stdout != ''
   copy: src={{item.src}} dest={{item.dest}} owner=root group=root mode=0600
   with_items:
     - { src: ldap/access/olcAccess.ldif, dest: /tmp/olcAccess.ldif }
 
 - name: Setting services ACL (modify)
+  when: acl_diff.stdout != ''
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/olcAccess.ldif
   with_items:
     - { src: ldap/access/olcAccess.ldif, dest: /tmp/olcAccess.ldif }
@@ -116,10 +129,6 @@
 - name: Configure ldap members and services (copy ldifs)
   copy: src={{item.srcd}}{{item.file}} dest={{item.destd}}{{item.file}} owner=root group=root mode=0600
   with_items: ldap_users
-
-- name: Configure ldap members and services (copy script)
-  copy: src={{item}} dest=/tmp/{{item}} owner=root group=root mode=0700
-  with_items: [ ldap_exists.sh, ldapadd_with_ssha.sh ]
 
 - name: Configure ldap members and services (add)
   shell: "ROOTPW={{ldap_passwd}} /tmp/ldapadd_with_ssha.sh {{item.destd}}{{item.file}} {{item.user}} {{item.ou}}"
