@@ -32,6 +32,12 @@
 -A PREROUTING -i eth0 -p tcp -m tcp --dport 8082 -j DNAT --to-destination 192.168.154.8:80
 -A PREROUTING -i eth0 -p tcp -m tcp --dport 4432 -j DNAT --to-destination 192.168.154.8:443
 
+# Forward MTA, SMTPS, IMAPS, POP3S requests to the mail host
+-A PREROUTING -i eth0 -p tcp -m tcp --dport 587 -j DNAT --to-destination 192.168.154.2:587
+-A PREROUTING -i eth0 -p tcp -m tcp --dport 993 -j DNAT --to-destination 192.168.154.2:993
+-A PREROUTING -i eth0 -p tcp -m tcp --dport 995 -j DNAT --to-destination 192.168.154.2:995
+-A PREROUTING -i eth0 -p tcp -m tcp --dport 25 -j DNAT --to-destination 192.168.154.2:25
+
 -A POSTROUTING -o eth0 -j MASQUERADE
 COMMIT
 # Completed on Sat Oct  8 09:26:04 2016
