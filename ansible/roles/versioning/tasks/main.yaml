@@ -1,0 +1,106 @@
+---
+- name: Install necessary packages
+  apt: name="{{item}}" state=present
+  with_items:
+    - nginx
+    - clang
+    - postgresql
+    - git
+
+# Gogs user
+###########
+- name: create git group
+  group: name=git state=present
+
+- name: create git user
+  user: name=git group=git shell=/bin/bash
+
+#- name: git user authorized_keys (ansible)
+#  authorized_key: user=git key="{{lookup('file', '/home/ansible/.ssh/id_rsa.pub')}}"
+
+
+# Go compiler Installation
+##########################
+- name: Test if golang is installed
+  stat: path=/home/git/go-linux-ppc64le-bootstrap/bin/go
+  register: go_try
+   
+- name: copy go files
+  unarchive: src=go-linux-ppc64le-bootstrap.tbz dest=/home/git owner=git group=git
+  when: go_try.stat.exists == False
+
+- name: Golang rights
+  file: >
+    path=/home/git/go-linux-ppc64le-bootstrap
+    recurse=yes
+    state=directory
+    group=git
+    owner=git
+
+- name: Go env variables in bashrc, GOROOT
+  lineinfile: dest=/home/git/.bashrc line="export GOROOT=$HOME/go-linux-ppc64le-bootstrap"
+ 
+- name: Go env variables in bashrc, PATH update
+  lineinfile: dest=/home/git/.bashrc line="export PATH=$PATH:$GOROOT/bin"
+
+- name: Go env variables in bashrc, GOPATH
+  lineinfile: dest=/home/git/.bashrc line="export GOPATH=$HOME/goworkspace"
+
+
+# Nginx installation
+####################
+- name: copy nginx conf file
+  copy: src=default dest=/etc/nginx/sites-available/default
+  notify:
+    - restart nginx
+
+- name: enable nginx conf
+  file: >
+    dest=/etc/nginx/sites-enabled/default
+    src=/etc/nginx/sites-available/default
+    state=link
+
+# Go Git Service
+################
+- name: Test if gogs is installed
+  stat: path=/home/git/goworkspace/src/github.com/gogits/gogs/gogs
+  register: gogs_try
+
+- name: install Go Git Service (gogs)
+  script: install_gogs.sh
+  register: gogs_result
+  when: gogs_try.stat.exists == False
+ 
+- name: Gogs rights
+  file: >
+    path=/home/git/goworkspace
+    recurse=yes
+    group=git
+    owner=git
+
+- name: Gogs service (systemd)
+  copy: src=gogs.service dest=/etc/systemd/system/gogs.service
+
+- name: Gogs conf folder
+  file: >
+    path=/home/git/goworkspace/src/github.com/gogits/gogs/custom/conf
+    state=directory
+    recurse=yes
+    group=git
+    owner=git
+
+- name: gogs conf file
+  copy: >
+    src=app.ini
+    dest=/home/git/goworkspace/src/github.com/gogits/gogs/custom/conf/app.ini
+  notify:
+    - restart gogs
+
+# Everything's right ?
+###################### 
+- name: nginx is started
+  service: name=nginx state=started enabled=true
+
+- name: gogs is started
+  service: name=gogs state=started enabled=true
+...

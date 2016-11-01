@@ -106,4 +106,12 @@
 
   roles:
     - { role: preprod, tags: preprod }
+
+- name: Setup storage server (git, backup...)
+  hosts: storage
+  remote_user: root
+  gather_facts: no
+
+  roles:
+    - { role: versioning, tags: versioning }
 ...

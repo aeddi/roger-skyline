@@ -1,0 +1,7 @@
+---
+- name: restart nginx
+  action: service name=nginx state=restarted
+
+- name: restart gogs
+  action: service name=gogs state=restarted
+...
