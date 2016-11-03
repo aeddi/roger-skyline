@@ -6,7 +6,7 @@ DONE / AEDDI - Vérifier que le NAT fonctionne toujours apres un reset de .1
 DNS
 AEDDI - Finir le DNS...
 AEDDI - Voir si le serial est bon partout
-AEDDI - Ajouter les DN pour les différents protocoles du service mail
+DONE / AEDDI - Ajouter les DN pour les différents protocoles du service mail
 
 SSH
 AEDDI - Modifier le role common pour desactiver PermitRootLogin sur toutes les instances
@@ -14,13 +14,13 @@ AEDDI - Faire en sorte de faire transiter toutes les connexions SSH via un user 
 
 LDAP:
 - Gérer l'authentification LDAP pour le systeme de versionning
-- Gérer l'authentification LDAP pour le systeme de monitoring
+DONE / GPONSINE - Gérer l'authentification LDAP pour le systeme de monitoring
 - Gérer l'authentification LDAP pour le systeme de mail
 
 SSL:
-AEDDI - Mettre en place le certif sur le serveur Apache de .9 (pour le monitoring)
-AEDDI - Mettre en place le certif sur le nginx de .10 (preprod)
-AEDDI - Mettre en place le certif sur les LBs en mode HTTPS endpoint
+DONE / AEDDI - Mettre en place le certif sur le serveur Apache de .9 (pour le monitoring)
+DONE / AEDDI - Mettre en place le certif sur le nginx de .10 (preprod)
+DONE / AEDDI - Mettre en place le certif sur les LBs en mode HTTPS endpoint
 - Mettre en place le certif sur le serveur HTTP du systeme de versionning
 - Mettre en place le certif sur les différents services mail
 

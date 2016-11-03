@@ -6,6 +6,7 @@
     - clang
     - postgresql
     - git
+    - python-psycopg2
 
 # Gogs user
 ###########

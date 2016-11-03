@@ -26,9 +26,6 @@
   with_items: [ slapd, ldap-utils, ssl-cert, gnutls-bin ]
   notify: Enable and start slapd
 
-- name: Setup ldap.conf to allow simple auth ldapmodify
-  copy: src=ldap/ldap.conf dest=/etc/ldap/ldap.conf
-
 - name: Copy helper scripts
   copy: src={{item.srcd}}{{item.name}} dest=/tmp/{{item.name}} owner=root group=root mode=0700
   with_items: helper_scripts
@@ -64,7 +61,7 @@
 
 
 # DEV************** Loglevel: show queries, results (/var/log/debug)
-- name: Set a friendly log level
+- name: '***DEV*** Set a friendly log level'
   args:
     executable: /bin/bash
   shell: ldapmodify -Y EXTERNAL -H ldapi:/// -D 'cn=admin,dc=slash16,dc=local' -f /dev/stdin <<< "{{ item }}"
@@ -78,26 +75,42 @@
 #Idealement: check si c'est necessaire avant ;
 # Merge les etapes si raisonnablement possible
 # cf. :'changed_when: output.{stdout,...} == ...'
-- name: Give openldap access to the ldap key [0]
-  command: usermod -aG ssl-cert openldap
-- name: Give openldap access to the ldap key [1]
-  command: chown :ssl-cert /etc/ssl/private/cert.key
-- name: Give openldap access to the ldap key [2]
-  command: chmod 640 /etc/ssl/private/cert.key
-  notify: Restart slapd
 
-- name: Configure ldap to use certificate [0]
-  copy: src=ldap/certs.ldif dest=/tmp/certs.ldif owner=openldap group=openldap 
+#- name: Check openldap access to the cert key
+#  shell: groups openldap | grep -q ssl-cert \
+#    && find /etc/ssl/private/cert.key -group ssl-cert
 
-- name: Configure ldap to use certificate [1] 
+- name: Copy ldap certificate and key
+  copy: src={{item.src}} dest={{item.dest}}
+  with_items:
+    - { src: ssl/ldap.pem, dest: /etc/ssl/certs/ldap.pem }
+    - { src: ssl/ldap.key, dest: /etc/ssl/private/ldap.key }
+
+- name: Check ldap certificates
+  shell: ldapsearch -Y EXTERNAL -LLL -H ldapi:/// -b cn=config '{{item.attr}}=*' {{item.attr}} 2> /dev/stdout | grep '{{item.attr}}' | grep '{{item.val}}'
+  register: certs_check
+  changed_when:
+    - certs_check.rc != 0
+  failed_when:
+    - certs_check.rc != 0
+    - certs_check.rc != 1
+  with_items:
+    - { id: 0, attr: olcTLSCACertificateFile, val: /etc/ssl/certs/ca_cert.pem }
+    - { id: 1, attr: olcTLSCertificateFile, val: /etc/ssl/certs/ldap.pem }
+    - { id: 2, attr: olcTLSCertificateKeyFile, val: /etc/ssl/private/ldap.key }
+
+- name: Configure ldap to use certificates [0]
+  copy: src=ldap/certs.ldif dest=/tmp/certs.ldif owner=openldap group=openldap
+  when: "certs_check.results[0].rc == 1 or certs_check.results[1].rc == 1 or certs_check.results[2].rc == 1"
+
+- name: Configure ldap to use certificates [1] 
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/certs.ldif
-  ignore_errors: yes
+  when: "certs_check.results[0].rc == 1 or certs_check.results[1].rc == 1 or certs_check.results[2].rc == 1"
 
 - name: Check ACLs
   command: /tmp/ldap_check_ACLs.sh
   register: acl_diff
   changed_when: acl_diff.stdout != ''
-  ignore_errors: yes
 
 - name: Setting services ACL (LDIF copy)
   when: acl_diff.stdout != ''
@@ -113,17 +126,31 @@
 
 # Configure ldap groups
 # TODO: si on considere que des services genre postfix doivent se bind, les ajouter.
+- name: Check ldap groups
+  shell: ldapcompare -Y EXTERNAL -H ldapi:/// ou={{item.ou}},dc=slash16,dc=local ou:{{item.ou}} | grep 'TRUE\|FALSE\|UNDEFINED'
+  register: groups_check
+  changed_when: groups_check.stdout != 'TRUE'
+  failed_when:
+    - groups_check.stdout != 'TRUE'
+    - groups_check.stdout != 'FALSE'
+    - groups_check.stdout != 'UNDEFINED'
+  with_items:
+    - { id: 0, ou: people }
+    - { id: 1, ou: services }
+
 - name: Configure ldap groups [0]
   copy: src={{item.src}} dest={{item.dest}} owner=openldap group=openldap
+  when: groups_check.results[{{item.id}}].stdout != 'TRUE'
   with_items:
-    - { src: ldap/groups/people.ldif, dest: /tmp/people.ldif }
-    - { src: ldap/groups/services.ldif, dest: /tmp/services.ldif }
+    - { id: 0, src: ldap/groups/people.ldif, dest: /tmp/people.ldif }
+    - { id: 1, src: ldap/groups/services.ldif, dest: /tmp/services.ldif }
+
 - name: Configure ldap groups [1]
-  command: ldapadd -x -D cn=admin,dc=slash16,dc=local -w {{ldap_passwd}} -f {{item}}
+  command: ldapadd -H ldap://ldap.slash16.local/ -x -D cn=admin,dc=slash16,dc=local -w {{ldap_passwd}} -f {{item.src}}
+  when: groups_check.results[{{item.id}}].stdout != 'TRUE'
   with_items:
-    - /tmp/people.ldif
-    - /tmp/services.ldif
-  ignore_errors: yes
+    - { id: 0, src: /tmp/people.ldif }
+    - { id: 1, src: /tmp/services.ldif }
 
 # Configure ldap members
 - name: Configure ldap members and services (copy ldifs)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if (($# < 1)); then
+if (($# < 1 || $# > 2)); then
   echo "Usage: $0 <UID> [OU]" >&2
   exit 1
 fi
@@ -11,7 +11,7 @@ if [[ ! -z "$2" ]]; then
     BASE=$(echo "-b ou=${2},dc=slash16,dc=local")
 fi
 
-EXISTS=$(ldapsearch -x -LLL $BASE "$FILTER" dn | grep '^dn:')
+EXISTS=$(ldapsearch -Y EXTERNAL -H ldapi:/// -LLL $BASE "$FILTER" dn | grep '^dn:')
 
 if [[ ! -z "$EXISTS" ]]; then
   echo exists

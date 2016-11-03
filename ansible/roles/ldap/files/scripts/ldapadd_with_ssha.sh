@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if (($# < 2 || $@ > 3)); then
+if (($# < 2 || $# > 3)); then
   echo "Usage: $0 <ldif> <UID> [OU]" >&2
   exit 1
 fi
@@ -17,7 +17,7 @@ EXISTS="$(shift; /tmp/ldap_exists.sh $@)"
 if [ "$EXISTS" == "" ]; then
   umask 177
   cat "$LDIF_STUB" <(echo "userPassword: $TARGET_PASS") > "$LDIF"
-  ldapadd -x -w "$ROOTPW" -D 'cn=admin,dc=slash16,dc=local' -f "$LDIF" >&2
+  ldapadd -H ldap://ldap.slash16.local/ -x -w "$ROOTPW" -D 'cn=admin,dc=slash16,dc=local' -f "$LDIF" >&2
 else
   echo $EXISTS
 fi

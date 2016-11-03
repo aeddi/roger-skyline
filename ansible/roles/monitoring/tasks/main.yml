@@ -70,4 +70,33 @@
 
 - name: Enable the Zabbix server
   service: name=zabbix-server enabled=true
+
+- name: Set certificate path in apache2 config
+  lineinfile: regexp="^\\t\\tSSLCertificateFile "
+              line="\\t\\tSSLCertificateFile /etc/ssl/certs/cert.pem"
+              dest=/etc/apache2/sites-available/default-ssl.conf
+  notify: Restart Apache2
+
+- name: Set certificate key path in apache2 config
+  lineinfile: regexp="^\\t\\tSSLCertificateKeyFile "
+              line="\\t\\tSSLCertificateKeyFile /etc/ssl/private/cert.key"
+              dest=/etc/apache2/sites-available/default-ssl.conf
+  notify: Restart Apache2
+
+- name: Enable SSL module
+  command: a2enmod ssl
+  register: output
+  changed_when: '"Module ssl already enabled" not in output.stdout'
+  notify: Restart Apache2
+
+- name: Enable SSL config
+  command: a2ensite default-ssl
+  register: output
+  changed_when: '"Site default-ssl already enabled" not in output.stdout'
+  notify: Restart Apache2
+
+- name: Install PHP Zabbix config
+  template: src=php.ini
+            dest=/etc/php5/apache2/php.ini
+  notify: Restart Apache2
 ...

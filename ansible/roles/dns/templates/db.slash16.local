@@ -34,6 +34,9 @@ vpn.slash16.local.		  IN	CNAME	srv1
 
 ; Services on svr2
 mail.slash16.local.		  IN	A	192.168.154.2
+smtp.slash16.local.		  IN	CNAME	mail
+imap.slash16.local.		  IN	CNAME	mail
+pop3.slash16.local.		  IN	CNAME	mail
 srv2.slash16.local.		  IN	CNAME	mail
 lb1.slash16.local.		  IN	CNAME	srv2
 

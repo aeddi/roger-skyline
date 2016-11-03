@@ -27,6 +27,10 @@ ldap_virtual_{aliases|recipients}.cf
 || bind = no (?)
 # query_filter => user attributes: mail|mailAlias, mailEnabled=TRUE
 
+ - SASL: SMTPS
+ - SASL: IMAPS
+ - SASL: POP3S
+ - (SASL: LDAPS)
 
  - decide LDAP binding options (+LDAP data & settings)
  - decide LDAP checks ('mailEnabled' attr ? + additional LDAP schemas)
@@ -36,3 +40,10 @@ ldap_virtual_{aliases|recipients}.cf
     - rsyslog
     - webapp
     - ?
+
+
+
+- dovecot keeps filtering with: objectClass=posixAccount, uid=<email>
+  asks MUST posixAccount attrs...
+  ldap(ffourati@slash16.local): user search: base=ou=people,dc=slash16,dc=local scope=subtree filter=(&(objectClass=posixAccount)(uid=ffourati@slash16.local)) fields=homeDirectory,uidNumber,gidNumber
+Despite the explicit config.

@@ -149,8 +149,10 @@
 # LDAP 
 ##################
 - name: Copy LDAP client config
-  copy: src=ldap.conf dest=/etc/ldap/ldap.conf
-
+  copy: src={{item.src}} dest={{item.dest}}
+  with_items:
+   - { src: ldap.conf, dest: /etc/ldap/ldap.conf }
+ 
 ##################
 # SSL
 ##################

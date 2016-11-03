@@ -8,3 +8,43 @@ adduser --system --home /srv/vmail --uid 5000 --gid 5000 --disabled-password --d
 # For authentication purpose:
 # service needs to filter (HENCE access) userPassword.
 # Thus, a service needs to BIND, and possess the proper ACL
+#
+
+L'auth chie toujours.
+2 phases.
+La premiere et coherente avec les settings
+La seconde ('userdb' ?) semble utiliser des filtres par defaut, incorrects. 
+
+24/10:
+Sur aucun systeme (hormis gateway ?) les users ne sont de valable posixAccounts
+-> vmail (mail_uid, mail_gid?)
+-> shunter userdb processus d'auth.
+-> systeme d'auth plus simple: auth_bind: dovecot se bind en tant que le client (voire pop3?)
+  pour l'authentifier.
+- lorsque dovecot recoit un mail du MTA, il tente une auth foireuse du destinataire:
+'(uid=<user>@<domain.com>)'
+- s'assurer que les mailboxes sont correctement initialisées...
+
+24/10PM:
+ - lorsque dovecot recoit un mail en LDA pour un user connu:
+    => creee bien /var/mail/<HOST>/<RECIPIENT>/... avec le nouveau mail dans new.
+ - lorsque qu'un user se connecte en IMAP:
+    => [XXX] creee /var/mail/<USER> : un mailbox vide
+
+24/10 18:31:45.50438758475 :
+ - puisque j'arrive pas å set la mailbox es clients, j'utilse la meme, et ca marche.
+ - note: check leastpriv: impossible de reply depuis srv1
+ - GO pop3
+ - GO ldap {STARTTLS}NOPE -> SSL/TLS
+ - GO {imap, pop3, smtp}S
+ - GO Anti-abuse
+ - Remove overly verbose logging
+ - Remove plain authentication access for non-local realms
+    OR remove (non-S) imap/pop3 altogether
+
+31/09:
+dovecot: enabled:
+V global SSL
+V imaps: ssl, pop3s: ssl
+V set key and cert to /etc/ssl/{certs,private}/cert.{pem,key}
+- ports open; works ?

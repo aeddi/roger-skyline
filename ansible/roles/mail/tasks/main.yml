@@ -10,6 +10,15 @@
   with_items: [bsd-mailx, exim4, exim4-base, exim4-config, exim4-daemon-light]
 
 # Autodependency: ssl-cert
+# dovecot-core
+# dovecot-imapd
+# dovecot-ldap
+# dovecot-lmtpd
+# dovecot-pop3d
+# postfix
+# postfix-ldap
+# postfix-pcre
+# MORE ...
 - name: Mail-related packages
   apt: name="{{ item }}" state=present
   with_items: [dovecot-core, dovecot-ldap, postfix, postfix-pcre, postfix-ldap, ssl-cert]
