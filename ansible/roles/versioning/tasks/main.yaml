@@ -72,6 +72,23 @@
   register: gogs_result
   when: gogs_try.stat.exists == False
  
+- name: Gogs conf folder
+  file: >
+    path=/home/git/goworkspace/src/github.com/gogits/gogs/custom/conf
+    state=directory
+    recurse=yes
+    group=git
+    owner=git
+
+- name: gogs conf file
+  template: >
+    src=app.ini.j2
+    dest=/home/git/goworkspace/src/github.com/gogits/gogs/custom/conf/app.ini
+    owner=git
+    group=git
+  notify:
+    - restart gogs
+
 - name: Gogs rights
   file: >
     path=/home/git/goworkspace
@@ -82,20 +99,30 @@
 - name: Gogs service (systemd)
   copy: src=gogs.service dest=/etc/systemd/system/gogs.service
 
-- name: Gogs conf folder
-  file: >
-    path=/home/git/goworkspace/src/github.com/gogits/gogs/custom/conf
-    state=directory
-    recurse=yes
-    group=git
-    owner=git
+# PostgreSQL
+############
 
-- name: gogs conf file
-  copy: >
-    src=app.ini
-    dest=/home/git/goworkspace/src/github.com/gogits/gogs/custom/conf/app.ini
-  notify:
-    - restart gogs
+- name: Database is created
+  sudo: yes
+  sudo_user: postgres
+  postgresql_db: >
+    name={{ gogs_db_name }}
+
+- name: User has access to the database
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: >
+    db={{ gogs_db_name }}
+    name={{ gogs_db_user }}
+    password={{ gogs_db_password }}
+    priv=ALL
+
+- name: User does not have unnecessary privilege
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: >
+    name={{ gogs_db_user }}
+    role_attr_flags=NOSUPERUSER,NOCREATEDB
 
 # Everything's right ?
 ###################### 
@@ -104,4 +131,7 @@
 
 - name: gogs is started
   service: name=gogs state=started enabled=true
+
+- name: postgresql is started
+  service: name=postgresql state=started enabled=true
 ...

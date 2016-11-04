@@ -1,0 +1,3 @@
+gogs_db_name: gogs
+gogs_db_user: gogs
+gogs_db_password: postgresql

@@ -5,9 +5,9 @@ RUN_MODE = prod
 [database]
 DB_TYPE  = postgres
 HOST     = 127.0.0.1:5432
-NAME     = gogs
-USER     = gogs
-PASSWD   = postgresql
+NAME     = {{ gogs_db_name }}
+USER     = {{ gogs_db_user }}
+PASSWD   = {{ gogs_db_password }}
 SSL_MODE = disable
 PATH     = data/gogs.db
 
