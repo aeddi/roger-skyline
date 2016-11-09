@@ -35,6 +35,11 @@ ldap_users:
     file: dovecot_stub.ldif
     srcd: ldap/services/
     destd: /tmp/
+  - ou: services
+    user: saslauthd
+    file: saslauthd_stub.ldif
+    srcd: ldap/services/
+    destd: /tmp/
 
 helper_scripts:
   - srcd: scripts/

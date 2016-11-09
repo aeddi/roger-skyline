@@ -1,0 +1,9 @@
+dn: uid=saslauthd,ou=services,dc=slash16,dc=local
+objectClass: applicationProcess
+objectClass: posixAccount
+cn: saslauthd
+uid: saslauthd
+# nobody 's uid/gid/homedir
+uidNumber: 65534
+gidNumber: 65534
+homeDirectory: /nonexistent
