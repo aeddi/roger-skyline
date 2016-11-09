@@ -47,4 +47,11 @@ dovecot: enabled:
 V global SSL
 V imaps: ssl, pop3s: ssl
 V set key and cert to /etc/ssl/{certs,private}/cert.{pem,key}
-- ports open; works ?
+V ports open; works ?
+
+09/11:
+- test pop3s with a true client (i.e.: more than a ~secure telnet~)
+- MTA policy on :25
+- spamfight
+- plug rsyslog
+- other services

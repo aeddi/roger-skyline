@@ -6,10 +6,9 @@
   roles:
     - role: mail
       tags: mail
-#    - role: mail
-#      tags: mail_test
-#      tasks:
-#        - include: roles/mail/tasks/main.yml
-#        - include: roles/mail/tasks/dev_setup.yml
-
+  pre_tasks:
+    - include: purge-redundent.yml
+    - meta: flush_handlers
+    - include: install-packages.yml
+    - meta: flush_handlers
 ...

@@ -2,31 +2,17 @@
 
 # WIP WIP WIP WIP WIP
 
-#- include: dev_clear.yml
-#  when: mail_test_mode != "true"
+# Unused redundent packages and related users are removed in a pre_task
+# Necessary packages, users, groups are added in a pre_task
 
-- name: Purge exim4
-  apt: name="{{ item }}" state=absent purge=yes
-  with_items: [bsd-mailx, exim4, exim4-base, exim4-config, exim4-daemon-light]
+- name: Dump config files
+  copy: >
+    src={{ item.src }}
+    dest={{ item.dest }}
+    owner={{ item.owner }}
+    group={{ item.group }}
+    mode={{ item.mode }}
+  with_items: mail_config_files
 
-# Autodependency: ssl-cert
-# dovecot-core
-# dovecot-imapd
-# dovecot-ldap
-# dovecot-lmtpd
-# dovecot-pop3d
-# postfix
-# postfix-ldap
-# postfix-pcre
-# MORE ...
-- name: Mail-related packages
-  apt: name="{{ item }}" state=present
-  with_items: [dovecot-core, dovecot-ldap, postfix, postfix-pcre, postfix-ldap, ssl-cert]
-
-#- debug: "{{ mail_test_mode.defined }}"
-
-# Keep last
-- include: dev_setup.yml
-#  when: ($mail_test_mode.defined)
 
 ...

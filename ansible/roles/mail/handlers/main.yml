@@ -1,0 +1,20 @@
+---
+
+- name: Stop and Disable mail daemons
+  service: name={{ item.name }} state=stopped enabled=no
+  with-items: mail_services
+
+- name: Kill mail daemons
+  command: kill {{ item.process }}
+  with-items: mail_services
+  ignore_errors: yes
+
+- name: Enable Start Reload mail daemons
+  service: name={{ item.name }} enabled=yes state=started daemon_reload=yes
+  with-items: mail_services
+
+- name: Restart and Reload mail daemons
+  service: name={{ item.name }} state=restarted daemon_reload=yes
+  with-items: mail_services
+
+...

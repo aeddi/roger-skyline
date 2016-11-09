@@ -1,0 +1,44 @@
+---
+
+mail_services:
+  - { name: postfix, process: [ postfix, master, qmgr, tlsmgr, pickup, stmpd, stmp ] }
+  - { name: dovecot, process: [ dovecot, anvil, log ]}
+  - { name: saslauthd, process: saslauthd }
+
+mail_packages:
+  - postfix
+  - postfix-ldap
+  - dovecot-core
+  - dovecot-imapd
+  - dovecot-ldap
+  - dovecot-lmtpd
+  - dovecot-pop3d
+  - libauthen-sasl-perl
+  - libsasl2-2:ppc64el
+  - libsasl2-modules:ppc64el
+  - libsasl2-modules-db:ppc64el
+  - sasl2-bin
+
+mail_redundent_packages: [bsd-mailx, exim4, exim4-base, exim4-config, exim4-daemon-light]
+
+mail_system_groups:
+  - { name: mail, gid: 8 }
+  - { name: sasl, gid: 45 }
+  - { name: dovecot, gid: 117 }
+  - { name: dovenull, gid: 118 }
+  - { name: postfix, gid: 119 }
+  - { name: postdrop, gid: 120 }
+  - { name: vmail, gid: 5000 }
+
+mail_system_users:
+  - { name: mail, uid: 8, homedir: /var/mail, shell: /usr/sbin/nologin, createhome: no, groups: }
+  - { name: dovecot, uid: 110, group: dovecot, homedir: /usr/lib/dovecot, shell: /usr/sbin/nologin, createhome: no, groups: }
+  - { name: dovenull, uid: 112, group: dovenull, homedir: /nonexistent, shell: /usr/sbin/nologin, createhome: no, groups: }
+  - { name: postfix, uid: 113, group: postfix, homedir: /var/spool/postfix, shell: /usr/sbin/nologin, createhome: no, groups: }
+  - { name: vmail, uid: 5000, group: vmail, homedir: /srv/vmail, shell: /usr/sbin/nologin, createhome: no, groups: sasl }
+
+
+ mail_config_files:
+   - { src: , dest: , owner: , group: , mode: }
+
+...
