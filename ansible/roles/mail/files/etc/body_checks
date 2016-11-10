@@ -1,0 +1,1 @@
+/^<iframe src=(3D)?cid:.* height=(3D)?0 width=(3D)?0>$/     REJECT IFRAME vulnerability exploit

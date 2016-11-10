@@ -8,6 +8,7 @@ mail_services:
 mail_packages:
   - postfix
   - postfix-ldap
+  - postfix-pcre
   - dovecot-core
   - dovecot-imapd
   - dovecot-ldap
