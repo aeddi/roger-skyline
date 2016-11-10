@@ -55,3 +55,13 @@ V ports open; works ?
 - spamfight
 - plug rsyslog
 - other services
+
+// MailScanner interactive install answers:
+-
+N
+n
+y
+n
+None
+postmaster@slash16.local
+/////
