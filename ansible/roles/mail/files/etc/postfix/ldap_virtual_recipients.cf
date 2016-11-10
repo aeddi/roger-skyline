@@ -1,0 +1,9 @@
+bind = yes
+bind_dn = uid=postfix,ou=services,dc=slash16,dc=local
+bind_pw = postfix
+server_host = ldaps://ldap.slash16.local:636
+search_base = ou=people,dc=slash16,dc=local
+domain = slash16.local
+#query_filter = (&(mail=%s)(mailEnabled=TRUE))
+query_filter = (mail=%s)
+result_attribute = mail

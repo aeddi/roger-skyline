@@ -47,3 +47,8 @@ ldap_virtual_{aliases|recipients}.cf
   asks MUST posixAccount attrs...
   ldap(ffourati@slash16.local): user search: base=ou=people,dc=slash16,dc=local scope=subtree filter=(&(objectClass=posixAccount)(uid=ffourati@slash16.local)) fields=homeDirectory,uidNumber,gidNumber
 Despite the explicit config.
+
+
+Ansible TODO:
+  run newaliases
+  run postmap on various <FIXME: list> hashtables

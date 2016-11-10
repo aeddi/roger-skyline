@@ -1,0 +1,4 @@
+---
+- name: restart pure-ftpd
+  action: service name=pure-ftpd-ldap state=restarted
+...

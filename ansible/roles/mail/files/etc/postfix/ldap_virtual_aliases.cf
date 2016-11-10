@@ -1,0 +1,14 @@
+### Aliases: WILL NOT USE
+## Let aliases lookup configured !
+## Otherwise regular recipient lookup will fail too.
+#bind = yes
+bind = no
+#bind_dn = uid=postfix,ou=services,dc=slash16,dc=local
+#bind_pw = postfix
+server_host = ldaps://ldap.slash16.local
+#server_port = 636
+search_base = ou=people,dc=slash16,dc=local
+domain = slash16.local
+# query_filter = (&(mailAlias=%s)(mailEnabled=TRUE))
+query_filter = (&(mailAlias=%s))
+result_attribute = mail, email
