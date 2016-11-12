@@ -20,7 +20,6 @@
 - name: Reload postfix
   service: name=postfix state=started daemon_reload=yes
 
-# FIXME: list those hashmaps  in vars
 # Postfix needs `reload`ing afterwards
 - name: Compile postfix hashmaps
   command: postmap {{ item }}
