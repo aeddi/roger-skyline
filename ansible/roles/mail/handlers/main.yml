@@ -17,4 +17,14 @@
   service: name={{ item.name }} state=restarted daemon_reload=yes
   with-items: mail_services
 
+- name: Reload postfix
+  service: name=postfix state=started daemon_reload=yes
+
+# FIXME: list those hashmaps  in vars
+# Postfix needs `reload`ing afterwards
+- name: Compile postfix hashmaps
+  command: postmap {{ item }}
+  with_items: postfix_hashmaps
+  notify: Reload postfix
+
 ...

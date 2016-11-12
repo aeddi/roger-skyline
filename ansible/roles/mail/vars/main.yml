@@ -4,6 +4,7 @@ mail_services:
   - { name: postfix, process: [ postfix, master, qmgr, tlsmgr, pickup, stmpd, stmp ] }
   - { name: dovecot, process: [ dovecot, anvil, log ]}
   - { name: saslauthd, process: saslauthd }
+  - { name: mailscanner, process: mailscanner }
 
 mail_packages:
   - postfix

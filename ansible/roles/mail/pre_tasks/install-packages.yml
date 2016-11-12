@@ -1,4 +1,4 @@
-
+---
 
 - name: Install mail service and dependencies packages
   apt: name={{ item }} state=present
@@ -19,3 +19,5 @@
     createhome=no
     shell={{ item.shell }}
   with_items: mail_system_users
+
+...

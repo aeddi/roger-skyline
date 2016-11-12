@@ -13,6 +13,32 @@
     group={{ item.group }}
     mode={{ item.mode }}
   with_items: mail_config_files
+  notify: Enable Start Reload mail daemons
 
+- name: Gathering fact: is MailScanner installed ?
+  shell: dpkg -l mailscanner
+  register: has_mailscanner
+  changed_when: has_mailscanner.rc != 0
 
+- name: Download MailScanner
+  when: has_mailscanner.rc != 0
+  shell: "wget -O- https://s3.amazonaws.com/msv5/release/MailScanner-5.0.3-7.deb.tar.gz | tar zx"
+  args:
+    chdir: /tmp
+    creates: MailScanner-5.0.3-7
+
+# MailScanner is not in repos; it uses some artisanal debconf with its ./install.sh
+- name: MailScanner initial setup
+  when: has_mailscanner.rc != 0
+  shell: "/bin/echo -e '\nN\nn\ny\nn\nNone\npostmaster@slash16.local' | ./install.sh"
+  args:
+    chdir: /tmp/MailScanner-5.0.3-7
+  #notify: Restart and Reload mail daemons
+
+- name: Dump config files
+  copy:
+  with_items:
+  notify:
+    - Compile postfix hashmaps
+    - Restart and Reload mail daemons
 ...
