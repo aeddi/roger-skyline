@@ -61,37 +61,37 @@ postfix_hashmaps:
   - { src: etc/postfix/virtual_aliases, dest: /etc/postfix/virtual_aliases, owner: root, group: root, mode: 0644 }
   - { src: etc/postfix/virtual_domains, dest: /etc/postfix/virtual_domains, owner: root, group: root, mode: 0644 }
 # DOVECOT ------------------------------------------------------------------------
-  - { src: etc/dovecot/dovecot.conf, dest: /etc/dovecot/dovecot.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/dovecot-ldap.conf.ext, dest: /etc/dovecot/dovecot-ldap.conf.ext, owner: root, group: root, mode: 600 }
-  - { src: etc/dovecot/conf.d/10-director.conf, dest: /etc/dovecot/conf.d/10-director.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-system.conf.ext, dest: /etc/dovecot/conf.d/auth-system.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/15-lda.conf, dest: /etc/dovecot/conf.d/15-lda.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/20-pop3.conf, dest: /etc/dovecot/conf.d/20-pop3.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-vpopmail.conf.ext, dest: /etc/dovecot/conf.d/auth-vpopmail.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/10-mail.conf, dest: /etc/dovecot/conf.d/10-mail.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/15-mailboxes.conf, dest: /etc/dovecot/conf.d/15-mailboxes.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-master.conf.ext, dest: /etc/dovecot/conf.d/auth-master.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/90-acl.conf, dest: /etc/dovecot/conf.d/90-acl.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-static.conf.ext, dest: /etc/dovecot/conf.d/auth-static.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/20-lmtp.conf, dest: /etc/dovecot/conf.d/20-lmtp.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/10-ssl.conf, dest: /etc/dovecot/conf.d/10-ssl.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/10-tcpwrapper.conf, dest: /etc/dovecot/conf.d/10-tcpwrapper.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-deny.conf.ext, dest: /etc/dovecot/conf.d/auth-deny.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-sql.conf.ext, dest: /etc/dovecot/conf.d/auth-sql.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-checkpassword.conf.ext, dest: /etc/dovecot/conf.d/auth-checkpassword.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/10-auth.conf, dest: /etc/dovecot/conf.d/10-auth.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/10-master.conf, dest: /etc/dovecot/conf.d/10-master.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/90-quota.conf, dest: /etc/dovecot/conf.d/90-quota.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/10-logging.conf, dest: /etc/dovecot/conf.d/10-logging.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-passwdfile.conf.ext, dest: /etc/dovecot/conf.d/auth-passwdfile.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/90-plugin.conf, dest: /etc/dovecot/conf.d/90-plugin.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/20-imap.conf, dest: /etc/dovecot/conf.d/20-imap.conf, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-ldap.conf.ext, dest: /etc/dovecot/conf.d/auth-ldap.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/conf.d/auth-dict.conf.ext, dest: /etc/dovecot/conf.d/auth-dict.conf.ext, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/dovecot-sql.conf.ext, dest: /etc/dovecot/dovecot-sql.conf.ext, owner: root, group: dovecot, mode: 640 }
-  - { src: etc/dovecot/dovecot-dict-auth.conf.ext, dest: /etc/dovecot/dovecot-dict-auth.conf.ext, owner: root, group: dovecot, mode: 640 }
-  - { src: etc/dovecot/README, dest: /etc/dovecot/README, owner: root, group: root, mode: 644 }
-  - { src: etc/dovecot/dovecot-dict-sql.conf.ext, dest: /etc/dovecot/dovecot-dict-sql.conf.ext, owner: root, group: dovecot, mode: 641 }
+  - { src: etc/dovecot/dovecot.conf, dest: /etc/dovecot/dovecot.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/dovecot-ldap.conf.ext, dest: /etc/dovecot/dovecot-ldap.conf.ext, owner: root, group: root, mode: 0600 }
+  - { src: etc/dovecot/conf.d/10-director.conf, dest: /etc/dovecot/conf.d/10-director.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-system.conf.ext, dest: /etc/dovecot/conf.d/auth-system.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/15-lda.conf, dest: /etc/dovecot/conf.d/15-lda.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/20-pop3.conf, dest: /etc/dovecot/conf.d/20-pop3.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-vpopmail.conf.ext, dest: /etc/dovecot/conf.d/auth-vpopmail.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/10-mail.conf, dest: /etc/dovecot/conf.d/10-mail.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/15-mailboxes.conf, dest: /etc/dovecot/conf.d/15-mailboxes.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-master.conf.ext, dest: /etc/dovecot/conf.d/auth-master.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/90-acl.conf, dest: /etc/dovecot/conf.d/90-acl.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-static.conf.ext, dest: /etc/dovecot/conf.d/auth-static.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/20-lmtp.conf, dest: /etc/dovecot/conf.d/20-lmtp.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/10-ssl.conf, dest: /etc/dovecot/conf.d/10-ssl.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/10-tcpwrapper.conf, dest: /etc/dovecot/conf.d/10-tcpwrapper.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-deny.conf.ext, dest: /etc/dovecot/conf.d/auth-deny.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-sql.conf.ext, dest: /etc/dovecot/conf.d/auth-sql.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-checkpassword.conf.ext, dest: /etc/dovecot/conf.d/auth-checkpassword.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/10-auth.conf, dest: /etc/dovecot/conf.d/10-auth.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/10-master.conf, dest: /etc/dovecot/conf.d/10-master.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/90-quota.conf, dest: /etc/dovecot/conf.d/90-quota.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/10-logging.conf, dest: /etc/dovecot/conf.d/10-logging.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-passwdfile.conf.ext, dest: /etc/dovecot/conf.d/auth-passwdfile.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/90-plugin.conf, dest: /etc/dovecot/conf.d/90-plugin.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/20-imap.conf, dest: /etc/dovecot/conf.d/20-imap.conf, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-ldap.conf.ext, dest: /etc/dovecot/conf.d/auth-ldap.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/conf.d/auth-dict.conf.ext, dest: /etc/dovecot/conf.d/auth-dict.conf.ext, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/dovecot-sql.conf.ext, dest: /etc/dovecot/dovecot-sql.conf.ext, owner: root, group: dovecot, mode: 0640 }
+  - { src: etc/dovecot/dovecot-dict-auth.conf.ext, dest: /etc/dovecot/dovecot-dict-auth.conf.ext, owner: root, group: dovecot, mode: 0640 }
+  - { src: etc/dovecot/README, dest: /etc/dovecot/README, owner: root, group: root, mode: 0644 }
+  - { src: etc/dovecot/dovecot-dict-sql.conf.ext, dest: /etc/dovecot/dovecot-dict-sql.conf.ext, owner: root, group: dovecot, mode: 0641 }
 # MailScanner / spamassassin / razor / pyzor
 
 ...

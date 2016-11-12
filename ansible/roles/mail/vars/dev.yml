@@ -1,7 +1,0 @@
----
-
-test_utilities:
-  - mutt
-  - swaks
-
-...
