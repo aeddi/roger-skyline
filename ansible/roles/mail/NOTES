@@ -65,3 +65,17 @@ n
 None
 postmaster@slash16.local
 /////
+Other confs: 
+ - MailScanner (+spamassassin)
+ - Razor, Pyzor
+/////
+
+ANSIBLE TODO:
+  - MailScanner conf :(:(:(:(:(
+
+TODO:
+- test from cluster:
+  - send typical spam
+  - pop3s
+  - re-test submission, imaps
+  - test MTA SMTP ; may not work (DNS-based validation)
