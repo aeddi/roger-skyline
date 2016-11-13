@@ -73,8 +73,9 @@
   notify: Restart rsyslog
 
 - name: Rsyslog local logging
-  template: src=rsyslog/rsyslog.d/60-local-logging.conf
-            dest=/etc/rsyslog.d/60-local-logging.conf
+  template: src={{ item.srcd }}/{{ item.name }}
+            dest={{ item.destd }}/{{ item.name }}
+  with_items: rsyslog_shared_conftemplates
   notify: Restart rsyslog
 
 ##################

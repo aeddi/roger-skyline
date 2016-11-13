@@ -25,6 +25,11 @@ ldap_users:
     file: mcizo_stub.ldif
     srcd: ldap/members/
     destd: /tmp/
+  - ou: people
+    user: operator
+    file: operator_stub.ldif
+    srcd: ldap/members/
+    destd: /tmp/
   - ou: services
     user: postfix
     file: postfix_stub.ldif

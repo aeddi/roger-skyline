@@ -2,3 +2,7 @@ user: ansible
 timezone: 'Europe/Paris'
 syslog_host: syslog.slash16.local
 syslog_port: 514
+
+rsyslog_shared_conftemplates:
+  - { srcd: rsyslog/rsyslog.d, name: 50-alert-mailing.conf, destd: /etc/rsyslog.d }
+  - { srcd: rsyslog/rsyslog.d, name: 60-local-logging.conf, destd: /etc/rsyslog.d }
