@@ -1,0 +1,5 @@
+-> :25 if (dns-known || from-my-network)
+-> :587 submit ssl/tls
+  => from local: <any>@slash16.local -> <ldap-known>@slash16.local
+  => from inet: from (virtual_alias || <>@dns-known) && spamassassin:OK
+  else: DROP|REJECT

@@ -1,0 +1,8 @@
+srv1-9 : local /var/log
+        srv9:/var/log/centralized
+
+mailing: srv1-9:
+if $severity < 3 then mail:operator@slash16.local
+with next mail delay: 7200
+
+operator has an inbox.
