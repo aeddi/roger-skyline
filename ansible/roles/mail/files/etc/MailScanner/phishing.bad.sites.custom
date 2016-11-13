@@ -1,0 +1,5 @@
+# Add your custom Phishing bad sites to the
+# phishing.bad.sites.custom file in your MailScanner
+# directory. Note that phishing.bad.sites.conf is
+# overwritten when ms-update-bad-sites is executed.
+#

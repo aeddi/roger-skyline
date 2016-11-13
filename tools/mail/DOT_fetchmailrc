@@ -1,0 +1,10 @@
+poll mail.slash16.local
+with proto POP3
+user "<user>"
+there with password "<userpw>"
+is "<user>" here                              
+mda "/usr/bin/procmail -d %T"        
+options                                                             
+no keep                                 
+ssl                                  
+sslcertpath /etc/ssl/certs

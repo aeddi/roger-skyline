@@ -234,3 +234,5 @@ smtpd_delay_reject = no
 smtpd_client_restrictions = check_client_access cidr:/etc/postfix/drop.cidr
 mailbox_command = /usr/lib/dovecot/dovecot-lda -f $SENDER -a $RECIPIENT
 proxy_interfaces = 10.17.1.154
+header_checks = pcre:/etc/postfix/header_checks
+body_checks = pcre:/etc/postfix/body_checks

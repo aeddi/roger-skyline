@@ -1,0 +1,14 @@
+
+set from=<user>@slash16.local
+set use_from=yes
+
+# Automatically log in to this mailbox at startup
+set spoolfile="imaps://<user>:<userpw>@mail.slash16.local/INBOX"
+# # Define the = shortcut, and the entry point for the folder browser (c?)
+set folder="imaps://mail.slash16.local/INBOX"
+set record="=Sent"
+set postponed="=Drafts"
+
+## TODO: retrieve stmps conf
+#set smtp_url=smtps://$imap_user:$imap_pass@mail.slash16.local:587
+set smtp_url=smtp://mail.slash16.local

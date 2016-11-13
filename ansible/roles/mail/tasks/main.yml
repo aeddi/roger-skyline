@@ -1,19 +1,7 @@
 ---
 
-# WIP WIP WIP WIP WIP
-
 # Unused redundent packages and related users are removed in a pre_task
 # Necessary packages, users, groups are added in a pre_task
-
-- name: Dump config files
-  copy: >
-    src={{ item.src }}
-    dest={{ item.dest }}
-    owner={{ item.owner }}
-    group={{ item.group }}
-    mode={{ item.mode }}
-  with_items: mail_config_files
-  notify: Enable Start Reload mail daemons
 
 - name: Gathering fact: is MailScanner installed ?
   shell: dpkg -l mailscanner
@@ -33,12 +21,39 @@
   shell: "/bin/echo -e '\nN\nn\ny\nn\nNone\npostmaster@slash16.local' | ./install.sh"
   args:
     chdir: /tmp/MailScanner-5.0.3-7
-  #notify: Restart and Reload mail daemons
 
 - name: Dump config files
-  copy:
-  with_items:
+  copy: >
+    src={{ item.src }}
+    dest={{ item.dest }}
+    owner={{ item.owner }}
+    group={{ item.group }}
+    mode={{ item.mode }}
+  with_items: mail_config_files
   notify:
     - Compile postfix hashmaps
-    - Restart and Reload mail daemons
+    - Enable Start Reload mail daemons
+
+- name: Ensure important symlinks are correct
+  file: path={{ item.link }} state=link dest={{ item.dest }} force=yes
+  with_items: mail_symlinks
+
+- name: Ensure key mail spool dirs are correct
+  file: >
+    path={{ item.path }}
+    state=directory
+    owner={{ item.owner }}
+    group={{ item.group }} 
+    mode={{ item.mode }}
+  with_items: mail_spool_dirs
+
+- name: Ensure config directory structure is correct
+  file: >
+    path={{ item.path }}
+    state=directory
+    owner={{ item.owner }}
+    group={{ item.group }} 
+    mode={{ item.mode }}
+  with_items: mail_config_dirs
+
 ...

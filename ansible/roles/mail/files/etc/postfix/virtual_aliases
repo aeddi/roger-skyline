@@ -2,4 +2,5 @@
 # Might be used to filter spam. hashmap.
 
 postmaster      postmaster@slash16.local
+no-reply        no-reply@slash16.local
 abuse           abuse@slash16.local

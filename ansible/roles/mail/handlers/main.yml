@@ -17,13 +17,15 @@
   service: name={{ item.name }} state=restarted daemon_reload=yes
   with-items: mail_services
 
-- name: Reload postfix
-  service: name=postfix state=started daemon_reload=yes
-
 # Postfix needs `reload`ing afterwards
 - name: Compile postfix hashmaps
   command: postmap {{ item }}
   with_items: postfix_hashmaps
-  notify: Reload postfix
+
+- name: Initialize the alias database
+  command: newaliases
+
+- name: Reload postfix
+  command: postfix reload
 
 ...
