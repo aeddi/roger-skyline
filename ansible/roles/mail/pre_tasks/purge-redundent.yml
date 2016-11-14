@@ -5,8 +5,8 @@
   with_items: mail_redundent_packages
 
 - name: Remove exim user
-  user: name=Debian-exim state=absent remove=yes
+  user: name=Debian-exim state=absent
 
 - name: Remove exim group
-  group: name=Debian-exim state=absent remove=yes
+  group: name=Debian-exim state=absent
 

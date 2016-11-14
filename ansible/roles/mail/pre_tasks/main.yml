@@ -1,6 +1,6 @@
 ---
 
 - name: Set hostname
-  hostname: mail
+  hostname: name=mail
 
 ...

@@ -3,10 +3,11 @@
 # Unused redundent packages and related users are removed in a pre_task
 # Necessary packages, users, groups are added in a pre_task
 
-- name: Gathering fact: is MailScanner installed ?
+- name: Is MailScanner installed ?
   shell: dpkg -l mailscanner
   register: has_mailscanner
   changed_when: has_mailscanner.rc != 0
+  failed_when: false
 
 - name: Download MailScanner
   when: has_mailscanner.rc != 0
@@ -22,6 +23,15 @@
   args:
     chdir: /tmp/MailScanner-5.0.3-7
 
+- name: Ensure config directory structure is correct
+  file: >
+    path={{ item.path }}
+    state=directory
+    owner={{ item.owner }}
+    group={{ item.group }} 
+    mode={{ item.mode }}
+  with_items: mail_config_dirs
+
 - name: Dump config files
   copy: >
     src={{ item.src }}
@@ -35,7 +45,7 @@
     - Enable Start Reload mail daemons
 
 - name: Ensure important symlinks are correct
-  file: path={{ item.link }} state=link dest={{ item.dest }} force=yes
+  file: path={{ item.link }} state=link src={{ item.src }} force=yes
   with_items: mail_symlinks
 
 - name: Ensure key mail spool dirs are correct
@@ -46,14 +56,5 @@
     group={{ item.group }} 
     mode={{ item.mode }}
   with_items: mail_spool_dirs
-
-- name: Ensure config directory structure is correct
-  file: >
-    path={{ item.path }}
-    state=directory
-    owner={{ item.owner }}
-    group={{ item.group }} 
-    mode={{ item.mode }}
-  with_items: mail_config_dirs
 
 ...

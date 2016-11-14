@@ -3,12 +3,12 @@
 - name: Setup mail
   hosts: mail
   remote_user: root
-  roles:
-    - role: mail
-      tags: mail
+  tags: mail
+  roles: [mail]
   pre_tasks:
-    - include: purge-redundent.yml
+    - include: roles/mail/pre_tasks/main.yml
+    - include: roles/mail/pre_tasks/purge-redundent.yml
     - meta: flush_handlers
-    - include: install-packages.yml
+    - include: roles/mail/pre_tasks/install-packages.yml
     - meta: flush_handlers
 ...

@@ -6,16 +6,15 @@
   notify: Stop and Disable mail daemons
 
 - name: Setup service groups
-  group: name={{ item.name }} gid={{ item.gid }} state=present
+  group: name={{ item.name }} state=present system={{ item.is_system }}
   with_items: mail_system_groups
 
-- name: Setup service users and groups
+- name: Setup service users and user groups
   user: >
     name={{ item.name }}
-    gid={{ item.uid }}
     group={{ item.group }}
     groups={{ item.groups }}
-    home={{ item.home }}
+    home={{ item.homedir }}
     createhome=no
     shell={{ item.shell }}
   with_items: mail_system_users

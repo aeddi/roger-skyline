@@ -16,25 +16,27 @@ mail_packages:
   - dovecot-lmtpd
   - dovecot-pop3d
   - libauthen-sasl-perl
-  - libsasl2-2:ppc64el
-  - libsasl2-modules:ppc64el
-  - libsasl2-modules-db:ppc64el
+  - libsasl2-2
+  - libsasl2-modules
+  - libsasl2-modules-db
   - sasl2-bin
 
 mail_redundent_packages: [bsd-mailx, exim4, exim4-base, exim4-config, exim4-daemon-light]
 
+# FIXME: remove explicit GIDs
 mail_system_groups:
-  - { name: mail, gid: 8 }
-  - { name: sasl, gid: 45 }
-  - { name: dovecot, gid: 117 }
-  - { name: dovenull, gid: 118 }
-  - { name: postfix, gid: 119 }
-  - { name: postdrop, gid: 120 }
-  - { name: vmail, gid: 5000 }
-  - { name: mtagroup, gid: 5001 }
+  - { name: mail, gid: 8 , is_system: yes }
+  - { name: sasl, gid: 45 , is_system: yes }
+  - { name: dovecot, gid: 117 , is_system: yes }
+  - { name: dovenull, gid: 118 , is_system: yes }
+  - { name: postfix, gid: 119 , is_system: yes }
+  - { name: postdrop, gid: 120 , is_system: yes }
+  - { name: vmail, gid: 5000 , is_system: no }
+  - { name: mtagroup, gid: 5001 , is_system: no }
 
+# FIXME: remove explicit UIDs
 mail_system_users:
-  - { name: mail, uid: 8, homedir: /var/mail, shell: /usr/sbin/nologin, createhome: no, groups: mtagroup }
+  - { name: mail, uid: 8, group: mail, homedir: /var/mail, shell: /usr/sbin/nologin, createhome: no, groups: mtagroup }
   - { name: dovecot, uid: 110, group: dovecot, homedir: /usr/lib/dovecot, shell: /usr/sbin/nologin, createhome: no, groups: }
   - { name: dovenull, uid: 112, group: dovenull, homedir: /nonexistent, shell: /usr/sbin/nologin, createhome: no, groups: }
   - { name: postfix, uid: 113, group: postfix, homedir: /var/spool/postfix, shell: /usr/sbin/nologin, createhome: no, groups: mtagroup }
@@ -46,151 +48,151 @@ postfix_hashmaps:
 
 # Ensure some symlinks are correct
 mail_symlinks:
-  - { link: /etc/mail/spamassassin/MailScanner.cf, dest: /etc/MailScanner/spamassassin.conf }
-  - { link: /var/spool/mail, dest: /var/mail }
+  - { link: /etc/mail/spamassassin/MailScanner.cf, src: /etc/MailScanner/spamassassin.conf }
+  - { link: /var/spool/mail, src: /var/mail }
 
 # Ensure directory trees mode and ownership
 mail_config_dirs:
 # DOVECOT ------------------------------------------------------------------------
-  - { path: /etc/dovecot, owner: root, group: root, mode: 0755 }
-  - { path: /etc/dovecot/conf.d, owner: root, group: root, mode: 0755 }
-  - { path: /etc/dovecot/private, owner: root, group: root, mode: 0700 }
+  - { path: /etc/dovecot, owner: root, group: root, mode: 755 }
+  - { path: /etc/dovecot/conf.d, owner: root, group: root, mode: 755 }
+  - { path: /etc/dovecot/private, owner: root, group: root, mode: 700 }
 # POSTFIX ------------------------------------------------------------------------
-  - { path: /etc/postfix, owner: root, group: root, mode: 0755 }
-  - { path: /etc/postfix/certs, owner: root, group: root, mode: 0700 }
-  - { path: /etc/postfix/sasl, owner: root, group: root, mode: 0755 }
+  - { path: /etc/postfix, owner: root, group: root, mode: 755 }
+  - { path: /etc/postfix/certs, owner: root, group: root, mode: 700 }
+  - { path: /etc/postfix/sasl, owner: root, group: root, mode: 755 }
 # MAILSCANNER --------------------------------------------------------------------
-  - { path: /etc/MailScanner, owner: root, group: root, mode: 0755 }
-  - { path: /etc/MailScanner/conf.d, owner: root, group: root, mode: 0755 }
-  - { path: /etc/MailScanner/rules, owner: root, group: root, mode: 0755 }
-  - { path: /etc/MailScanner/mcp, owner: root, group: root, mode: 0755 }
-  - { path: /etc/MailScanner, owner: root, group: root, mode: 0755 }
-  - { path: /etc/MailScanner/conf.d, owner: root, group: root, mode: 0755 }
-  - { path: /etc/MailScanner/rules, owner: root, group: root, mode: 0755 }
-  - { path: /etc/MailScanner/mcp, owner: root, group: root, mode: 0755 }
+  - { path: /etc/MailScanner, owner: root, group: root, mode: 755 }
+  - { path: /etc/MailScanner/conf.d, owner: root, group: root, mode: 755 }
+  - { path: /etc/MailScanner/rules, owner: root, group: root, mode: 755 }
+  - { path: /etc/MailScanner/mcp, owner: root, group: root, mode: 755 }
+  - { path: /etc/MailScanner, owner: root, group: root, mode: 755 }
+  - { path: /etc/MailScanner/conf.d, owner: root, group: root, mode: 755 }
+  - { path: /etc/MailScanner/rules, owner: root, group: root, mode: 755 }
+  - { path: /etc/MailScanner/mcp, owner: root, group: root, mode: 755 }
 # Razor, Pyzor
-  - { path: /root/.razor, owner: root, group: root, mode: 0755 }
-  - { path: /root/.pyzor, owner: root, group: root, mode: 0700 }
-  - { path: /var/lib/MailScanner, owner: root, group: root, mode: 0755 }
-  - { path: /var/lib/MailScanner/.pyzor, owner: root, group: root, mode: 0700 }
-  - { path: /var/lib/MailScanner/.razor, owner: root, group: root, mode: 0755 }
+  - { path: /root/.razor, owner: root, group: root, mode: 755 }
+  - { path: /root/.pyzor, owner: root, group: root, mode: 700 }
+  - { path: /var/lib/MailScanner, owner: root, group: root, mode: 755 }
+  - { path: /var/lib/MailScanner/.pyzor, owner: root, group: root, mode: 700 }
+  - { path: /var/lib/MailScanner/.razor, owner: root, group: root, mode: 755 }
 # spamassassin
-  - { path: /etc/mail, owner: root, group: root, mode: 0755 }
-  - { path: /etc/mail/spamassassin, owner: root, group: root, mode: 0755 }
-  - { path: /etc/mail/spamassassin/sa-update-keys, owner: root, group: root, mode: 0700 }
+  - { path: /etc/mail, owner: root, group: root, mode: 755 }
+  - { path: /etc/mail/spamassassin, owner: root, group: root, mode: 755 }
+  - { path: /etc/mail/spamassassin/sa-update-keys, owner: root, group: root, mode: 700 }
 
 
 # src: ansible role relative path
- mail_config_files:
+mail_config_files:
 # SALSHAUTHD ------------------------------------------------------------------------
-  - { src: etc/saslauthd.conf, dest: /etc/saslauthd.conf, owner: root, group: root, mode: 0600 }
-  - { src: etc/default/saslauthd, dest: /etc/default/saslauthd, owner: root, group: root, mode: 0644 }
+  - { src: etc/saslauthd.conf, dest: /etc/saslauthd.conf, owner: root, group: root, mode: 600 }
+  - { src: etc/default/saslauthd, dest: /etc/default/saslauthd, owner: root, group: root, mode: 644 }
 # POSTFIX ------------------------------------------------------------------------
-  - { src: etc/postfix/certs/dh_1024.pem, dest: /etc/postfix/certs/dh_1024.pem, owner: root, group: root, mode: 0644 }
-  - { src: etc/postfix/certs/dh_512.pem, dest: /etc/postfix/certs/dh_512.pem, owner: root, group: root, mode: 0644 }
-  - { src: etc/postfix/sasl/smtpd.conf, dest: /etc/postfix/sasl/smtpd.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/postfix/drop.cidr, dest: /etc/postfix/drop.cidr, owner: root, group: root, mode: 0644 }
-  - { src: etc/postfix/header_checks, dest: /etc/postfix/header_checks, owner: root, group: root, mode: 0644 }
-  - { src: etc/postfix/body_checks, dest: /etc/postfix/body_checks, owner: root, group: root, mode: 0644 }
-  - { src: etc/postfix/ldap_virtual_recipients.cf, dest: /etc/postfix/ldap_virtual_recipients.cf, owner: root, group: postfix, mode: 0640 }
-  - { src: etc/postfix/ldap_virtual_aliases.cf, dest: /etc/postfix/ldap_virtual_aliases.cf, owner: root, group: postfix, mode: 0640 }
-  - { src: etc/postfix/master.cf, dest: /etc/postfix/master.cf, owner: root, group: root, mode: 0644 }
-  - { src: etc/postfix/virtual_aliases, dest: /etc/postfix/virtual_aliases, owner: root, group: root, mode: 0644 }
-  - { src: etc/postfix/virtual_domains, dest: /etc/postfix/virtual_domains, owner: root, group: root, mode: 0644 }
+  - { src: etc/postfix/certs/dh_1024.pem, dest: /etc/postfix/certs/dh_1024.pem, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/certs/dh_512.pem, dest: /etc/postfix/certs/dh_512.pem, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/sasl/smtpd.conf, dest: /etc/postfix/sasl/smtpd.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/drop.cidr, dest: /etc/postfix/drop.cidr, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/header_checks, dest: /etc/postfix/header_checks, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/body_checks, dest: /etc/postfix/body_checks, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/ldap_virtual_recipients.cf, dest: /etc/postfix/ldap_virtual_recipients.cf, owner: root, group: postfix, mode: 640 }
+  - { src: etc/postfix/ldap_virtual_aliases.cf, dest: /etc/postfix/ldap_virtual_aliases.cf, owner: root, group: postfix, mode: 640 }
+  - { src: etc/postfix/master.cf, dest: /etc/postfix/master.cf, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/virtual_aliases, dest: /etc/postfix/virtual_aliases, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/virtual_domains, dest: /etc/postfix/virtual_domains, owner: root, group: root, mode: 644 }
 # DOVECOT ------------------------------------------------------------------------
-  - { src: etc/dovecot/dovecot.conf, dest: /etc/dovecot/dovecot.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/dovecot-ldap.conf.ext, dest: /etc/dovecot/dovecot-ldap.conf.ext, owner: root, group: root, mode: 0600 }
-  - { src: etc/dovecot/conf.d/10-director.conf, dest: /etc/dovecot/conf.d/10-director.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-system.conf.ext, dest: /etc/dovecot/conf.d/auth-system.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/15-lda.conf, dest: /etc/dovecot/conf.d/15-lda.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/20-pop3.conf, dest: /etc/dovecot/conf.d/20-pop3.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-vpopmail.conf.ext, dest: /etc/dovecot/conf.d/auth-vpopmail.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/10-mail.conf, dest: /etc/dovecot/conf.d/10-mail.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/15-mailboxes.conf, dest: /etc/dovecot/conf.d/15-mailboxes.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-master.conf.ext, dest: /etc/dovecot/conf.d/auth-master.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/90-acl.conf, dest: /etc/dovecot/conf.d/90-acl.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-static.conf.ext, dest: /etc/dovecot/conf.d/auth-static.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/20-lmtp.conf, dest: /etc/dovecot/conf.d/20-lmtp.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/10-ssl.conf, dest: /etc/dovecot/conf.d/10-ssl.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/10-tcpwrapper.conf, dest: /etc/dovecot/conf.d/10-tcpwrapper.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-deny.conf.ext, dest: /etc/dovecot/conf.d/auth-deny.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-sql.conf.ext, dest: /etc/dovecot/conf.d/auth-sql.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-checkpassword.conf.ext, dest: /etc/dovecot/conf.d/auth-checkpassword.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/10-auth.conf, dest: /etc/dovecot/conf.d/10-auth.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/10-master.conf, dest: /etc/dovecot/conf.d/10-master.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/90-quota.conf, dest: /etc/dovecot/conf.d/90-quota.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/10-logging.conf, dest: /etc/dovecot/conf.d/10-logging.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-passwdfile.conf.ext, dest: /etc/dovecot/conf.d/auth-passwdfile.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/90-plugin.conf, dest: /etc/dovecot/conf.d/90-plugin.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/20-imap.conf, dest: /etc/dovecot/conf.d/20-imap.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-ldap.conf.ext, dest: /etc/dovecot/conf.d/auth-ldap.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/conf.d/auth-dict.conf.ext, dest: /etc/dovecot/conf.d/auth-dict.conf.ext, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/dovecot-sql.conf.ext, dest: /etc/dovecot/dovecot-sql.conf.ext, owner: root, group: dovecot, mode: 0640 }
-  - { src: etc/dovecot/dovecot-dict-auth.conf.ext, dest: /etc/dovecot/dovecot-dict-auth.conf.ext, owner: root, group: dovecot, mode: 0640 }
-  - { src: etc/dovecot/README, dest: /etc/dovecot/README, owner: root, group: root, mode: 0644 }
-  - { src: etc/dovecot/dovecot-dict-sql.conf.ext, dest: /etc/dovecot/dovecot-dict-sql.conf.ext, owner: root, group: dovecot, mode: 0641 }
+  - { src: etc/dovecot/dovecot.conf, dest: /etc/dovecot/dovecot.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/dovecot-ldap.conf.ext, dest: /etc/dovecot/dovecot-ldap.conf.ext, owner: root, group: root, mode: 600 }
+  - { src: etc/dovecot/conf.d/10-director.conf, dest: /etc/dovecot/conf.d/10-director.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-system.conf.ext, dest: /etc/dovecot/conf.d/auth-system.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/15-lda.conf, dest: /etc/dovecot/conf.d/15-lda.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/20-pop3.conf, dest: /etc/dovecot/conf.d/20-pop3.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-vpopmail.conf.ext, dest: /etc/dovecot/conf.d/auth-vpopmail.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/10-mail.conf, dest: /etc/dovecot/conf.d/10-mail.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/15-mailboxes.conf, dest: /etc/dovecot/conf.d/15-mailboxes.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-master.conf.ext, dest: /etc/dovecot/conf.d/auth-master.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/90-acl.conf, dest: /etc/dovecot/conf.d/90-acl.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-static.conf.ext, dest: /etc/dovecot/conf.d/auth-static.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/20-lmtp.conf, dest: /etc/dovecot/conf.d/20-lmtp.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/10-ssl.conf, dest: /etc/dovecot/conf.d/10-ssl.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/10-tcpwrapper.conf, dest: /etc/dovecot/conf.d/10-tcpwrapper.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-deny.conf.ext, dest: /etc/dovecot/conf.d/auth-deny.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-sql.conf.ext, dest: /etc/dovecot/conf.d/auth-sql.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-checkpassword.conf.ext, dest: /etc/dovecot/conf.d/auth-checkpassword.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/10-auth.conf, dest: /etc/dovecot/conf.d/10-auth.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/10-master.conf, dest: /etc/dovecot/conf.d/10-master.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/90-quota.conf, dest: /etc/dovecot/conf.d/90-quota.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/10-logging.conf, dest: /etc/dovecot/conf.d/10-logging.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-passwdfile.conf.ext, dest: /etc/dovecot/conf.d/auth-passwdfile.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/90-plugin.conf, dest: /etc/dovecot/conf.d/90-plugin.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/20-imap.conf, dest: /etc/dovecot/conf.d/20-imap.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-ldap.conf.ext, dest: /etc/dovecot/conf.d/auth-ldap.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/conf.d/auth-dict.conf.ext, dest: /etc/dovecot/conf.d/auth-dict.conf.ext, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/dovecot-sql.conf.ext, dest: /etc/dovecot/dovecot-sql.conf.ext, owner: root, group: dovecot, mode: 640 }
+  - { src: etc/dovecot/dovecot-dict-auth.conf.ext, dest: /etc/dovecot/dovecot-dict-auth.conf.ext, owner: root, group: dovecot, mode: 640 }
+  - { src: etc/dovecot/README, dest: /etc/dovecot/README, owner: root, group: root, mode: 644 }
+  - { src: etc/dovecot/dovecot-dict-sql.conf.ext, dest: /etc/dovecot/dovecot-dict-sql.conf.ext, owner: root, group: dovecot, mode: 641 }
 # Razor, Pyzor
-  - { src: root/.razor/server.n001.cloudmark.com.conf, dest: /root/.razor/server.n001.cloudmark.com.conf, owner: root, group: root, mode: 0644 }
-  - { src: root/.razor/servers.nomination.lst, dest: /root/.razor/servers.nomination.lst, owner: root, group: root, mode: 0644 }
-  - { src: root/.razor/servers.discovery.lst, dest: /root/.razor/servers.discovery.lst, owner: root, group: root, mode: 0644 }
-  - { src: root/.razor/servers.catalogue.lst, dest: /root/.razor/servers.catalogue.lst, owner: root, group: root, mode: 0644 }
-  - { src: root/.razor/razor-agent.conf, dest: /root/.razor/razor-agent.conf, owner: root, group: root, mode: 0644 }
-  - { src: root/.pyzor/servers, dest: /root/.pyzor/servers, owner: root, group: root, mode: 0600 }
+  - { src: root/.razor/server.n001.cloudmark.com.conf, dest: /root/.razor/server.n001.cloudmark.com.conf, owner: root, group: root, mode: 644 }
+  - { src: root/.razor/servers.nomination.lst, dest: /root/.razor/servers.nomination.lst, owner: root, group: root, mode: 644 }
+  - { src: root/.razor/servers.discovery.lst, dest: /root/.razor/servers.discovery.lst, owner: root, group: root, mode: 644 }
+  - { src: root/.razor/servers.catalogue.lst, dest: /root/.razor/servers.catalogue.lst, owner: root, group: root, mode: 644 }
+  - { src: root/.razor/razor-agent.conf, dest: /root/.razor/razor-agent.conf, owner: root, group: root, mode: 644 }
+  - { src: root/.pyzor/servers, dest: /root/.pyzor/servers, owner: root, group: root, mode: 600 }
 # spamassassin
-  - { src: etc/mail/spamassassin/v320.pre, dest: /etc/mail/spamassassin/v320.pre, owner: root, group: root, mode: 0644 }
-  - { src: etc/mail/spamassassin/v312.pre, dest: /etc/mail/spamassassin/v312.pre, owner: root, group: root, mode: 0644 }
-  - { src: etc/mail/spamassassin/sa-update-keys/trustdb.gpg, dest: /etc/mail/spamassassin/sa-update-keys/trustdb.gpg, owner: root, group: root, mode: 0600 }
-  - { src: etc/mail/spamassassin/sa-update-keys/pubring.gpg~, dest: /etc/mail/spamassassin/sa-update-keys/pubring.gpg~, owner: root, group: root, mode: 0600 }
-  - { src: etc/mail/spamassassin/sa-update-keys/pubring.gpg, dest: /etc/mail/spamassassin/sa-update-keys/pubring.gpg, owner: root, group: root, mode: 0600 }
-  - { src: etc/mail/spamassassin/sa-update-keys/secring.gpg, dest: /etc/mail/spamassassin/sa-update-keys/secring.gpg, owner: root, group: root, mode: 0600 }
-  - { src: etc/mail/spamassassin/init.pre, dest: /etc/mail/spamassassin/init.pre, owner: root, group: root, mode: 0644 }
-  - { src: etc/mail/spamassassin/v330.pre, dest: /etc/mail/spamassassin/v330.pre, owner: root, group: root, mode: 0644 }
-  - { src: etc/mail/spamassassin/v340.pre, dest: /etc/mail/spamassassin/v340.pre, owner: root, group: root, mode: 0644 }
-  - { src: etc/mail/spamassassin/v310.pre, dest: /etc/mail/spamassassin/v310.pre, owner: root, group: root, mode: 0644 }
-  - { src: etc/mail/spamassassin/local.cf, dest: /etc/mail/spamassassin/local.cf, owner: root, group: root, mode: 0644 }
-  - { src: etc/mail/spamassassin/v341.pre, dest: /etc/mail/spamassassin/v341.pre, owner: root, group: root, mode: 0644 }
+  - { src: etc/mail/spamassassin/v320.pre, dest: /etc/mail/spamassassin/v320.pre, owner: root, group: root, mode: 644 }
+  - { src: etc/mail/spamassassin/v312.pre, dest: /etc/mail/spamassassin/v312.pre, owner: root, group: root, mode: 644 }
+  - { src: etc/mail/spamassassin/sa-update-keys/trustdb.gpg, dest: /etc/mail/spamassassin/sa-update-keys/trustdb.gpg, owner: root, group: root, mode: 600 }
+  - { src: etc/mail/spamassassin/sa-update-keys/pubring.gpg~, dest: /etc/mail/spamassassin/sa-update-keys/pubring.gpg~, owner: root, group: root, mode: 600 }
+  - { src: etc/mail/spamassassin/sa-update-keys/pubring.gpg, dest: /etc/mail/spamassassin/sa-update-keys/pubring.gpg, owner: root, group: root, mode: 600 }
+  - { src: etc/mail/spamassassin/sa-update-keys/secring.gpg, dest: /etc/mail/spamassassin/sa-update-keys/secring.gpg, owner: root, group: root, mode: 600 }
+  - { src: etc/mail/spamassassin/init.pre, dest: /etc/mail/spamassassin/init.pre, owner: root, group: root, mode: 644 }
+  - { src: etc/mail/spamassassin/v330.pre, dest: /etc/mail/spamassassin/v330.pre, owner: root, group: root, mode: 644 }
+  - { src: etc/mail/spamassassin/v340.pre, dest: /etc/mail/spamassassin/v340.pre, owner: root, group: root, mode: 644 }
+  - { src: etc/mail/spamassassin/v310.pre, dest: /etc/mail/spamassassin/v310.pre, owner: root, group: root, mode: 644 }
+  - { src: etc/mail/spamassassin/local.cf, dest: /etc/mail/spamassassin/local.cf, owner: root, group: root, mode: 644 }
+  - { src: etc/mail/spamassassin/v341.pre, dest: /etc/mail/spamassassin/v341.pre, owner: root, group: root, mode: 644 }
 # MailScanner
-  - { src: var/lib/MailScanner/.pyzor/servers, dest: /var/lib/MailScanner/.pyzor/servers, owner: root, group: root, mode: 0600 }
-  - { src: var/lib/MailScanner/.razor/server.n001.cloudmark.com.conf, dest: /var/lib/MailScanner/.razor/server.n001.cloudmark.com.conf, owner: root, group: root, mode: 0644 }
-  - { src: var/lib/MailScanner/.razor/servers.nomination.lst, dest: /var/lib/MailScanner/.razor/servers.nomination.lst, owner: root, group: root, mode: 0644 }
-  - { src: var/lib/MailScanner/.razor/servers.discovery.lst, dest: /var/lib/MailScanner/.razor/servers.discovery.lst, owner: root, group: root, mode: 0644 }
-  - { src: var/lib/MailScanner/.razor/servers.catalogue.lst, dest: /var/lib/MailScanner/.razor/servers.catalogue.lst, owner: root, group: root, mode: 0644 }
-  - { src: var/lib/MailScanner/.razor/razor-agent.conf, dest: /var/lib/MailScanner/.razor/razor-agent.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/phishing.safe.sites.conf, dest: /etc/MailScanner/phishing.safe.sites.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/archives.filetype.rules.conf, dest: /etc/MailScanner/archives.filetype.rules.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/spamassassin.conf, dest: /etc/MailScanner/spamassassin.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/archives.filename.rules.conf, dest: /etc/MailScanner/archives.filename.rules.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/defaults, dest: /etc/MailScanner/defaults, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/phishing.safe.sites.custom, dest: /etc/MailScanner/phishing.safe.sites.custom, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/filename.rules.conf, dest: /etc/MailScanner/filename.rules.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/conf.d/README, dest: /etc/MailScanner/conf.d/README, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/spam.lists.conf, dest: /etc/MailScanner/spam.lists.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/rules/EXAMPLES, dest: /etc/MailScanner/rules/EXAMPLES, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/rules/spam.whitelist.rules, dest: /etc/MailScanner/rules/spam.whitelist.rules, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/rules/bounce.rules, dest: /etc/MailScanner/rules/bounce.rules, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/rules/max.message.size.rules, dest: /etc/MailScanner/rules/max.message.size.rules, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/rules/README, dest: /etc/MailScanner/rules/README, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/country.domains.conf, dest: /etc/MailScanner/country.domains.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/phishing.bad.sites.custom, dest: /etc/MailScanner/phishing.bad.sites.custom, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/phishing.bad.sites.conf, dest: /etc/MailScanner/phishing.bad.sites.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/filetype.rules.conf, dest: /etc/MailScanner/filetype.rules.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/virus.scanners.conf, dest: /etc/MailScanner/virus.scanners.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/MailScanner.conf, dest: /etc/MailScanner/MailScanner.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/mcp/mcp.spamassassin.conf, dest: /etc/MailScanner/mcp/mcp.spamassassin.conf, owner: root, group: root, mode: 0644 }
-  - { src: etc/MailScanner/mcp/10_example.cf, dest: /etc/MailScanner/mcp/10_example.cf, owner: root, group: root, mode: 0644 }
+  - { src: var/lib/MailScanner/.pyzor/servers, dest: /var/lib/MailScanner/.pyzor/servers, owner: root, group: root, mode: 600 }
+  - { src: var/lib/MailScanner/.razor/server.n001.cloudmark.com.conf, dest: /var/lib/MailScanner/.razor/server.n001.cloudmark.com.conf, owner: root, group: root, mode: 644 }
+  - { src: var/lib/MailScanner/.razor/servers.nomination.lst, dest: /var/lib/MailScanner/.razor/servers.nomination.lst, owner: root, group: root, mode: 644 }
+  - { src: var/lib/MailScanner/.razor/servers.discovery.lst, dest: /var/lib/MailScanner/.razor/servers.discovery.lst, owner: root, group: root, mode: 644 }
+  - { src: var/lib/MailScanner/.razor/servers.catalogue.lst, dest: /var/lib/MailScanner/.razor/servers.catalogue.lst, owner: root, group: root, mode: 644 }
+  - { src: var/lib/MailScanner/.razor/razor-agent.conf, dest: /var/lib/MailScanner/.razor/razor-agent.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/phishing.safe.sites.conf, dest: /etc/MailScanner/phishing.safe.sites.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/archives.filetype.rules.conf, dest: /etc/MailScanner/archives.filetype.rules.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/spamassassin.conf, dest: /etc/MailScanner/spamassassin.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/archives.filename.rules.conf, dest: /etc/MailScanner/archives.filename.rules.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/defaults, dest: /etc/MailScanner/defaults, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/phishing.safe.sites.custom, dest: /etc/MailScanner/phishing.safe.sites.custom, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/filename.rules.conf, dest: /etc/MailScanner/filename.rules.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/conf.d/README, dest: /etc/MailScanner/conf.d/README, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/spam.lists.conf, dest: /etc/MailScanner/spam.lists.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/rules/EXAMPLES, dest: /etc/MailScanner/rules/EXAMPLES, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/rules/spam.whitelist.rules, dest: /etc/MailScanner/rules/spam.whitelist.rules, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/rules/bounce.rules, dest: /etc/MailScanner/rules/bounce.rules, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/rules/max.message.size.rules, dest: /etc/MailScanner/rules/max.message.size.rules, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/rules/README, dest: /etc/MailScanner/rules/README, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/country.domains.conf, dest: /etc/MailScanner/country.domains.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/phishing.bad.sites.custom, dest: /etc/MailScanner/phishing.bad.sites.custom, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/phishing.bad.sites.conf, dest: /etc/MailScanner/phishing.bad.sites.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/filetype.rules.conf, dest: /etc/MailScanner/filetype.rules.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/virus.scanners.conf, dest: /etc/MailScanner/virus.scanners.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/MailScanner.conf, dest: /etc/MailScanner/MailScanner.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/mcp/mcp.spamassassin.conf, dest: /etc/MailScanner/mcp/mcp.spamassassin.conf, owner: root, group: root, mode: 644 }
+  - { src: etc/MailScanner/mcp/10_example.cf, dest: /etc/MailScanner/mcp/10_example.cf, owner: root, group: root, mode: 644 }
 
 mail_spool_dirs:
-  - { path: /var/mail, owner: root, group: mail, mode: 02775 }
-  - { path: /var/spool/MailScanner, owner: root, group: root, mode: 0755 }
-  - { path: /var/spool/MailScanner/quarantine, owner: mail, group: mtagroup, mode: 0775 }
-  - { path: /var/spool/MailScanner/archive, owner: mail, group: mtagroup, mode: 0775 }
-  - { path: /var/spool/MailScanner/incoming, owner: root, group: mtagroup, mode: 0770 }
-  - { path: /var/spool/postfix, owner: root, group: root, mode: 0755 }
-  - { path: /var/spool/postfix/var, owner: root, group: root, mode: 0755 }
-  - { path: /var/spool/postfix/var/run, owner: root, group: root, mode: 0755 }
-  - { path: /var/spool/postfix/var/run/saslauthd, owner: root, group: sasl, mode: 0710 }
-  - { path: /var/spool/MailScanner/incoming/Locks, owner: root, group: postfix, mode: 0755 }
-  - { path: /var/spool/MailScanner/incoming/SpamAssassin-Temp, owner: postfix, group: root, mode: 0755 }
-  - { path: /var/spool/MailScanner/spamassassin, owner: postfix, group: postfix, mode: 0755 }
+  - { path: /var/mail, owner: root, group: mail, mode: 1775 }
+  - { path: /var/spool/MailScanner, owner: root, group: root, mode: 755 }
+  - { path: /var/spool/MailScanner/quarantine, owner: mail, group: mtagroup, mode: 775 }
+  - { path: /var/spool/MailScanner/archive, owner: mail, group: mtagroup, mode: 775 }
+  - { path: /var/spool/MailScanner/incoming, owner: root, group: mtagroup, mode: 770 }
+  - { path: /var/spool/postfix, owner: root, group: root, mode: 755 }
+  - { path: /var/spool/postfix/var, owner: root, group: root, mode: 755 }
+  - { path: /var/spool/postfix/var/run, owner: root, group: root, mode: 755 }
+  - { path: /var/spool/postfix/var/run/saslauthd, owner: root, group: sasl, mode: 710 }
+  - { path: /var/spool/MailScanner/incoming/Locks, owner: root, group: postfix, mode: 755 }
+  - { path: /var/spool/MailScanner/incoming/SpamAssassin-Temp, owner: postfix, group: root, mode: 755 }
+  - { path: /var/spool/MailScanner/spamassassin, owner: postfix, group: postfix, mode: 755 }
 
 ...
