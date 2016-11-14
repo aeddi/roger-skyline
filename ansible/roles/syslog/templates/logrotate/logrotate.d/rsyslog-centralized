@@ -26,6 +26,7 @@
 /var/log/centralized/cron.log
 /var/log/centralized/debug
 /var/log/centralized/messages
+/var/log/centralized/local7.log
 {
 	rotate 40
 	weekly
