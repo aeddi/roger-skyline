@@ -2,7 +2,7 @@
 - name: Install necessary packages
   apt: name="{{item}}" state=present
   with_items:
-    - pure-ftpd-ldap
+    - vsftpd
 
 # Started ?
 - name: pure-ftpd is started

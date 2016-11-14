@@ -2,11 +2,16 @@
 - name: Install necessary packages
   apt: name="{{item}}" state=present
   with_items:
-    - nginx
     - clang
     - postgresql
     - git
     - python-psycopg2
+    - python-apt
+
+- name: Add backports repo
+  apt_repository: >
+    repo='deb http://ftp.debian.org/debian jessie-backports main'
+    state=present
 
 # Gogs user
 ###########
@@ -50,7 +55,15 @@
 
 # Nginx installation
 ####################
-- name: copy nginx conf file
+- name: Install backports nginx
+  apt: name=nginx state=present default-release=jessie-backports
+
+- name: nginx conf file
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+  notify:
+    - restart nginx
+
+- name: nginx site conf
   copy: src=default dest=/etc/nginx/sites-available/default
   notify:
     - restart nginx
