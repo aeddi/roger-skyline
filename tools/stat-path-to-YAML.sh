@@ -35,7 +35,7 @@ function list_type {
     local files=$(find $1 -type $find_type)
   
     for f in $files; do
-      local fstated=$(stat -c "- { src: ${f#/}, dest: $f, owner: %U, group: %G, mode: %#a }" $f)
+      local fstated=$(stat -c "- { src: ${f#/}, dest: $f, owner: %U, group: %G, mode: %a }" $f)
       echo "$prefix $fstated"
     done
     shift

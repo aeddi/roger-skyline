@@ -21,18 +21,23 @@ mail_packages:
   - libsasl2-modules-db
   - sasl2-bin
 
-mail_redundent_packages: [bsd-mailx, exim4, exim4-base, exim4-config, exim4-daemon-light]
+mail_redundent_packages:
+  - bsd-mailx
+  - exim4
+  - exim4-base
+  - exim4-config
+  - exim4-daemon-light
 
 # FIXME: remove explicit GIDs
 mail_system_groups:
-  - { name: mail, gid: 8 , is_system: yes }
-  - { name: sasl, gid: 45 , is_system: yes }
-  - { name: dovecot, gid: 117 , is_system: yes }
-  - { name: dovenull, gid: 118 , is_system: yes }
-  - { name: postfix, gid: 119 , is_system: yes }
-  - { name: postdrop, gid: 120 , is_system: yes }
-  - { name: vmail, gid: 5000 , is_system: no }
-  - { name: mtagroup, gid: 5001 , is_system: no }
+  - { name: mail, is_system: yes }
+  - { name: sasl, is_system: yes }
+  - { name: dovecot, is_system: yes }
+  - { name: dovenull, is_system: yes }
+  - { name: postfix, is_system: yes }
+  - { name: postdrop, is_system: yes }
+  - { name: vmail, is_system: no }
+  - { name: mtagroup, is_system: no }
 
 # FIXME: remove explicit UIDs
 mail_system_users:
@@ -97,6 +102,7 @@ mail_config_files:
   - { src: etc/postfix/ldap_virtual_recipients.cf, dest: /etc/postfix/ldap_virtual_recipients.cf, owner: root, group: postfix, mode: 640 }
   - { src: etc/postfix/ldap_virtual_aliases.cf, dest: /etc/postfix/ldap_virtual_aliases.cf, owner: root, group: postfix, mode: 640 }
   - { src: etc/postfix/master.cf, dest: /etc/postfix/master.cf, owner: root, group: root, mode: 644 }
+  - { src: etc/postfix/main.cf, dest: /etc/postfix/main.cf, owner: root, group: root, mode: 644 }
   - { src: etc/postfix/virtual_aliases, dest: /etc/postfix/virtual_aliases, owner: root, group: root, mode: 644 }
   - { src: etc/postfix/virtual_domains, dest: /etc/postfix/virtual_domains, owner: root, group: root, mode: 644 }
 # DOVECOT ------------------------------------------------------------------------

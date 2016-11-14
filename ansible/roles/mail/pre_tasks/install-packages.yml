@@ -3,7 +3,9 @@
 - name: Install mail service and dependencies packages
   apt: name={{ item }} state=present
   with_items: mail_packages
-  notify: Stop and Disable mail daemons
+  notify:
+    - Stop and Disable mail daemons
+    - Nuke default config
 
 - name: Setup service groups
   group: name={{ item.name }} state=present system={{ item.is_system }}

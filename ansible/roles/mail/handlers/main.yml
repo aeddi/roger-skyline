@@ -9,8 +9,8 @@
   with_items: mail_services
   ignore_errors: yes
 
-- name: Enable Start Reload mail daemons
-  service: name={{ item.name }} enabled=yes state=started daemon_reload=yes
+- name: Enable and Restart mail daemons
+  service: name={{ item.name }} enabled=yes state=restarted
   with_items: mail_services
 
 - name: Restart and Reload mail daemons
@@ -27,5 +27,14 @@
 
 - name: Reload postfix
   command: postfix reload
+
+- name: Kill anything using mail ports
+  shell: 'for pid in $(lsof -i :25,587,465,993,995 | sed 1d | grep -v systemd | awk "{ print $2}"); do kill -9 $pid || true; done'
+  args:
+    executable: '/bin/bash'
+ 
+- name: Nuke default config
+  file: path={{ item.dest }} state=absent force=yes
+  with_items: mail_config_files
 
 ...

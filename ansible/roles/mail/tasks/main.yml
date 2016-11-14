@@ -42,7 +42,7 @@
   with_items: mail_config_files
   notify:
     - Compile postfix hashmaps
-    - Enable Start Reload mail daemons
+    - Enable and Restart mail daemons
 
 - name: Ensure important symlinks are correct
   file: path={{ item.link }} state=link src={{ item.src }} force=yes
