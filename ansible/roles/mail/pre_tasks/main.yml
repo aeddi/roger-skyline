@@ -1,0 +1,6 @@
+---
+
+- name: Set hostname
+  hostname: mail
+
+...
