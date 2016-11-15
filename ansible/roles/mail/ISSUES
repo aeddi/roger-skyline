@@ -2,6 +2,7 @@
 After redump & redeploy:
 V sendmail (daemon from purge exim4*) using :25, :587 => kill anything using those ports
 V :25 transport denied -> forgot to list /etc/postfix/main.cf in dump list
-- :587 cannot connect saslauthd: "Permission denied" => deja vu
+V :587 cannot connect saslauthd: "Permission denied" => deja vu
+  => postfix supplemntal sasl group
 ? systemd holding :993 (POP3) (should yield to dovecot whenever conn:993 inbound)
-X!(UNTRUE-CLEANUP) Ansible does not compare file contents. Nuke any existing config !
+V- X!(UNTRUE-CLEANUP) Ansible does not compare file contents. Nuke any existing config !

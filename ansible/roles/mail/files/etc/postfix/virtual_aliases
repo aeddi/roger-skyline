@@ -1,7 +1,10 @@
 
 # Might be used to filter spam. hashmap.
 
-postmaster      postmaster@slash16.local
-admin           admin@slash16.local
-no-reply        no-reply@slash16.local
-abuse           abuse@slash16.local
+postmaster                    operator@slash16.local
+postmaster@slash16.local      operator@slash16.local
+admin                         operator@slash16.local
+admin@slash16.local           operator@slash16.local
+root                          operator@slash16.local
+root@slash16.local            operator@slash16.local
+abuse                         operator@slash16.local
