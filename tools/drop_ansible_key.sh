@@ -1,17 +1,22 @@
 #!/bin/bash
 
+# Connect with password (provided separetely in ./pass.ish)
+# And drop the Ansible servers's public RSA keys on hosts' root.
+
 function purge_sshpass {
-  trap 'true' SIGINT SIGTERM SIGHUP SIGUSR1 SIGUSR2 ERR
-  sudo apt-get autoremove --purge -y sshpass || true
+  trap 'true' SIGINT SIGTERM SIGHUP SIGUSR1 SIGUSR2 QUIT ERR
+  term=$(tty)
+  if [ "$term" == "not a tty" ]; then term=/dev/null; fi
+  ( nohup sudo apt-get autoremove --purge -y sshpass > $term )
   exit 0
 }
 
-# Pull password list where it resides.
-source=./pass.ish
+# Pull password list.
+source ./pass.ish
 
 key_path=/home/ansible/.ssh/id_rsa.pub
 
-trap purge_sshpass SIGINT SIGTERM SIGHUP SIGUSR1 SIGUSR2 ERR
+trap purge_sshpass SIGINT SIGTERM SIGHUP SIGUSR1 SIGUSR2 QUIT ERR
 sudo apt-get install -y sshpass || exit 1
 
 for i in $(seq 1 10); do

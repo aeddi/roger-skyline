@@ -6,3 +6,25 @@ syslog_port: 514
 rsyslog_shared_conftemplates:
   - { srcd: rsyslog/rsyslog.d, name: 50-alert-mailing.conf, destd: /etc/rsyslog.d }
   - { srcd: rsyslog/rsyslog.d, name: 60-local-logging.conf, destd: /etc/rsyslog.d }
+
+rsyslogd_known_files:
+  - 15-log-forwarding.conf
+  - 50-alert-mailing.conf
+  - 60-local-logging.conf
+
+exim4_simplemta_debconf:
+  - { svtype: 'string', question: 'dc_other_hostnames', svalue: '' }
+  - { svtype: 'boolean', question: 'dc_minimaldns', svalue: 'false' }
+  - { svtype: 'string', question: 'mailname', svalue: slash16.local }
+  - { svtype: 'string', question: 'dc_readhost', svalue: slash16.local }
+  - { svtype: 'boolean', question: 'hide_mailname', svalue: 'true' }
+  - { svtype: 'boolean', question: 'no_config', svalue: 'true' }
+  - { svtype: 'string', question: 'dc_eximconfig_configtype', svalue: 'internet site; mail is sent and received directly using SMTP' }
+  - { svtype: 'string', question: 'dc_relay_nets', svalue: '' }
+  - { svtype: 'string', question: 'exim4-config-title', svalue: '' }
+  - { svtype: 'string', question: 'dc_localdelivery', svalue: 'mbox format in /var/mail/' }
+  - { svtype: 'string', question: 'dc_local_interfaces', svalue: '127.0.0.1 ; ::1; 127.0.1.1 ; 127.0.1.2' }
+  - { svtype: 'string', question: 'dc_relay_domains', svalue: 'slash16.local ; mail.slash16.local' }
+  - { svtype: 'string', question: 'dc_smarthost', svalue: mail.slash16.local }
+  - { svtype: 'string', question: 'dc_postmaster', svalue: postmaster }
+  - { svtype: 'boolean', question: 'use_split_config', svalue: 'false' }

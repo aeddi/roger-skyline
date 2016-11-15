@@ -36,12 +36,38 @@
     line="Unattended-Upgrade::Mail \"root\";"
     dest=/etc/apt/apt.conf.d/50unattended-upgrades
 
+###################
+# Solve sudo alert: self reference host
+###################
+
+- name: Self-reference host in /etc/hosts
+  lineinfile: >
+    line="127.0.1.2 {{ ansible_hostname }}"
+    insertafter="^127\.0\.0\.1.*localhost$"
+    dest=/etc/hosts
 
 ###################
 # Configure hosts' MTA to transfert local mails
 ###################
 
-# TODO
+# By default, exim4 is installed and required minimal configuration
+# So that mailing root or other users transfers a message to
+# <user>@slash16.local on mail.slash16.local:25
+
+- name: Debconf light MTA exim4
+  when: "'mail' not in group_names"
+  debconf: >
+    name=exim4
+    question="{{ item.question }}"
+    value="{{ item.svalue }}"
+    vtype="{{ item.svtype }}"
+  with_items: exim4_simplemta_debconf
+  notify: Restart exim4
+
+- name: Ensure a light MTA is installed
+  when: "'mail' not in group_names"
+  apt: name={{ item }} state=present
+  with_items: [ exim4, exim4-base, exim4-daemon-light, exim4-config ]
 
 ###################
 # Misc. tools
@@ -77,14 +103,6 @@
 - name: Ensure rsyslog is present
   apt: name=rsyslog state=present
 
-- name: Remove undesired files contained in rsyslog.d
-  shell: 'ls -d /etc/rsyslog.d/* |                                              \
-          egrep -v "(15-log-forwarding|30-log-server|60-local-logging).conf" |  \
-          xargs rm -rv 2> /dev/null || true'
-  register: output
-  changed_when: output.stdout
-  notify: Restart rsyslog
-
 - name: Basic rsyslog configuration
   template: src=rsyslog/rsyslog.conf
             dest=/etc/rsyslog.conf
@@ -100,6 +118,18 @@
   template: src={{ item.srcd }}/{{ item.name }}
             dest={{ item.destd }}/{{ item.name }}
   with_items: rsyslog_shared_conftemplates
+  notify: Restart rsyslog
+
+- name: Inspect rsyslog.d contents
+  shell: find /etc/rsyslog.d -type f | grep -oP '^.*/\K.*$'
+  register: rsyslogd_rem_contents
+  changed_when: false
+
+# file: state=absent doesn't remove, produces OK or SKIP.
+- name: Unmanaged files contained in rsyslog.d
+  when: item not in rsyslogd_known_files
+  command: rm -f "{{ item }}"
+  with_items: rsyslogd_rem_contents.stdout_lines
   notify: Restart rsyslog
 
 ##################
