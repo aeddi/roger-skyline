@@ -23,7 +23,6 @@
 /var/log/centralized/auth.log
 /var/log/centralized/user.log
 /var/log/centralized/lpr.log
-/var/log/centralized/cron.log
 /var/log/centralized/debug
 /var/log/centralized/messages
 /var/log/centralized/local7.log

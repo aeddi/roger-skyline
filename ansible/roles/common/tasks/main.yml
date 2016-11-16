@@ -50,7 +50,7 @@
 # Configure hosts' MTA to transfert local mails
 ###################
 
-# By default, exim4 is installed and required minimal configuration
+# By default, exim4 is installed and requires minimal configuration
 # So that mailing root or other users transfers a message to
 # <user>@slash16.local on mail.slash16.local:25
 

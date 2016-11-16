@@ -26,7 +26,7 @@ for i in $(seq 1 10); do
     ssh \
       '-oStrictHostKeyChecking=no' \
       root@192.168.54.$i \
-      'mkdir -p /root/.ssh && cat - > /root/.ssh/authorized_keys' \
+      'mkdir -p /root/.ssh && cat - >> /root/.ssh/authorized_keys' \
       < $key_path
   echo Result: $? >&2
 done

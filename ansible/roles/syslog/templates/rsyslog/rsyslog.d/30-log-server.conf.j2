@@ -18,7 +18,6 @@ $outchannel auth_rot_cent,/var/log/centralized/auth.log,262144000,/usr/sbin/logr
 $outchannel sysl_rot_cent,/var/log/centralized/syslog,262144000,/usr/sbin/logrotate /etc/logrotate.conf
 $outchannel user_rot_cent,/var/log/centralized/user.log,262144000,/usr/sbin/logrotate /etc/logrotate.conf
 $outchannel lpr_rot_cent,/var/log/centralized/lpr.log,262144000,/usr/sbin/logrotate /etc/logrotate.conf
-$outchannel cron_rot_cent,/var/log/centralized/cron.log,262144000,/usr/sbin/logrotate /etc/logrotate.conf
 $outchannel debug_rot_cent,/var/log/centralized/debug,262144000,/usr/sbin/logrotate /etc/logrotate.conf
 $outchannel mess_rot_cent,/var/log/centralized/messages,262144000,/usr/sbin/logrotate /etc/logrotate.conf
 $outchannel local7_rot_cent,/var/log/centralized/local7.log,262144000,/usr/sbin/logrotate /etc/logrotate.conf
@@ -36,13 +35,13 @@ mail.info                       :omfile:-$mail_info_rot_cent
 mail.warn                       :omfile:-$mail_warn_rot_cent
 mail.err                        :omfile:$mail_err_rot_cent
 
-*.=debug;                   \
-auth,authpriv.none;         \
-news.none;mail.none             :omfile:-$debug_rot_cent
-*.=info;*.=notice;*.=warn;  \
-auth,authpriv.none;         \
-cron,daemon.none;           \
-mail,news.none                  :omfile:-$mess_rot_cent
 
+*.=debug;\
+        auth,authpriv.none;\
+        news.none;mail.none     :omfile:-$debug_rot_cent
+*.=info;*.=notice;*.=warn;\
+        auth,authpriv.none;\
+        cron,daemon.none;\
+        mail,news.none          :omfile:-$mess_rot_cent
 
 if $fromhost-ip != '127.0.0.1' then stop
