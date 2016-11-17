@@ -13,15 +13,15 @@ AEDDI - Modifier le role common pour desactiver PermitRootLogin sur toutes les i
 AEDDI - Faire en sorte de faire transiter toutes les connexions SSH via un user restreint (par ex l'user ansible)
 
 LDAP:
-- Gérer l'authentification LDAP pour le systeme de versionning
+DONE / MCIZO - Gérer l'authentification LDAP pour le systeme de versionning
 DONE / GPONSINE - Gérer l'authentification LDAP pour le systeme de monitoring
-- Gérer l'authentification LDAP pour le systeme de mail
+DONE / FFOURATI - Gérer l'authentification LDAP pour le systeme de mail
 
 SSL:
 DONE / AEDDI - Mettre en place le certif sur le serveur Apache de .9 (pour le monitoring)
 DONE / AEDDI - Mettre en place le certif sur le nginx de .10 (preprod)
 DONE / AEDDI - Mettre en place le certif sur les LBs en mode HTTPS endpoint
-- Mettre en place le certif sur le serveur HTTP du systeme de versionning
+DONE /MCIZO - Mettre en place le certif sur le serveur HTTP du systeme de versionning
 - Mettre en place le certif sur les différents services mail
 
 DB:
@@ -32,8 +32,8 @@ Automatisation:
 - Creer un role pour la mise en prod (merge preprod / prod, git pull prod code sur .4 et .5)
 
 Syslog:
-- Verifier quels services n'output pas leurs logs dessus par défaut et faire en sorte que ce soit le cas
-- Envoyer des mails pour les Emergency, Alert et Critical quand le service de mail sera en place
+FFOURATI <- REPORT - Verifier quels services n'output pas leurs logs dessus par défaut et faire en sorte que ce soit le cas
+DONE / FFOURATI - Envoyer des mails pour les Emergency, Alert et Critical quand le service de mail sera en place
 
 Monitoring:
 AEDDI - Exporter la config Zabbix pour le role
@@ -43,10 +43,10 @@ Backup:
 - Mettre en place le service
 
 Mail:
-- Mettre en place le service
+DONE / FFOURATI - Mettre en place le service
 
 Versionning:
-- Mettre en place le service
+DONE / MCIZO - Mettre en place le service
 
 Web app:
-- Faire la web app, voir avec aeddi pour la lecture / ecriture sur la DB
+AKAZIAN? - Faire la web app, voir avec aeddi pour la lecture / ecriture sur la DB

@@ -114,4 +114,13 @@
 
   roles:
     - { role: versioning, tags: versioning }
+
+
+- name: Setup XMPP server
+  hosts: xmpp
+  remote_user: root
+  gather_facts: no
+
+  roles:
+    - { role: xmpp, tags: xmpp }
 ...
