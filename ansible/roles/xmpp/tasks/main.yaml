@@ -1,0 +1,43 @@
+---
+- name: Install prosody
+  apt: name={{item}} state=present
+  with_items:
+    - prosody
+    - lua-cyrussasl
+    - libsasl2-modules-ldap
+    - sasl2-bin
+
+- name: prosody user's group
+  user: name=prosody append=yes groups=sasl
+
+- name: saslauthd
+  copy: src=saslauthd dest=/etc/default/saslauthd
+  notify:
+    - restart saslauthd
+    - restart prosody
+
+- name: saslauthd.conf
+  copy: src=saslauthd.conf dest=/etc/saslauthd.conf
+  notify:
+    - restart saslauthd
+    - restart prosody
+
+- name: sasl folder in etc
+  file: path=/etc/sasl state=directory recurse=yes
+
+- name: Configure sasl prosody.conf
+  copy: src=prosody.conf dest=/etc/sasl/prosody.conf
+  notify:
+    - restart saslauthd
+    - restart prosody
+
+- name: Configure prosody.cfg.lua
+  copy: src=prosody.cfg.lua dest=/etc/prosody/prosody.cfg.lua
+  notify:
+    - restart prosody
+
+- name: Configure xmpp.slash16.local.cfg.lua
+  copy: src=xmpp.slash16.local.cfg.lua dest=/etc/prosody/conf.avail/xmpp.slash16.local.cfg.lua
+  notify:
+    - restart prosody
+...

@@ -1,0 +1,10 @@
+---
+- name: restart prosody
+  action: service name=prosody state=restarted
+
+- name: restart saslauthd
+  action: service name=saslauthd state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload
+...
