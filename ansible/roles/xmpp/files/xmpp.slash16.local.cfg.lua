@@ -9,6 +9,7 @@ VirtualHost "xmpp.slash16.local"
 	ssl = {
 		key = "/etc/ssl/private/cert.key";
 		certificate = "/etc/ssl/certs/cert.pem";
+    ciphers = "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH EDH+aRSA !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
 		}
 
 ------ Components ------
