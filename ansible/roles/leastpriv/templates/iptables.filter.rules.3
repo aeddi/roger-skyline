@@ -30,6 +30,12 @@
 # Allow all traffic from localhost
 -A INPUT -i lo -j ACCEPT
 
+# Allow XMPP Server/Server and traffic
+-A INPUT -p tcp --dport 5269 -j ACCEPT
+-A OUTPUT -p tcp --sport 5269 -j ACCEPT
+# Allow XMPP Client/Server traffic
+-A INPUT -p tcp --dport 5222 -j ACCEPT
+
 # DELETE AFTER DEV
 -A INPUT -s 192.168.154.254/32 -p tcp -m multiport --dport 80,443 -j ACCEPT
 -A INPUT -s 192.168.54.10/32 -p tcp -m tcp --dport 22 -j ACCEPT
