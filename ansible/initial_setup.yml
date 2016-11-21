@@ -50,6 +50,18 @@
     - { role: load_balancers, tags: load_balancers }
 
 
+- name: Install Nginx (with syslog support)
+  hosts:
+    - storage
+    - web_workers
+    - preprod
+  remote_user: root
+  gather_facts: no
+
+  roles:
+    - { role: nginx, tags: nginx }
+
+
 - name: Setup web workers (nginx + gunicorn + Django)
   hosts: web_workers
   remote_user: root

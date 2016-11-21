@@ -8,10 +8,6 @@
     - python-psycopg2
     - python-apt
 
-- name: Add backports repo
-  apt_repository: >
-    repo='deb http://ftp.debian.org/debian jessie-backports main'
-    state=present
 
 # Gogs user
 ###########
@@ -55,32 +51,37 @@
 
 # Nginx installation
 ####################
-- name: Install backports nginx
-  apt: name=nginx state=present default-release=jessie-backports
-
-- name: nginx pid's file race fix, systemd folder
-  file: >
-    path=/etc/systemd/system/nginx.service.d
-    state=directory
-    recurse=yes
-
-- name: nginx pid's file race fix, override.conf
-  copy: src=override.conf dest=/etc/systemd/system/nginx.service.d/override.conf
-  notify:
-    - reload systemd
-    - restart nginx
-
-- name: nginx conf file
-  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
-  notify:
-    - restart nginx
+#- name: Add backports repo
+#  apt_repository: >
+#    repo='deb http://ftp.debian.org/debian jessie-backports main'
+#    state=present
+#
+#- name: Install backports nginx
+#  apt: name=nginx state=present default-release=jessie-backports
+#
+#- name: nginx pid's file race fix, systemd folder
+#  file: >
+#    path=/etc/systemd/system/nginx.service.d
+#    state=directory
+#    recurse=yes
+#
+#- name: nginx pid's file race fix, override.conf
+#  copy: src=override.conf dest=/etc/systemd/system/nginx.service.d/override.conf
+#  notify:
+#    - reload systemd
+#    - restart nginx
+#
+#- name: nginx conf file
+#  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+#  notify:
+#    - restart nginx
 
 - name: nginx site conf
   copy: src=default dest=/etc/nginx/sites-available/default
   notify:
     - restart nginx
 
-- name: enable nginx conf
+- name: enable nginx site conf
   file: >
     dest=/etc/nginx/sites-enabled/default
     src=/etc/nginx/sites-available/default

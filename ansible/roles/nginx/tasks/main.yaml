@@ -1,0 +1,26 @@
+---
+- name: Add backports repo
+  apt_repository: >
+    repo='deb http://ftp.debian.org/debian jessie-backports main'
+    state=present
+
+- name: Install backports nginx
+  apt: name=nginx state=latest default-release=jessie-backports
+
+#- name: nginx pid's file race fix, systemd folder
+#  file: >
+#    path=/etc/systemd/system/nginx.service.d
+#    state=directory
+#    recurse=yes
+#
+#- name: nginx pid's file race fix, override.conf
+#  copy: src=override.conf dest=/etc/systemd/system/nginx.service.d/override.conf
+#  notify:
+#    - reload systemd
+#    - restart nginx
+
+
+- name: nginx conf file
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+  notify:
+    - restart nginx
