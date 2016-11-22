@@ -4,7 +4,7 @@
 # And drop the Ansible servers's public RSA keys on hosts' root.
 
 function purge_sshpass {
-  trap 'true' SIGINT SIGTERM SIGHUP SIGUSR1 SIGUSR2 QUIT ERR
+  trap '' SIGINT SIGTERM SIGHUP SIGUSR1 SIGUSR2 QUIT ERR
   term=$(tty)
   if [ "$term" == "not a tty" ]; then term=/dev/null; fi
   ( nohup sudo apt-get autoremove --purge -y sshpass > $term )
