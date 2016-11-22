@@ -1,4 +1,4 @@
-
+---
 
 - name: Purge exim4
   apt: name={{ item }} state=absent purge=yes
@@ -11,3 +11,4 @@
 - name: Remove exim group
   group: name=Debian-exim state=absent
 
+...

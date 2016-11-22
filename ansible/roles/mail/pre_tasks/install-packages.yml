@@ -19,6 +19,7 @@
     home={{ item.homedir }}
     createhome=no
     shell={{ item.shell }}
+    system={{ item.is_system }}
   with_items: mail_system_users
 
 ...

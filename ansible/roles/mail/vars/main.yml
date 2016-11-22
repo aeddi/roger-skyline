@@ -28,7 +28,6 @@ mail_redundent_packages:
   - exim4-config
   - exim4-daemon-light
 
-# FIXME: remove explicit GIDs
 mail_system_groups:
   - { name: mail, is_system: yes }
   - { name: sasl, is_system: yes }
@@ -39,13 +38,12 @@ mail_system_groups:
   - { name: vmail, is_system: no }
   - { name: mtagroup, is_system: no }
 
-# FIXME: remove explicit UIDs
 mail_system_users:
-  - { name: mail, uid: 8, group: mail, homedir: /var/mail, shell: /usr/sbin/nologin, createhome: no, groups: mtagroup }
-  - { name: dovecot, uid: 110, group: dovecot, homedir: /usr/lib/dovecot, shell: /usr/sbin/nologin, createhome: no, groups: }
-  - { name: dovenull, uid: 112, group: dovenull, homedir: /nonexistent, shell: /usr/sbin/nologin, createhome: no, groups: }
-  - { name: postfix, uid: 113, group: postfix, homedir: /var/spool/postfix, shell: /usr/sbin/nologin, createhome: no, groups: mtagroup }
-  - { name: vmail, uid: 5000, group: vmail, homedir: /srv/vmail, shell: /usr/sbin/nologin, createhome: no, groups: sasl }
+  - { name: mail, group: mail, homedir: /var/mail, shell: /usr/sbin/nologin, createhome: no, groups: 'mtagroup', is_system: yes }
+  - { name: dovecot, group: dovecot, homedir: /usr/lib/dovecot, shell: /usr/sbin/nologin, createhome: no, groups: '', is_system: yes }
+  - { name: dovenull, group: dovenull, homedir: /nonexistent, shell: /usr/sbin/nologin, createhome: no, groups: '', is_system: yes }
+  - { name: postfix, group: postfix, homedir: /var/spool/postfix, shell: /usr/sbin/nologin, createhome: no, groups: 'mtagroup,sasl', is_system: yes }
+  - { name: vmail, group: vmail, homedir: /srv/vmail, shell: /usr/sbin/nologin, createhome: no, groups: '', is_system: no }
 
 postfix_hashmaps:
   - /etc/postfix/virtual_aliases
