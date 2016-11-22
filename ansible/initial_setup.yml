@@ -135,4 +135,17 @@
 
   roles:
     - { role: xmpp, tags: xmpp }
+
+
+- name: Setup mail
+  hosts: mail
+  remote_user: root
+  tags: mail
+  roles: [mail]
+  pre_tasks:
+    - include: roles/mail/pre_tasks/set-hostname.yml
+    - include: roles/mail/pre_tasks/redundent-packages.yml
+    - meta: flush_handlers
+    - include: roles/mail/pre_tasks/install-packages.yml
+    - meta: flush_handlers
 ...
