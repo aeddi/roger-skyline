@@ -8,7 +8,7 @@ server {
   ssl_ciphers         HIGH:!aNULL:!MD5;
 
   server_name _;
-  access_log off;
+  access_log on;
 
   location /static/ {
           alias /opt/webapp/static/;

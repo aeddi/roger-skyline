@@ -1,4 +1,7 @@
 ---
 - name: Restart nginx service
   service: name=nginx state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload
 ...

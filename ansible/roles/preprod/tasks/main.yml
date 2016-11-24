@@ -1,4 +1,12 @@
 ---
+- name: backports repo
+  apt_repository: >
+    repo='deb http://ftp.debian.org/debian jessie-backports main'
+    state=present
+
+- name: Install backports libpq-dev
+  apt: name=libpq-dev state=latest default-release=jessie-backports
+
 - name: Install needed apt packages
   apt: name="{{item}}" state=present
   with_items:
@@ -20,6 +28,7 @@
   with_items:
     - django
     - gunicorn
+    - psycopg2
 
 - name: Creates static directory
   file: path=/opt/webapp/static state=directory
@@ -27,6 +36,8 @@
 - name: Setup Django service config
   template: src=django.service
             dest=/etc/systemd/system/django.service
+  notify:
+    - reload systemd 
 
 - name: Start and enable Django service
   service: name=django state=started enabled=yes

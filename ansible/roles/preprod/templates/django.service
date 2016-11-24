@@ -6,7 +6,7 @@ After=network.target
 User=root
 Group=root
 WorkingDirectory=/opt/webapp
-ExecStart=/opt/webapp/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --pythonpath /opt/webapp/webapp webapp.wsgi
+ExecStart=/opt/webapp/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --pythonpath /opt/webapp/bin/python3 --chdir /var/www/website roger.wsgi --log-syslog
 
 [Install]
 WantedBy=multi-user.target
