@@ -23,11 +23,15 @@ SSH_PORT     = 22
 OFFLINE_MODE = true
 
 [mailer]
-ENABLED = false
+ENABLED = true
+HOST = mail.slash16.local:25
+FROM = "Gogs" <no-reply@slash16.local>
+USER = no-reply@slash16.local
+SKIP_VERIFY = true
 
 [service]
-REGISTER_EMAIL_CONFIRM = false
-ENABLE_NOTIFY_MAIL     = false
+REGISTER_EMAIL_CONFIRM = true
+ENABLE_NOTIFY_MAIL     = true
 DISABLE_REGISTRATION   = true
 ENABLE_CAPTCHA         = true
 REQUIRE_SIGNIN_VIEW    = false
