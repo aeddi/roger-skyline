@@ -1,0 +1,27 @@
+- Baseline: triggers explicites pour chaque service
+- Base++: extrait de l'activité récente du service (log, psqperf etc)
+- Syslog vs Services: inclure des extraits de log sur le monitoring de services
+
+(Legende: [v]: triggers ok;  [V]: extrait d'activité o;k [S]: extrait syslog ok)
+SERVICES:
+  - mail:
+    - [v] STMP,POP3,IMAP
+    - MailScanner & co ?
+  - [v] XMPP
+  - [v] LDAP
+  - GoGS
+  - Webwk x2
+  - Webwk DBs:
+    - DB1
+    - DB2
+  - LBs
+  - Backup ?
+  - Monitoring ?
+  - FTP (si ajout�)
+  - Preprod ?
+    - ...
+  - DHCP
+  - DNS
+  - NAT rulez ?
+  
+  - !!! MORE !!!

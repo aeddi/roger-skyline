@@ -37,10 +37,11 @@ DONE / FFOURATI - Envoyer des mails pour les Emergency, Alert et Critical quand 
 
 Monitoring:
 AEDDI - Exporter la config Zabbix pour le role
-- Mettre en place une page de monitoring pour les services qui peuvent etre monitorés (c'est simple, la doc de zabbix file des exemples pour mettre en place du monitoring de serveur HTTP par ex, ça prend 5 min)
+ONGOING / FFOURATI - Mise en place de triggers pour chaque service
+- (+syslog:) Mettre en place une page de monitoring pour les services qui peuvent etre monitorés (c'est simple, la doc de zabbix file des exemples pour mettre en place du monitoring de serveur HTTP par ex, ça prend 5 min)
 
 Backup:
-- Mettre en place le service
+FFOURATI - Mettre en place le service
 
 Mail:
 DONE / FFOURATI - Mettre en place le service
