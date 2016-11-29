@@ -1,0 +1,18 @@
+---
+- name: deploy website on web_worker1
+  hosts: web_worker1
+  remote_user: root
+  gather_facts: no
+  #tags: deploy_website
+  roles:
+    - webapp 
+
+
+- name: deploy website on web_worker2
+  hosts: web_worker2
+  remote_user: root
+  gather_facts: no
+  #tags: deploy_website
+  roles:
+    - webapp 
+...

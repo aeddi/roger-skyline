@@ -1,0 +1,20 @@
+---
+# So the load balancers can redirect to the other web worker
+- name: stop nginx
+  service: name=nginx state=stopped
+
+- name: update website
+  environment:
+    GIT_SSL_NO_VERIFY: 1
+  git: repo=git@git.slash16.local:akazian/website.git dest=/var/www/website accept_hostkey=yes
+
+- name: collectstatic
+  django_manage: virtualenv=/opt/webapp app_path=/var/www/website command=collectstatic
+
+- name: restart django
+  service: name=django state=restarted
+
+- name: start nginx
+  service: name=nginx state=started
+
+...
