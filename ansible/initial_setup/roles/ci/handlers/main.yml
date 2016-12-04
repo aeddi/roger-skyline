@@ -1,0 +1,10 @@
+---
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: restart nginx
+  action: service name=nginx state=restarted
+
+- name: restart buildbot
+  action: service name=buildbot state=restarted
+...

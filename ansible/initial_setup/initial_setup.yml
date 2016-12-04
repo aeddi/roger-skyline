@@ -119,6 +119,7 @@
   roles:
     - { role: preprod, tags: preprod }
 
+ 
 - name: Setup storage server (git, backup...)
   hosts: storage
   remote_user: root
@@ -126,6 +127,15 @@
 
   roles:
     - { role: versioning, tags: versioning }
+
+
+- name: Setup Continuous Integration tool
+  hosts: storage
+  remote_user: root
+  gather_facts: no
+
+  roles:
+    - { role: ci, tags: ci }
 
 
 - name: Setup XMPP server

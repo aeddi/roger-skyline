@@ -1,0 +1,62 @@
+---
+- name: Install necessary packages
+  apt: name="{{item}}" state=present
+  with_items:
+    - python-pip
+    - python-dev
+    - python-openssl
+    - libffi-dev
+    - libssl-dev
+
+- name: create buildbot group
+  group: name=buildbot state=present
+
+- name: create buildbot user
+  user: name=buildbot group=buildbot shell=/bin/bash
+
+- name: Install buildbot
+  pip: name="{{item}}" state=present
+  with_items:
+    - buildbot
+    - buildbot-worker
+    - buildbot_www
+    - buildbot_waterfall_view
+    - buildbot-console-view
+    - service_identity
+
+- name: Create ci folder
+  file: state=directory path=/home/buildbot/ci group=buildbot owner=buildbot
+
+- name: Buildbot master exists
+  stat: path=/home/buildbot/ci/master/buildbot.tac
+  register: master_try
+
+- name: Create a master
+  sudo: yes
+  sudo_user: buildbot
+  command: buildbot create-master master chdir=/home/buildbot/ci
+  when: master_try.stat.exists == False
+
+- name: Buildbot worker exists
+  stat: path=/home/buildbot/ci/worker/buildbot.tac
+  register: worker_try
+
+- name: Create a worker
+  sudo: yes
+  sudo_user: buildbot
+  command: buildbot-worker create-worker worker localhost website-worker pass chdir=/home/buildbot/ci
+  when: worker_try.stat.exists == False
+
+- name: Buildbot master config
+  copy: src=master.cfg dest=/home/buildbot/ci/master/master.cfg group=buildbot owner=buildbot
+
+- name: buildbot master service
+  copy: src=buildbot.service dest=/etc/systemd/system/buildbot.service
+  notify:
+    - reload systemd
+
+- name: buildbot worker service
+  copy: src=buildbot-worker.service dest=/etc/systemd/system/buildbot-worker.service
+  notify:
+    - reload systemd
+...
