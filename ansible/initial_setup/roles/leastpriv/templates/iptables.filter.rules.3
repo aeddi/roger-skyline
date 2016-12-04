@@ -17,6 +17,10 @@
 # Zabbix agent accessible only from Zabbix server
 -A INPUT -s 192.168.154.9/32 -p tcp -m tcp --dport 10050 -j ACCEPT
 
+# PostgreSQL connections from web_workers
+-A INPUT -s 192.168.154.4/32 -p tcp -m tcp --dport 5432 -j ACCEPT
+-A INPUT -s 192.168.154.5/32 -p tcp -m tcp --dport 5432 -j ACCEPT
+
 # ICMP accessible only from Zabbix server and gateway (initial setup)
 -A INPUT -s 192.168.54.1/32 -p icmp -j ACCEPT
 -A INPUT -s 192.168.154.9/32 -p icmp -j ACCEPT
