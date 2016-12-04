@@ -1,10 +1,10 @@
 ---
+- name: reload systemd
+  command: systemctl daemon-reload
+
 - name: restart nginx
   action: service name=nginx state=restarted
 
 - name: restart gogs
   action: service name=gogs state=restarted
-
-- name: reload systemd
-  command: systemctl daemon-reload
 ...

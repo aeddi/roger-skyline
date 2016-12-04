@@ -124,6 +124,8 @@
 
 - name: Gogs service (systemd)
   copy: src=gogs.service dest=/etc/systemd/system/gogs.service
+  notify:
+    - reload systemd
 
 # PostgreSQL
 ############
