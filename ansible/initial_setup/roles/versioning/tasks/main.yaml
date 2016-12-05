@@ -127,6 +127,14 @@
   notify:
     - reload systemd
 
+- name: Links to Gogs folder
+  file: >
+    src=/home/git/goworkspace/src/github.com/gogits/gogs
+    dest=/home/git/link-gogs
+    state=link
+    group=git
+    owner=git
+
 # PostgreSQL
 ############
 
