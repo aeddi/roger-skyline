@@ -1,4 +1,7 @@
 ---
+- name: django_user can create database
+  postgresql_user: name=django_user role_attr_flags=CREATEDB
+
 - name: Create new user for replication role
   postgresql_user: name={{rep_user}} password={{rep_pswd}}
                    role_attr_flags=REPLICATION
@@ -8,14 +11,24 @@
               line="host    replication     {{rep_user}}      192.168.154.7/32            md5"
   notify: Restart PostgreSQL
 
-- name: accept connections from web1
+- name: accept connections from web1 for main db
   lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
               line="host    django_db     django_user      192.168.154.4/32            md5"
   notify: Restart PostgreSQL
 
-- name: accept connections from web2
+- name: accept connections from web2 for main db
   lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
               line="host    django_db     django_user      192.168.154.5/32            md5"
+  notify: Restart PostgreSQL
+
+- name: accept connections from web1 for test db
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    test_django_db     django_user      192.168.154.4/32            md5"
+  notify: Restart PostgreSQL
+
+- name: accept connections from web2 for test db
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    test_django_db     django_user      192.168.154.5/32            md5"
   notify: Restart PostgreSQL
 
 - name: Creates directory for archive configuration
