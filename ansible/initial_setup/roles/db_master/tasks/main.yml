@@ -8,6 +8,16 @@
               line="host    replication     {{rep_user}}      192.168.154.7/32            md5"
   notify: Restart PostgreSQL
 
+- name: accept connections from web1
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    django_db     django_user      192.168.154.4/32            md5"
+  notify: Restart PostgreSQL
+
+- name: accept connections from web2
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    django_db     django_user      192.168.154.5/32            md5"
+  notify: Restart PostgreSQL
+
 - name: Creates directory for archive configuration
   file: path=/var/lib/postgresql/9.4/main/archive
         state=directory

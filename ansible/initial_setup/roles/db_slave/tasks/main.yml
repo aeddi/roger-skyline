@@ -7,6 +7,14 @@
 - name: Delete current PostgreSQL slave folder
   file: path=/var/lib/postgresql/9.4/main state=absent
 
+- name: accept connections from LB1
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    django_db     django_user      192.168.154.2/32            md5"
+
+- name: accept connections from LB2
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    django_db     django_user      192.168.154.3/32            md5"
+
 - name: Sync master and slave databases
   shell: PGPASSWORD={{rep_pswd}} pg_basebackup -h 192.168.154.6 -D /var/lib/postgresql/9.4/main -U {{rep_user}} --xlog-method=stream
 
