@@ -1,0 +1,25 @@
+---
+- name: get production database
+  hosts: db_slave
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - name: Dump prod db
+      sudo: yes
+      sudo_user: postgres
+      command: pg_dump -f /tmp/prod_db.dump django_db -Fc
+    - name: Fetch the db
+      sudo: yes
+      sudo_user: postgres
+      fetch: src=/tmp/prod_db.dump dest=/tmp/prod_db.dump flat=yes
+
+- name: prod db in preprod
+  hosts: preprod
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - name: Put the fetched db in preprod's postgres
+      sudo: yes
+      sudo_user: postgres
+      command: pg_restore --clean --dbname django_db /tmp/prod_db.dump
+...
