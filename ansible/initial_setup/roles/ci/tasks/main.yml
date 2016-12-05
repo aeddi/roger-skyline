@@ -18,6 +18,7 @@
   pip: name="{{item}}" state=present
   with_items:
     - buildbot
+    - six==1.10.0
     - buildbot-worker
     - buildbot_www
     - buildbot_waterfall_view
@@ -59,4 +60,27 @@
   copy: src=buildbot-worker.service dest=/etc/systemd/system/buildbot-worker.service
   notify:
     - reload systemd
+
+- name: Buildbot is started
+  service: name=buildbot state=started
+
+- name: Buildbot-Worker is started
+  service: name=buildbot-worker state=started
+
+
+# NGINX
+#######
+- name: nginx site conf
+  copy: src=buildbot-nginx dest=/etc/nginx/sites-available/buildbot
+  notify:
+    - restart nginx
+
+- name: enable nginx site conf
+  file: >
+    dest=/etc/nginx/sites-enabled/buildbot
+    src=/etc/nginx/sites-available/buildbot
+    state=link
+  notify:
+    - restart nginx
+
 ...
