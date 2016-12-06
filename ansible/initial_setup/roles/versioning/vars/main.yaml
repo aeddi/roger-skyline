@@ -1,10 +1,13 @@
 gogs_db_name: gogs
 gogs_db_user: gogs
 gogs_db_password: postgresql
+gogs_dump_dirtree:
+  - /home/git/.local/bin
+  - /home/git/.local/etc
 gogs_dump_cronjob_files:
   - { dest: /home/git/.local/bin/gogs_dump.sh, src: cron/gogs_dump.sh, mode: 774 }
-  - { dest: /home/git/.local/bin/logrotate_user_wrapper.sh, src: cron/logrotate_user_wrapper.sh, mode: 774 }
-  - { dest: /home/git/.local/etc/gogs_dump_logrotate.conf, src: cron/gogs_dump_logrotate.conf, mode: 664 }
+  - { dest: /home/git/.local/bin/logrotate_user_wrapper.sh, src: cron/logrotate/logrotate_user_wrapper.sh, mode: 774 }
+  - { dest: /home/git/.local/etc/gogs_dump_logrotate.conf, src: cron/logrotate/gogs_dump_logrotate.conf, mode: 664 }
 gogs_dump_cronjobs:
   - { job: /home/git/.local/bin/gogs_dump.sh, name: "GoGS daily dump", hour: 2, minute: 30 }
   - { job: /home/git/.local/bin/logrotate_user_wrapper.sh, name: "GoGS dump daily rotation", hour: 5, minute: 0 }

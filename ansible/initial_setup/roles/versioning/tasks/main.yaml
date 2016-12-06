@@ -155,6 +155,10 @@
 # GoGS backup #
 ###############
 
+- name: GoGS dump cronjob dirtree
+  with_items: gogs_dump_dirtree
+  file: state=dir owner=git group=git {{ item }}
+
 - name: GoGS dump cronjob files
   with_items: gogs_dump_cronjob_files
   copy: >
