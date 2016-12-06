@@ -157,7 +157,7 @@
 
 - name: GoGS dump cronjob dirtree
   with_items: gogs_dump_dirtree
-  file: state=dir owner=git group=git {{ item }}
+  file: state=directory owner=git group=git path={{ item }}
 
 - name: GoGS dump cronjob files
   with_items: gogs_dump_cronjob_files
@@ -168,15 +168,24 @@
     group=git
     mode={{ item.mode }}
 
-- name: GoGs dump cronjobs
-  with_items: gogs_dump_cronjobs
+# //!\\ Cron module's behaviour is borken when iterating on items.
+- name: GoGs dump cronjob
   cron: >
     user=git
+    hour=2
+    minute=30
+    job=/home/git/.local/bin/gogs_dump.sh
     state=present
-    name={{ item.name }}
-    hour={{ item.hour }}
-    minute={{ item.minute }}
-    job={{ item.job }}
+    name="GoGS daily dump"
+
+- name: GoGs dump logrotate cronjob
+  cron: >
+    user=git
+    hour=5
+    minute=0
+    job=/home/git/.local/bin/logrotate_user_wrapper.sh
+    state=present
+    name="GoGS daily dump rotation"
 
 # Everything's right ?
 ###################### 
