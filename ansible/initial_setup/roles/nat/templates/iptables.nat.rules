@@ -32,6 +32,10 @@
 -A PREROUTING -i eth0 -p tcp -m tcp --dport 8082 -j DNAT --to-destination 192.168.154.8:80
 -A PREROUTING -i eth0 -p tcp -m tcp --dport 4432 -j DNAT --to-destination 192.168.154.8:443
 
+# Forward HTTP/S requests to Buildbot(CI) web interface
+-A PREROUTING -i eth0 -p tcp -m tcp --dport 8083 -j DNAT --to-destination 192.168.154.8:8083
+-A PREROUTING -i eth0 -p tcp -m tcp --dport 4433 -j DNAT --to-destination 192.168.154.8:4433
+
 # Forward MTA, SMTPS, IMAPS, POP3S requests to the mail host
 -A PREROUTING -i eth0 -p tcp -m tcp --dport 587 -j DNAT --to-destination 192.168.154.2:587
 -A PREROUTING -i eth0 -p tcp -m tcp --dport 465 -j DNAT --to-destination 192.168.154.2:465

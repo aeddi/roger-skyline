@@ -7,4 +7,8 @@
 
 - name: restart buildbot
   action: service name=buildbot state=restarted
+
+- name: restart buildbot-worker
+  action: service name=buildbot-worker state=restarted
+
 ...
