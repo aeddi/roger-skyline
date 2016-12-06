@@ -7,9 +7,9 @@ After=network.target
 Type=forking
 PIDFile=/home/buildbot/ci/master/twistd.pid
 WorkingDirectory=/home/buildbot/ci
-ExecStart=/usr/local/bin/buildbot start master
-ExecReload=/usr/local/bin/buildbot reconfig master
-ExecStop=/usr/local/bin/buildbot stop master
+ExecStart=/usr/bin/buildbot start master
+ExecReload=/usr/bin/buildbot restart master
+ExecStop=/usr/bin/buildbot stop master
 Restart=always
 User=buildbot
 
