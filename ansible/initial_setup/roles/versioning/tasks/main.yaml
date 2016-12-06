@@ -127,14 +127,6 @@
   notify:
     - reload systemd
 
-- name: Links to Gogs folder
-  file: >
-    src=/home/git/goworkspace/src/github.com/gogits/gogs
-    dest=/home/git/link-gogs
-    state=link
-    group=git
-    owner=git
-
 # PostgreSQL
 ############
 
@@ -159,6 +151,26 @@
   postgresql_user: >
     name={{ gogs_db_user }}
     role_attr_flags=NOSUPERUSER,NOCREATEDB
+
+# GoGS backup #
+###############
+
+- name: GoGS dump cronjob script
+  copy: >
+    src=cron/gogs-dump.sh
+    dest={{gogs_dump_cronjob_script}}
+    owner=git
+    group=git
+    mode=774
+
+- name: GoGs dump cronjob
+  cron: >
+    user=git
+    state=present
+    name="GoGS daily dump"
+    hour=2
+    minute=30
+    job={{gogs_dump_cronjob_script}}
 
 # Everything's right ?
 ###################### 
