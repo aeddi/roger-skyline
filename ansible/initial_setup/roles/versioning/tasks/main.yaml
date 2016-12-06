@@ -155,22 +155,24 @@
 # GoGS backup #
 ###############
 
-- name: GoGS dump cronjob script
+- name: GoGS dump cronjob files
+  with_items: gogs_dump_cronjob_files
   copy: >
-    src=cron/gogs-dump.sh
-    dest={{gogs_dump_cronjob_script}}
+    src={{ item.src }}
+    dest={{ item.dest }}
     owner=git
     group=git
-    mode=774
+    mode={{ item.mode }}
 
-- name: GoGs dump cronjob
+- name: GoGs dump cronjobs
+  with_items: gogs_dump_cronjobs
   cron: >
     user=git
     state=present
-    name="GoGS daily dump"
-    hour=2
-    minute=30
-    job={{gogs_dump_cronjob_script}}
+    name={{ item.name }}
+    hour={{ item.hour }}
+    minute={{ item.minute }}
+    job={{ item.job }}
 
 # Everything's right ?
 ###################### 
