@@ -21,6 +21,7 @@ $outchannel lpr_rot_cent,/var/log/centralized/lpr.log,262144000,/usr/sbin/logrot
 $outchannel debug_rot_cent,/var/log/centralized/debug,262144000,/usr/sbin/logrotate /etc/logrotate.conf
 $outchannel mess_rot_cent,/var/log/centralized/messages,262144000,/usr/sbin/logrotate /etc/logrotate.conf
 $outchannel local7_rot_cent,/var/log/centralized/local7.log,262144000,/usr/sbin/logrotate /etc/logrotate.conf
+$outchannel cron_rot_cent,/var/log/cron.log,262144000,/usr/sbin/logrotate /etc/logrotate.conf
 
 auth,authpriv.*                 :omfile:$auth_rot_cent
 *.*;auth,authpriv.none          :omfile:-$sysl_rot_cent
@@ -30,6 +31,7 @@ lpr.*                           :omfile:-$lpr_rot_cent
 mail.*                          :omfile:-$mail_rot_cent
 user.*                          :omfile:-$user_rot_cent
 local7.*                        :omfile:-$local7_rot_cent
+cron.*                          :omfile:-$cron_rot_cent
 
 mail.info                       :omfile:-$mail_info_rot_cent
 mail.warn                       :omfile:-$mail_warn_rot_cent
@@ -41,7 +43,7 @@ mail.err                        :omfile:$mail_err_rot_cent
         news.none;mail.none     :omfile:-$debug_rot_cent
 *.=info;*.=notice;*.=warn;\
         auth,authpriv.none;\
-        cron,daemon.none;\
+        daemon.none;\
         mail,news.none          :omfile:-$mess_rot_cent
 
 if $fromhost-ip != '127.0.0.1' then stop
