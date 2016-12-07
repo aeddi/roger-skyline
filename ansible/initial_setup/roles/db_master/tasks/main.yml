@@ -31,6 +31,16 @@
               line="host    test_django_db     django_user      192.168.154.5/32            md5"
   notify: Restart PostgreSQL
 
+- name: accept connections from web1 for postgres db(test)
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    postgres     django_user      192.168.154.4/32            md5"
+  notify: Restart PostgreSQL
+
+- name: accept connections from web2 for postgres db(test)
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    postgres     django_user      192.168.154.5/32            md5"
+  notify: Restart PostgreSQL
+
 - name: Creates directory for archive configuration
   file: path=/var/lib/postgresql/9.4/main/archive
         state=directory
