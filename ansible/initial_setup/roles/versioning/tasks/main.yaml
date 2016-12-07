@@ -168,7 +168,7 @@
     group=git
     mode={{ item.mode }}
 
-# //!\\ Cron module's behaviour is borken when iterating on items.
+# //!\\ Cron module's behaviour is broken when iterating on items.
 - name: GoGs dump cronjob
   cron: >
     user=git
@@ -183,7 +183,7 @@
     user=git
     hour=5
     minute=0
-    job=/home/git/.local/bin/logrotate_user_wrapper.sh
+    job="/home/git/.local/bin/logrotate_user_wrapper.sh {{ gogs_dump_logrotate_conf }}"
     state=present
     name="GoGS daily dump rotation"
 
