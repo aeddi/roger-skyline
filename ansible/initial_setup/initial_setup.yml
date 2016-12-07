@@ -120,7 +120,7 @@
     - { role: preprod, tags: preprod }
 
  
-- name: Setup storage server (git, backup...)
+- name: Setup storage server (git, ftp...)
   hosts: storage
   remote_user: root
   gather_facts: no
@@ -158,4 +158,12 @@
     - meta: flush_handlers
     - include: roles/mail/pre_tasks/install-packages.yml
     - meta: flush_handlers
+
+- name: Setup backup agent
+  hosts: xmpp
+  remote_user: ansible
+  tags: backup_agent
+  roles:
+    - backup_agent
+
 ...

@@ -1,0 +1,16 @@
+---
+
+- name: Rsync versioning backups
+  gather_facts: no
+  hosts: versioning
+  remote_user: git
+  tags: versioning
+  tasks:
+    - synchronize:
+        mode: pull
+        dest: /home/ansible/backup-agent/pull/versioning
+        src: /home/git/gogs-dumps
+        delete: yes
+        compress: no
+
+...

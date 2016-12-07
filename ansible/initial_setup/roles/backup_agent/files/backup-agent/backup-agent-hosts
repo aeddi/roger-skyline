@@ -1,0 +1,16 @@
+# For use by the backup agent, only.
+
+[versioning]
+  git.slash16.local 
+
+[mail]
+  mail.slash16.local
+
+[syslog]
+  syslog.slash16.local
+
+[proddb]
+  db2.slash16.local
+
+[monitoring]
+  monitor.slash16.local
