@@ -86,7 +86,7 @@
 
 - name: Create Django database user
   postgresql_user: name=django_user password=django_user
-                   db=django_db priv=ALL
+                   db=django_db priv=ALL role_attr_flags=CREATEDB
   sudo_user: postgres
   sudo: yes
 
