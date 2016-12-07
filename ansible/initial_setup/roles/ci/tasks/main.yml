@@ -6,6 +6,7 @@
     - buildbot-slave
     - python3-pip
     - python3-venv
+    - python-ldap
 
 - name: create buildbot group
   group: name=buildbot state=present
@@ -90,6 +91,24 @@
     dest=/etc/nginx/sites-enabled/buildbot
     src=/etc/nginx/sites-available/buildbot
     state=link
+  notify:
+    - restart nginx
+
+# Nginx auth
+- name: create nginx-ldap-auth group
+  group: name=nginx-ldap-auth state=present
+
+- name: create nginx-ldap-auth user
+  user: name=nginx-ldap-auth group=nginx-ldap-auth shell=/bin/bash
+
+- name: Get nginx-ldap-auth
+  sudo: yes
+  sudo_user: nginx-ldap-auth
+  git: repo=https://github.com/nginxinc/nginx-ldap-auth.git
+       dest=/home/nginx-ldap-auth/nginx-ldap depth=1
+
+- name: nginx-ldap-auth conf
+  copy: src=nginx-ldap-auth.conf dest=/etc/nginx/conf.d/nginx-ldap-auth.conf
   notify:
     - restart nginx
 
