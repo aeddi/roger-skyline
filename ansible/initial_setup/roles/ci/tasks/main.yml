@@ -4,6 +4,8 @@
   with_items:
     - buildbot
     - buildbot-slave
+    - python3-pip
+    - python3-venv
 
 - name: create buildbot group
   group: name=buildbot state=present
@@ -90,5 +92,21 @@
     state=link
   notify:
     - restart nginx
+
+# DATABASE CONF
+###############
+- name: Set db_read alias in /etc/hosts
+  lineinfile: dest=/etc/hosts
+              line="127.0.0.1  db_read"
+
+- name: Set db_write alias in /etc/hosts
+  lineinfile: dest=/etc/hosts
+              line="127.0.0.1  db_write"
+
+- name: Create Django database user
+  postgresql_user: name=django_user password=django_user
+                   role_attr_flags=CREATEDB
+  sudo_user: postgres
+  sudo: yes
 
 ...
