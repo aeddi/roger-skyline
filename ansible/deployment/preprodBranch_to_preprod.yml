@@ -1,0 +1,8 @@
+---
+- name: deploy website on preprod
+  hosts: preprod
+  remote_user: root
+  gather_facts: no
+  roles:
+    - { role: webapp, branch: preprod }
+...
