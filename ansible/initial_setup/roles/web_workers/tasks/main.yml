@@ -45,6 +45,7 @@
 - name: Setup Django virtualhost
   template: src=nginx-django
             dest=/etc/nginx/sites-available/django
+  notify: Restart nginx service
 
 - name: Enable Django virtualhost
   file: src=/etc/nginx/sites-available/django 
@@ -53,7 +54,7 @@
   notify: Restart nginx service
 
 - name: Disable nginx default virtualhost
-  file: path=/etc/nginx/sites-available/default 
+  file: path=/etc/nginx/sites-enabled/default 
         state=absent
   notify: Restart nginx service
 
