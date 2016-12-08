@@ -1,0 +1,13 @@
+---
+
+backup_agent_local_id_dir: { path: /home/ansible/.srv3_backupagent_id, mode: 700 }
+backup_agent_ssh_id: {{backup_agent_local_id}}/id_rsa
+backup_agent_ssh_keys:
+  - { name: id_rsa, rem_mode: 600 }
+  - { name: id_rsa.pub, rem_mode: 644 }
+authorized_keys_targets:
+  - { host: mail.slash16.local, rem_user: ansible }
+  - { host: db2.slash16.local, rem_user: ansible }
+  - { host: git.slash16.local, rem_user: git }
+
+...

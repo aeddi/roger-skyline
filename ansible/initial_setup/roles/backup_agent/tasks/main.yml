@@ -1,15 +1,75 @@
 ---
 
+# Create backup-agent@srv3
+# Generate an id key
+# Run a boostrap playbook to push its key to target hosts
+
 - name: Ansible packages
   sudo: yes
   sudo_user: root
   apt: state=present name=ansible
 
-- name: Backup agent tree
+- name: Add user backup-agent
+  sudo: yes
+  sudo_user: root
+  user:
+    name: backup-agent
+ 
+- name: Generate backup-agent@srv3 SSH id (private dir)
+  changed_when: false
+  notify: Remove backup_agent_local_id_dir
+  local_action: >
+    file
+    state=directory
+    path={{backup_agent_local_id_dir.path}}
+    mode={{backup_agent_local_id_dir.mode}}
+
+- name: Generate backup-agent@srv3 SSH id (key pair)
+  local_action: command ssh-keygen -N '' -f {{backup_agent_ssh_id}}
+
+- name: Move keypair to backup-agent@srv3 
+  copy: >
+    state=present
+    src={{backup_agent_local_id_dir.path}}
+    dest=/home/backup-agent/.ssh
+ 
+- name: Propagate backup-agent public id
+  with_items: authorized_keys_targets
+  delegate_to: 127.0.0.1
+  changed_when: false
+  shell: >
+    ssh
+    {{item.rem_user}}@{{item.host}}
+    'umask 177; cat - > /tmp/{{item.rem_host}}Xbackup-agent.pub'
+    < {{backup_agent_ssh_id}}.pub
+
+- name: Authorize backup-agent public id
+  with_items: authorized_keys_targets
+  delegate_to: {{item.host}}
+  sudo: yes
+  sudo_user: root
+  authorized_key:
+    user: {{item.rem_user}}
+    state: present
+    path: /tmp/{{item.rem_host}}Xbackup-agent.pub
+
+- name: Backup-agent functional tree
+  sudo: yes
+  sudo_user: root
   copy:
     src: backup-agent
-    dest: /home/ansible/
+    dest: /home/
+    owner: backup-agent
+    group: backup-agent
+    mode: 700
 
-#- name: Setup cronjob for the backup agent
+- name: Setup cron for the backup agent
+  cron: >
+    user=backup-agent
+    hour=5
+    minute=30
+    jobs=/home/backup-agent/cronjobs/bin/agent-fetch.sh
+    state=present
+    name="Backup agent daily sync"
 
 ...

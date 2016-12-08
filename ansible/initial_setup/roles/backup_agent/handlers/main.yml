@@ -1,0 +1,6 @@
+---
+
+- name: Remove backup_agent_local_id_dir
+  local_action: file state=absent force=yes path={{backup_agent_local_id_dir.path}}
+
+...
