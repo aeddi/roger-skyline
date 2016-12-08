@@ -9,7 +9,7 @@
 [syslog]
   syslog.slash16.local
 
-[proddb]
+[prod_db]
   db2.slash16.local
 
 [monitoring]

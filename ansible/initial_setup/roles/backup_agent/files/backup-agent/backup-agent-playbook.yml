@@ -1,6 +1,6 @@
 ---
 
-- name: Rsync versioning backups
+- name: Pull-sync versioning backups
   gather_facts: no
   hosts: versioning
   tags: versioning
@@ -15,7 +15,7 @@
         delete: yes
         compress: no
 
-- name: Pull-sync versining backups
+- name: Pull-sync central syslogs
   gather_facts: no
   hosts: syslog
   tags: syslog
@@ -27,5 +27,19 @@
         dest: /home/backup-agent/pull/syslog
         src: /var/log/centralized
         delete: yes
+
+- name: Pull-sync Db_slave dump
+  gather_facts: no
+  hosts: prod_db
+  tags: prod_db
+  remote_user: ansible
+  tasks:
+    - sudo: yes
+      synchronize:
+        mode: pull
+        dest: /home/backup-agent/pull/prod_db
+        src: /var/backups/postgres
+        delete: yes
+        compress: no
 
 ...

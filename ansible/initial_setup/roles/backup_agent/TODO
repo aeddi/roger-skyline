@@ -13,7 +13,7 @@ srv6:
 wn- ~master DB~
   => NULL
 srv7:
-> - slave DB?
+V - slave DB
 srv8:
 wn- FTP filesystems
 V - GoGS DB
@@ -24,3 +24,5 @@ V - /var/log/centralized
   - zabbix Settings ?
 srv10:
   - NULL
+srv?:
+  - CI DB
