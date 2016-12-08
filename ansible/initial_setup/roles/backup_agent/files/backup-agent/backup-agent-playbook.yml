@@ -3,14 +3,29 @@
 - name: Rsync versioning backups
   gather_facts: no
   hosts: versioning
-  remote_user: git
   tags: versioning
+  remote_user: ansible
   tasks:
-    - synchronize:
+    - sudo: yes
+      sudo_user: git
+      synchronize:
         mode: pull
         dest: /home/backup-agent/pull/versioning
         src: /home/git/gogs-dumps
         delete: yes
         compress: no
+
+- name: Pull-sync versining backups
+  gather_facts: no
+  hosts: syslog
+  tags: syslog
+  remote_user: ansible
+  tasks:
+    - sudo: yes
+      synchronize:
+        mode: pull
+        dest: /home/backup-agent/pull/syslog
+        src: /var/log/centralized
+        delete: yes
 
 ...

@@ -35,4 +35,34 @@ fi
 BACKUPAGENT_HOSTSFILE="$HOME/backup-agent-hosts"
 BACKUPAGENT_PLAYBOOK="$HOME/backup-agent-playbook.yml"
 
-/usr/bin/ansible-playbook -i $BACKUPAGENT_HOSTSFILE $BACKUPAGENT_PLAYBOOK
+# If stdout is not a terminal, devnull it
+# when calling ansible-playbook.
+FD1_TARGET=$(readlink /proc/$$/fd/1)
+if grep -q pts <<< "$FD1_TARGET"
+then
+  true
+else
+  exec 1> /dev/null
+fi
+
+# Run in parallel
+TASK_TAGS=(versioning syslog)
+TASK_PIDS=()
+i=0
+while ((i < ${#TASK_TAGS[@]} ))
+do
+  /usr/bin/ansible-playbook \
+    -i $BACKUPAGENT_HOSTSFILE $BACKUPAGENT_PLAYBOOK \
+    --tags ${TASK_TAGS[${i}]} \
+    & \
+  TASK_PIDS[${i}]=$!
+  let i+=1
+done
+
+if grep -q pts <<< "$FD1_TARGET"
+then
+  true
+else
+  exec 1>> "$FD1_TARGET"
+fi
+wait ${TASK_PIDS[@]}

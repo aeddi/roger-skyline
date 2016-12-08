@@ -60,9 +60,9 @@
   with_items: authorized_keys_targets
   delegate_to: "{{item.initial_host}}"
   sudo: yes
-  sudo_user: "{{item.rem_user}}"
+  sudo_user: ansible
   lineinfile:
-    dest: "/home/{{item.rem_user}}/.ssh/authorized_keys"
+    dest: "/home/ansible/.ssh/authorized_keys"
     state: absent
     regexp: "^.*{{pubkey_comment}}$"
 
@@ -71,7 +71,7 @@
   delegate_to: "{{item.initial_host}}"
   sudo: yes
   authorized_key:
-    user: "{{item.rem_user}}"
+    user: ansible
     state: present
     key: "{{pub_key.stdout}}"
 

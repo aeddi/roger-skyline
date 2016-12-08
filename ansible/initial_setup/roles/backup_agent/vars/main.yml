@@ -7,9 +7,10 @@ backup_agent_ssh_keys:
   - { name: id_rsa, rem_mode: 600 }
   - { name: id_rsa.pub, rem_mode: 644 }
 authorized_keys_targets:
-  - { initial_host: 192.168.54.2, intended_host: mail.slash16.local, rem_user: ansible }
-  - { initial_host: 192.168.54.7, intended_host: db2.slash16.local, rem_user: ansible }
-  - { initial_host: 192.168.54.8, intended_host: git.slash16.local, rem_user: git }
+  - { initial_host: 192.168.54.2, intended_host: mail.slash16.local }
+  - { initial_host: 192.168.54.7, intended_host: db2.slash16.local }
+  - { initial_host: 192.168.54.8, intended_host: git.slash16.local }
+  - { initial_host: 192.168.54.9, intended_host: syslog.slash16.local }
 backup_agent_files:
   - { src: "{{backup_agent_ssh_id}}", dest: "/home/backup-agent/.ssh/id_rsa", mode: 600 }
   - { src: "{{backup_agent_ssh_id}}.pub", dest: "/home/backup-agent/.ssh/id_rsa.pub", mode: 644 }

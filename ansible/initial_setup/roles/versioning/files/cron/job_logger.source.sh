@@ -3,14 +3,21 @@
 # Source to gain syslog logging
 
 TEMP_ERR_FILE=$(mktemp)
-exec 2> $TEMP_ERR_FILE
+EXIT_TRAP=cleanup
+if readlink /proc/$$/fd/2 | grep -q pts; then
+    exec 2> >(tee $TEMP_ERR_FILE >&2)
+else
+    exec 2> $TEMP_ERR_FILE
+fi
 
 function cleanup {
     if [ -n "$TEMP_ERR_FILE" ] && [ -f "$TEMP_ERR_FILE" ]; then
         rm -rf "$TEMP_ERR_FILE"
     fi
 }
-trap cleanup EXIT INT TERM HUP
+# EXIT manages any blockable sig and ERR.
+EXIT_CONDITIONS=(EXIT)
+trap "${EXIT_TRAP}" ${EXIT_CONDITIONS[@]}
 
 function this_logger {
     local facility="$1"
@@ -27,7 +34,16 @@ function error {
     if [ -z "$msg" ]; then
         msg=$(cat "$TEMP_ERR_FILE")
     fi
-    this_logger error "Error line ${lineno} (exit ${ecode}): ${msg}"
+    if readlink /proc/$$/fd/1 | grep -q pts; then
+      echo "Error line ${lineno} (exit ${ecode}): ${msg}"
+    fi
+    save_IFS="${IFS}"
+    this_logger cron error "Error line ${lineno} (exit ${ecode}):"
+    IFS=$'\n'
+    for l in "$msg"; do
+        this_logger cron error "${l}"
+    done
+    IFS="${save_IFS}"
 }
 
 trap 'error ${LINENO}' ERR
