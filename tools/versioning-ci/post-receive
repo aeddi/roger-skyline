@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/bin/python /home/git/gogs-repositories/akazian/website.git/hooks/git_buildbot.py
