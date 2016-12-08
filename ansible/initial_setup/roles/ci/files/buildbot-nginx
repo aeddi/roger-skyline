@@ -1,9 +1,9 @@
-server {
-  listen 8083 default_server;
-  server_name _;
-  #return 302 http://google.fr;
-  return 302 https://10.17.1.154:4433$request_uri;
-}
+#server {
+#  listen 8083 default_server;
+#  server_name _;
+#  #return 302 http://google.fr;
+#  return 302 https://10.17.1.154:4433$request_uri;
+#}
 
 server {
   listen 4433 ssl;
