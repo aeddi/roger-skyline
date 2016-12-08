@@ -16,8 +16,8 @@
     name: backup-agent
  
 - name: Generate backup-agent@srv3 SSH id (private dir)
-  changed_when: false
-  notify: Remove backup_agent_local_id_dir
+  changed_when: true
+  notify: Remove backup agent local_id_dir
   local_action: >
     file
     state=directory
@@ -25,50 +25,64 @@
     mode={{backup_agent_local_id_dir.mode}}
 
 - name: Generate backup-agent@srv3 SSH id (key pair)
-  local_action: command ssh-keygen -N '' -f {{backup_agent_ssh_id}}
+  changed_when: true
+  register: pub_key
+  local_action: >
+    shell
+    echo y |
+    ssh-keygen -C {{pubkey_comment}} -N '' -f {{backup_agent_ssh_id}} >/dev/null
+    &&
+    tail -n1 {{backup_agent_ssh_id}}.pub
 
-- name: Move keypair to backup-agent@srv3 
+- name: backup-agent@srv3 operation dirtree
+  sudo: yes
+  sudo_user: backup-agent
+  with_items: backup_agent_dirtree
+  file: >
+    state=directory
+    path={{item.dir}}
+    mode={{item.mode}}
+    owner=backup-agent
+    group=backup-agent
+
+- name: backup-agent@srv3 keys and operational files
+  with_items: backup_agent_files
+  sudo: yes
+  sudo_user: backup-agent
   copy: >
-    state=present
-    src={{backup_agent_local_id_dir.path}}
-    dest=/home/backup-agent/.ssh
+    src={{item.src}}
+    dest={{item.dest}}
+    owner=backup-agent
+    group=backup-agent
+    mode={{item.mode}}
  
-- name: Propagate backup-agent public id
+- name: Purge previous backup-agent public id
   with_items: authorized_keys_targets
-  delegate_to: 127.0.0.1
-  changed_when: false
-  shell: >
-    ssh
-    {{item.rem_user}}@{{item.host}}
-    'umask 177; cat - > /tmp/{{item.rem_host}}Xbackup-agent.pub'
-    < {{backup_agent_ssh_id}}.pub
+  delegate_to: "{{item.initial_host}}"
+  sudo: yes
+  sudo_user: "{{item.rem_user}}"
+  lineinfile:
+    dest: "/home/{{item.rem_user}}/.ssh/authorized_keys"
+    state: absent
+    regexp: "^.*{{pubkey_comment}}$"
 
 - name: Authorize backup-agent public id
   with_items: authorized_keys_targets
-  delegate_to: {{item.host}}
+  delegate_to: "{{item.initial_host}}"
   sudo: yes
-  sudo_user: root
   authorized_key:
-    user: {{item.rem_user}}
+    user: "{{item.rem_user}}"
     state: present
-    path: /tmp/{{item.rem_host}}Xbackup-agent.pub
-
-- name: Backup-agent functional tree
-  sudo: yes
-  sudo_user: root
-  copy:
-    src: backup-agent
-    dest: /home/
-    owner: backup-agent
-    group: backup-agent
-    mode: 700
+    key: "{{pub_key.stdout}}"
 
 - name: Setup cron for the backup agent
+  sudo: yes
+  sudo_user: backup-agent
   cron: >
     user=backup-agent
     hour=5
     minute=30
-    jobs=/home/backup-agent/cronjobs/bin/agent-fetch.sh
+    job=/home/backup-agent/cronjobs/bin/agent-fetch.sh
     state=present
     name="Backup agent daily sync"
 

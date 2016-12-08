@@ -8,7 +8,7 @@
   tasks:
     - synchronize:
         mode: pull
-        dest: /home/ansible/backup-agent/pull/versioning
+        dest: /home/backup-agent/pull/versioning
         src: /home/git/gogs-dumps
         delete: yes
         compress: no

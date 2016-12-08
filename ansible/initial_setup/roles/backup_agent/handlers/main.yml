@@ -1,6 +1,10 @@
 ---
 
-- name: Remove backup_agent_local_id_dir
-  local_action: file state=absent force=yes path={{backup_agent_local_id_dir.path}}
+- name: Remove backup agent local_id_dir
+  delegate_to: 127.0.0.1
+  local_action: >
+    file
+    state=absent
+    path={{backup_agent_local_id_dir.path}}
 
 ...
