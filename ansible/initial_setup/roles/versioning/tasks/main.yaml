@@ -181,8 +181,8 @@
 - name: GoGs dump logrotate cronjob
   cron: >
     user=git
-    hour=5
-    minute=0
+    hour=4
+    minute=15
     job="/home/git/.local/bin/logrotate_user_wrapper.sh {{ gogs_dump_logrotate_conf }}"
     state=present
     name="GoGS daily dump rotation"

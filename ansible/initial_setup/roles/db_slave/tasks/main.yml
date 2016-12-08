@@ -45,4 +45,48 @@
   service: name=postgresql state=started
   sudo_user: root
   sudo: yes
+
+- name: Pg_dump directories
+  tags: db_backup
+  sudo: yes
+  sudo_user: root
+  with_items: pg_dump_dirs
+  file: >
+    state=directory
+    path={{item.dir}}
+    owner={{item.owner}}
+    group={{item.group}}
+    mode={{item.mode}}
+
+- name: Pg backup cron files
+  tags: db_backup
+  with_items: pg_dumps_scripts
+  copy: >
+    src={{item.srcd}}/{{item.name}}
+    dest={{item.destd}}/{{item.name}}
+    owner={{item.owner}}
+    group={{item.group}}
+    mode={{item.mode}}
+
+# //!\\ Bugged when cron:name changes with_items OR contains spaces.
+- name: Pg backup cronjob
+  tags: db_backup
+  cron: >
+    name='Pg_dump'
+    state=present
+    user=postgres
+    hour=2
+    minute=30
+    job='{{pg_cron_dump_script}}'
+
+- name: Pg backup rotation cronjob
+  tags: db_backup
+  cron: >
+    name='Pg_dump-rotate'
+    state=present
+    user=postgres
+    hour=4
+    minute=15
+    job='{{pg_cron_logrotate_script}} {{pg_cron_logrotate_conf}}'
+
 ...
