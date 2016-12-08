@@ -1,25 +1,26 @@
 srv1:
-  - ?
+  - NULL
 srv2:
   - Dovecot mail boxes
   - MailScanner / Spammassassin learning base ?
 srv3:
-  - ?
+  - NULL
 srv4:
-  - ?
+  - NULL
 srv5:
-  - ?
+  - NULL
 srv6:
-  - slave DB?
+wn- ~master DB~
+  => NULL
 srv7:
   - slave DB?
 srv8:
-  - FTP filesystems
-  - GoGS DB
-  - GoGS repos.
+wn- FTP filesystems
+V - GoGS DB
+V - GoGS repos.
 srv9:
   - /var/log/centralized
   - zabbix DB
   - zabbix Settings ?
 srv10:
-  - NULL ?
+  - NULL

@@ -1,0 +1,1 @@
+A role with a its own playbook and a cronjob to either trigger and|or fetch backups from hosts.

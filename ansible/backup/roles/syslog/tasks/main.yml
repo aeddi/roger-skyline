@@ -1,7 +1,0 @@
----
-
-- name: Looking for changes in logs.
-  shell:
-  changed_when:
-
-...
