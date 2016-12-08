@@ -29,7 +29,7 @@ export HOME=$BACKUPAGENT_HOME
 PULL_DIR=$BACKUPAGENT_HOME/pull
 
 if [ ! -d "$PULL_DIR" ]; then
-  mkdir -p "$PULL_DIR"
+  mkdir -m 700 -p "$PULL_DIR"
 fi
 
 BACKUPAGENT_HOSTSFILE="$HOME/backup-agent-hosts"

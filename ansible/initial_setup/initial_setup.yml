@@ -161,7 +161,6 @@
 
 - name: Setup backup agent
   hosts: xmpp
-  remote_user: ansible
   tags: backup_agent
   roles:
     - backup_agent
