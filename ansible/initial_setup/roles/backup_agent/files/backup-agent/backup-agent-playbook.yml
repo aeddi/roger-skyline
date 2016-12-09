@@ -66,4 +66,18 @@
         ssh ansible@mail.slash16.local 'sudo sa-learn --backup | gzip'
         > /home/backup-agent/pull/mail/spamassassin-bayes.gz
 
+- name: Pull-sync zabbix DB dumps
+  gather_facts: no
+  hosts: monitoring
+  tags: monitoring
+  remote_user: ansible
+  tasks:
+    - sudo: yes
+      synchronize:
+        mode: pull
+        dest: /home/backup-agent/pull/monitoring
+        src: /var/backups/zabbix
+        delete: yes
+        compress: no
+
 ...
