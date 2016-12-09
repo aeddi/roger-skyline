@@ -72,15 +72,9 @@
   notify:
     - reload systemd
 
-- name: Buildbot is started
-  service: name=buildbot state=started
 
-- name: Buildbot Slave is started
-  service: name=buildslave state=started
-
-
-# NGINX
-#######
+# NGINX #
+#########
 - name: nginx site conf
   copy: src=buildbot-nginx dest=/etc/nginx/sites-available/buildbot
   notify:
@@ -112,6 +106,17 @@
   notify:
     - restart nginx
 
+- name: install nginx-ldap-auth daemon
+  copy: src=nginx-ldap-auth.service dest=/etc/systemd/system/nginx-ldap-auth.service
+  notify:
+    - reload systemd
+
+- name: install web backend for nginx-ldap
+  copy: src=backend-ldap-daemon.service
+        dest=/etc/systemd/system/backend-ldap-daemon.service
+  notify:
+    - reload systemd
+
 # DATABASE CONF
 ###############
 - name: Set db_read alias in /etc/hosts
@@ -127,5 +132,20 @@
                    role_attr_flags=CREATEDB
   sudo_user: postgres
   sudo: yes
+
+
+# Start the daemons #
+# ################# #
+- name: Buildbot is started
+  service: name=buildbot state=started
+
+- name: Buildbot Slave is started
+  service: name=buildslave state=started
+
+- name: nginx-ldap-auth is started
+  service: name=nginx-ldap-auth state=started
+
+- name: backend-ldap-daemon is started
+  service: name=backend-ldap-daemon state=started
 
 ...

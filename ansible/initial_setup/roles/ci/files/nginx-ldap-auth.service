@@ -1,0 +1,16 @@
+[Unit]
+Description=Nginx LDAP authentication
+Wants=network.target
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/home/nginx-ldap-auth/nginx-ldap/nginx-ldap-auth-daemon.pid
+WorkingDirectory=/home/nginx-ldap-auth/nginx-ldap
+ExecStart=/home/nginx-ldap-auth/nginx-ldap/nginx-ldap-auth-daemon-ctl.sh start
+ExecStop=/home/nginx-ldap-auth/nginx-ldap/nginx-ldap-auth-daemon-ctl.sh stop
+Restart=always
+User=nginx-ldap-auth
+
+[Install]
+WantedBy=multi-user.target

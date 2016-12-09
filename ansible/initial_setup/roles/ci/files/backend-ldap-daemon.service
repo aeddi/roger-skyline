@@ -1,0 +1,16 @@
+[Unit]
+Description=Web interface for Nginx LDAP auth
+Wants=network.target
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/home/nginx-ldap-auth/nginx-ldap/backend-sample-app.pid
+WorkingDirectory=/home/nginx-ldap-auth/nginx-ldap
+ExecStart=/home/nginx-ldap-auth/nginx-ldap/backend-daemon-ctl.sh start
+ExecStop=/home/nginx-ldap-auth/nginx-ldap/backend-daemon-ctl.sh stop
+Restart=always
+User=nginx-ldap-auth
+
+[Install]
+WantedBy=multi-user.target
