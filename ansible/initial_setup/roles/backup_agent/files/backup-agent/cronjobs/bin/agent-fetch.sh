@@ -46,7 +46,7 @@ else
 fi
 
 # Run in parallel
-TASK_TAGS=(versioning syslog prod_db)
+TASK_TAGS=(versioning syslog prod_db mail)
 TASK_PIDS=()
 i=0
 while ((i < ${#TASK_TAGS[@]} ))

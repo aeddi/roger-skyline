@@ -1,8 +1,8 @@
 srv1:
   - NULL
 srv2:
-  - Dovecot mail boxes
-  - MailScanner / Spammassassin learning base ?
+V - Dovecot mail boxes
+V - MailScanner / Spammassassin learning base
 srv3:
   - NULL
 srv4:
