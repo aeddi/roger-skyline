@@ -104,7 +104,7 @@
 - name: Get nginx-ldap-auth
   sudo: yes
   sudo_user: nginx-ldap-auth
-  git: repo=https://github.com/nginxinc/nginx-ldap-auth.git
+  git: repo=https://github.com/supermaciz/nginx-ldap-auth.git
        dest=/home/nginx-ldap-auth/nginx-ldap depth=1
 
 - name: nginx-ldap-auth conf
