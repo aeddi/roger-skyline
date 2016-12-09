@@ -1,1 +1,35 @@
+---
+
 mysql_passwd: mysql
+
+zabbix_helpers_dir: /opt/helpers/zabbix/bin
+
+zabbix_cron_prefix: /opt/cronjobs/zabbix
+zabbix_cron_bins: "{{zabbix_cron_prefix}}/bin"
+zabbix_cron_confs: "{{zabbix_cron_prefix}}/etc"
+zabbix_cron_dump_script_name: zabbix-db-dump.sh
+zabbix_cron_dump_script: "{{zabbix_cron_bins}}/{{zabbix_cron_dump_script_name}}"
+zabbix_cron_logrotate_script_name: logrotate_user_wrapper.sh
+zabbix_cron_logrotate_script: "{{zabbix_cron_bins}}/{{zabbix_cron_logrotate_script_name}}"
+zabbix_cron_logrotate_conf_name: zabbix_dump_logrotate.conf
+zabbix_cron_logrotate_conf: "{{zabbix_cron_confs}}/{{zabbix_cron_logrotate_conf_name}}"
+zabbix_dump_dirs:
+  - { dir: /opt/helpers, mode: 775, owner: root, group: root }
+  - { dir: /opt/helpers/zabbix, mode: 775, owner: zabbix, group: zabbix }
+  - { dir: /opt/helpers/zabbix/bin, mode: 775, owner: zabbix, group: zabbix }
+  - { dir: /opt/cronjobs, mode: 775, owner: root, group: root }
+  - { dir: "{{zabbix_cron_prefix}}", mode: 755, owner: zabbix, group: zabbix }
+  - { dir: "{{zabbix_cron_bins}}", mode: 755, owner: zabbix, group: zabbix }
+  - { dir: "{{zabbix_cron_confs}}", mode: 755, owner: zabbix, group: zabbix }
+  - { dir: /var/backups, mode: 755, owner: root, group: root }
+  - { dir: /var/backups/zabbix, mode: 770, owner: root, group: zabbix }
+zabbix_dump_scripts:
+  - { name: get-table-list.pl, srcd: zabbix-backup, destd: "{{zabbix_helpers_dir}}", mode: 755, owner: zabbix, group: zabbix }
+  - { name: zabbix-mysql-dump, srcd: zabbix-backup, destd: "{{zabbix_helpers_dir}}", mode: 755, owner: zabbix, group: zabbix }
+  - { name: "{{zabbix_cron_dump_script_name}}", srcd: cron, destd: "{{zabbix_cron_bins}}", mode: 755, owner: zabbix, group: zabbix }
+  - { name: job_logger.source.sh, srcd: cron, destd: "{{zabbix_cron_bins}}", mode: 644, owner: zabbix, group: zabbix }
+  - { name: "{{zabbix_cron_logrotate_script_name}}", srcd: cron/logrotate, destd: "{{zabbix_cron_bins}}", mode: 755, owner: zabbix, group: zabbix }
+  - { name: "{{zabbix_cron_logrotate_script_name}}", srcd: cron/logrotate, destd: "{{zabbix_cron_bins}}", mode: 755, owner: zabbix, group: zabbix }
+  - { name: "{{zabbix_cron_logrotate_conf_name}}", srcd: cron/logrotate, destd: "{{zabbix_cron_confs}}", mode: 644, owner: zabbix, group: zabbix }
+
+...

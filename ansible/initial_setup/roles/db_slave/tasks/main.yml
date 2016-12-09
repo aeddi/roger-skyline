@@ -60,7 +60,7 @@
 
 - name: Pg backup cron files
   tags: db_backup
-  with_items: pg_dumps_scripts
+  with_items: pg_dump_scripts
   copy: >
     src={{item.srcd}}/{{item.name}}
     dest={{item.destd}}/{{item.name}}

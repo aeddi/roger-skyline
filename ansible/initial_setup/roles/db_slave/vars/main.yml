@@ -18,7 +18,7 @@ pg_dump_dirs:
   - { dir: "{{pg_cron_confs}}", mode: 755, owner: postgres, group: postgres }
   - { dir: /var/backups, mode: 755, owner: root, group: root }
   - { dir: /var/backups/postgres, mode: 770, owner: root, group: postgres }
-pg_dumps_scripts:
+pg_dump_scripts:
   - { name: "{{pg_cron_dump_script_name}}", srcd: cron, destd: "{{pg_cron_bins}}", mode: 755, owner: postgres, group: postgres }
   - { name: job_logger.source.sh, srcd: cron, destd: "{{pg_cron_bins}}", mode: 644, owner: postgres, group: postgres }
   - { name: "{{pg_cron_logrotate_script_name}}", srcd: cron/logrotate, destd: "{{pg_cron_bins}}", mode: 755, owner: postgres, group: postgres }

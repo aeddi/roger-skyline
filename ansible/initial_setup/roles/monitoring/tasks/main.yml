@@ -99,4 +99,56 @@
   template: src=php.ini
             dest=/etc/php5/apache2/php.ini
   notify: Restart Apache2
+
+- name: Pull the last release of the zabbix-backup script 
+  tags: monitoring_backup
+  delegate_to: 127.0.0.1
+  shell: >
+    tar xf $(./github_last_release.py)
+    && find -type d -maxdepth 1 -name '*zabbix-backup*' -exec mv '{}' zabbix-backup \;
+  args:
+    chdir: "{{playbook_dir}}/roles/monitoring/files"
+    creates: zabbix-backup
+
+- name: Create remote backup helpers dirtree
+  tags: monitoring_backup
+  with_items: zabbix_dump_dirs
+  file:
+    state: directory
+    path: "{{item.dir}}"
+    owner: "{{item.owner}}"
+    group: "{{item.group}}"
+    mode: "{{item.mode}}"
+    
+- name: Copy zabbix backup scripts
+  tags: monitoring_backup
+  with_items: zabbix_dump_scripts
+  copy:
+    src: "{{item.srcd}}/{{item.name}}"
+    dest: "{{item.destd}}/{{item.name}}"
+    owner: "{{item.owner}}"
+    group: "{{item.group}}"
+    mode: "{{item.mode}}"
+
+# //!\\ Bugged when cron:name changes with_items OR contains spaces.
+- name: zabbix DB backup cronjob
+  tags: monitoring_backup
+  cron: >
+    name='Zabbix_DB_dump'
+    state=present
+    user=zabbix
+    hour=2
+    minute=30
+    job='{{zabbix_cron_dump_script}}'
+
+- name: zabbix DB backup rotation cronjob
+  tags: monitoring_backup
+  cron: >
+    name='Zabbix_DB_dump-rotate'
+    state=present
+    user=zabbix
+    hour=4
+    minute=15
+    job='{{zabbix_cron_logrotate_script}} {{zabbix_cron_logrotate_conf}}'
+    
 ...
