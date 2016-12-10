@@ -2,8 +2,8 @@
 - name: Install necessary packages
   apt: name="{{item}}" state=present
   with_items:
-    - buildbot
-    - buildbot-slave
+    - python-dev
+    - python-openssl
     - python3-pip
     - python3-venv
     - python-ldap
@@ -23,15 +23,15 @@
   sudo_user: buildbot
   lineinfile: dest=/home/buildbot/.ssh/known_hosts create=yes line="{{git_key.stdout}}"
 
-#- name: Install buildbot
-#  pip: name="{{item}}" state=absent
-#  with_items:
-#    - buildbot
-#    - buildbot-worker
-#    - buildbot_www
-#    - buildbot_waterfall_view
-#    - buildbot-console-view
-#    - service_identity
+- name: Install buildbot
+  pip: name="{{item}}" state=present
+  with_items:
+    - buildbot
+    - buildbot-worker
+    - buildbot_www
+    - buildbot_waterfall_view
+    - buildbot-console-view
+    - service_identity
 
 - name: Create ci folder
   file: state=directory path=/home/buildbot/ci group=buildbot owner=buildbot
@@ -46,31 +46,31 @@
   command: buildbot create-master master chdir=/home/buildbot/ci
   when: master_try.stat.exists == False
 
-- name: Buildbot slave exists
-  stat: path=/home/buildbot/ci/slave/buildbot.tac
-  register: worker_try
-
-- name: Create a slave
-  sudo: yes
-  sudo_user: buildbot
-  command: buildslave create-slave slave 127.0.0.1:9989 example-slave pass chdir=/home/buildbot/ci
-  when: worker_try.stat.exists == False
+#- name: Buildbot worker exists
+#  stat: path=/home/buildbot/ci/worker/buildbot.tac
+#  register: worker_try
+#
+#- name: Create a worker
+#  sudo: yes
+#  sudo_user: buildbot
+#  command: buildbot-worker create-worker worker 127.0.0.1:9989 example-worker pass chdir=/home/buildbot/ci
+#  when: worker_try.stat.exists == False
 
 - name: Buildbot master config
   copy: src=master.cfg dest=/home/buildbot/ci/master/master.cfg group=buildbot owner=buildbot
   notify:
     - restart buildbot
-    - restart buildbot slave
+    #- restart buildbot worker
 
 - name: buildbot master service
   copy: src=buildbot.service dest=/etc/systemd/system/buildbot.service
   notify:
     - reload systemd
 
-- name: buildbot slave service
-  copy: src=buildslave.service dest=/etc/systemd/system/buildslave.service
-  notify:
-    - reload systemd
+#- name: buildbot worker service
+#  copy: src=buildbot-worker.service dest=/etc/systemd/system/buildbot-worker.service
+#  notify:
+#    - reload systemd
 
 
 # NGINX #
@@ -139,8 +139,8 @@
 - name: Buildbot is started
   service: name=buildbot state=started
 
-- name: Buildbot Slave is started
-  service: name=buildslave state=started
+#- name: Buildbot worker is started
+#  service: name=buildbot-worker state=started
 
 - name: nginx-ldap-auth is started
   service: name=nginx-ldap-auth state=started

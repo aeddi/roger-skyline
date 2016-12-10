@@ -6,7 +6,8 @@
 #}
 
 server {
-  listen 4433 ssl;
+  listen 4433 ssl http2;
+  server_name ci.slash16.local;
   #server_name git.slash16.local;
 
   ssl_certificate /etc/ssl/certs/cert.pem;
@@ -14,10 +15,29 @@ server {
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
   ssl_ciphers HIGH:!aNULL:!MD5;
 
+  ssl_session_cache shared:SSL:144m;
+  ssl_session_timeout 144m;
+
+  add_header Strict-Transport-Security "max-age=31536000; includeSubdomains;";
+  spdy_headers_comp 5;
+
   location / {
     proxy_set_header X-Real-IP $remote_addr;
     #proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     #proxy_set_header Host $http_host;
     proxy_pass http://127.0.0.1:8010;
   }
+  location /sse/ {
+    proxy_buffering off;
+    proxy_pass http://localhost:8010/sse/;
+  }
+  location /buildbot/ws {
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_pass http://localhost:5000/ws;
+    # raise the proxy timeout for the websocket
+    proxy_read_timeout 6000s;
+  }
+
 }
