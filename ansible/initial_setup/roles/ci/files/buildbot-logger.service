@@ -1,0 +1,14 @@
+[Unit]
+Description=buildbot-logger: logs to syslog
+After=buildbot.target
+
+[Service]
+Type=forking
+PIDFile=/home/buildbot/ci/buildbot-logger.pid
+ExecStart=/sbin/start-stop-daemon -S -x /home/buildbot/ci/buildbot-logger.sh -b -m -p /home/buildbot/ci/buildbot-logger.pid
+ExecStop=/sbin/start-stop-daemon -K -p /home/buildbot/ci/buildbot-logger.pid
+Restart=always
+User=buildbot
+
+[Install]
+WantedBy=multi-user.target

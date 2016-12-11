@@ -73,6 +73,20 @@
 #    - reload systemd
 
 
+- name: install buildbot logger daemon
+  copy: src=buildbot-logger.service
+        dest=/etc/systemd/system/buildbot-logger.service
+  notify:
+    - reload systemd
+
+- name: install buildbot logger script
+  sudo: yes
+  sudo_user: buildbot
+  copy: src=buildbot-logger.sh
+        dest=/home/buildbot/ci/buildbot-logger.sh
+  notify:
+    - restart buildbot-logger
+
 # NGINX #
 #########
 - name: nginx site conf
@@ -111,7 +125,7 @@
   notify:
     - reload systemd
 
-- name: install web backend for nginx-ldap
+- name: install web backend daemon for nginx-ldap
   copy: src=backend-ldap-daemon.service
         dest=/etc/systemd/system/backend-ldap-daemon.service
   notify:
@@ -141,6 +155,9 @@
 
 #- name: Buildbot worker is started
 #  service: name=buildbot-worker state=started
+
+- name: Start buildbot logger daemon
+  service: name=buildbot-logger state=started
 
 - name: nginx-ldap-auth is started
   service: name=nginx-ldap-auth state=started

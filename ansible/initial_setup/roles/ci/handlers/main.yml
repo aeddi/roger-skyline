@@ -8,6 +8,9 @@
 - name: restart buildbot
   action: service name=buildbot state=restarted
 
+- name: restart buildbot-logger
+  action: service name=buildbot-logger state=restarted
+
 - name: restart buildbot slave
   action: service name=buildslave state=restarted
 
