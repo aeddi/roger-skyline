@@ -20,6 +20,7 @@ VirtualHost "xmpp.slash16.local"
 -- Set up a MUC (multi-user chat) room server on conference.example.com:
 Component "conference.10.17.1.154" "muc"
   name = "Slash16 chatrooms server"
+  restrict_room_creation = true
 
 -- Set up a SOCKS5 bytestream proxy for server-proxied file transfers:
 --Component "proxy.example.com" "proxy65"
