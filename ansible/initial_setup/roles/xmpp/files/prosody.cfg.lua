@@ -145,6 +145,15 @@ cyrus_service_name = "xmpp"
 
 --storage = "sql" -- Default is "internal" (Debian: "sql" requires one of the
 -- lua-dbi-sqlite3, lua-dbi-mysql or lua-dbi-postgresql packages to work)
+storage = "sql"
+sql = {
+  driver = "PostgreSQL",
+  database = "prosody_db",
+  host = "srv8.slash16.local",
+  port = 5432,
+  username = "prosody",
+  password = "prosody",
+}
 
 -- For the "sql" backend, you can uncomment *one* of the below to configure:
 --sql = { driver = "SQLite3", database = "prosody.sqlite" } -- Default. 'database' is the filename.

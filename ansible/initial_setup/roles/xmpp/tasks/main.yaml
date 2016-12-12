@@ -6,6 +6,8 @@
     - lua-cyrussasl
     - libsasl2-modules-ldap
     - sasl2-bin
+    - lua-sec
+    - lua-dbi-postgresql
 
 - name: prosody user's group
   user: name=prosody append=yes groups=sasl
@@ -40,4 +42,39 @@
   copy: src=xmpp.slash16.local.cfg.lua dest=/etc/prosody/conf.avail/xmpp.slash16.local.cfg.lua
   notify:
     - restart prosody
+
+# Database conf #
+#################
+
+- name: Create prosody's database
+  delegate_to: 192.168.154.8
+  sudo: yes
+  sudo_user: postgres
+  postgresql_db: name=prosody_db
+
+- name: User prosody for the db
+  delegate_to: 192.168.154.8
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: >
+    db=prosody_db
+    name=prosody
+    password=prosody
+    priv=ALL
+    role_attr_flags=NOSUPERUSER,NOCREATEDB
+
+- name: accept connections from prosody user from srv3 (srv8 PostgreSQL pg_hba.conf)
+  delegate_to: 192.168.154.8
+  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf
+              line="host    prosody_db     prosody      192.168.154.3/32            md5"
+  notify: Restart PostgreSQL
+
+- name: Accept connections from xmpp (srv8 postgresql.conf)
+  delegate_to: 192.168.154.8
+  lineinfile: dest=/etc/postgresql/9.4/main/postgresql.conf
+              regexp="^listen_addresses ="
+              line="listen_addresses = '*'"
+  notify:
+    - Restart PostgreSQL
+
 ...

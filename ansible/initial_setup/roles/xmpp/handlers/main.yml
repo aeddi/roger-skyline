@@ -7,4 +7,11 @@
 
 - name: reload systemd
   command: systemctl daemon-reload
+
+- name: Restart PostgreSQL
+  delegate_to: 192.168.154.8
+  service: name=postgresql state=restarted
+  sudo_user: root
+  sudo: yes
+
 ...
