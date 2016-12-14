@@ -60,8 +60,7 @@
   when: has_admin_pass.stdout == ''
 
 
-# DEV************** Loglevel: show queries, results (/var/log/debug)
-- name: '***DEV*** Set a friendly log level'
+- name: Set stats log level
   args:
     executable: /bin/bash
   shell: ldapmodify -Y EXTERNAL -H ldapi:/// -D 'cn=admin,dc=slash16,dc=local' -f /dev/stdin <<< "{{ item }}"
@@ -70,7 +69,7 @@
         dn: cn=config
         changetype: modify
         replace: olcLogLevel
-        olcLogLevel: filter stats stats
+        olcLogLevel: stats
 
 #Idealement: check si c'est necessaire avant ;
 # Merge les etapes si raisonnablement possible
