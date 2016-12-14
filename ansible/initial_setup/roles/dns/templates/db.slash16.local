@@ -9,7 +9,7 @@ $ORIGIN slash16.local.
 
 ; NS and MX records
 @	IN	NS	srv1.slash16.local.
-@	IN	MX	10	srv2.slash16.local.
+@	IN	MX	10	mail.slash16.local.
 
 ; Hosts base A records
 srv1.slash16.local.		IN	A	192.168.154.254
