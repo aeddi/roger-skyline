@@ -4,24 +4,26 @@
 
 (Legende: [v]: triggers ok;  [V]: extrait d'activit√© o;k [S]: extrait syslog ok)
 SERVICES:
-  - mail:
+  - [v] mail:
     - [v] STMP,POP3,IMAP
-    - MailScanner & co ?
+    - [v] MailScanner & co ?
   - [v] XMPP
   - [v] LDAP
-  - GoGS
-  - Webwk x2
-  - Webwk DBs:
-    - DB1
-    - DB2
-  - LBs
+  - [v] GoGS
+  - Webwk x2 (HTTPS.?)
+  - [v] Webwk DBs:
+    - [v] DB1
+    - [v] DB2
+  - [v] LBs
   - Backup ?
-  - Monitoring ?
-  - FTP (si ajout√)
+  - [v] Monitoring
   - Preprod ?
     - ...
-  - DHCP
-  - DNS
-  - NAT rulez ?
-  
-  - !!! MORE !!!
+  - DHCPD
+  - DNSD
+  - NAT rulez ? (bof)
+  - CI
+
+  - [v] rsyslog
+  - [v] exim4
+  ?????????????????

@@ -41,7 +41,7 @@ ONGOING / FFOURATI - Mise en place de triggers pour chaque service
 - (+syslog:) Mettre en place une page de monitoring pour les services qui peuvent etre monitorés (c'est simple, la doc de zabbix file des exemples pour mettre en place du monitoring de serveur HTTP par ex, ça prend 5 min)
 
 Backup:
-FFOURATI - Mettre en place le service
+DONE / FFOURATI - Mettre en place le service
 
 Mail:
 DONE / FFOURATI - Mettre en place le service
@@ -50,4 +50,4 @@ Versionning:
 DONE / MCIZO - Mettre en place le service
 
 Web app:
-AKAZIAN? - Faire la web app, voir avec aeddi pour la lecture / ecriture sur la DB
+DONE ? - Faire la web app, voir avec aeddi pour la lecture / ecriture sur la DB

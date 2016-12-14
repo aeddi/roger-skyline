@@ -16,12 +16,13 @@ srv7:
 V - slave DB
 srv8:
 wn- FTP filesystems
+  - XMPP???
 V - GoGS DB
 V - GoGS repos.
 srv9:
 V - /var/log/centralized
-  - zabbix DB
-  - zabbix Settings ?
+V - zabbix DB
+V - zabbix Settings
 srv10:
   - NULL
 srv?:
