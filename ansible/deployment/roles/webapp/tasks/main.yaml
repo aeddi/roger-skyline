@@ -13,7 +13,7 @@
 - name: Delete former virtualenv
   file: state=absent path=/opt/webapp
 
-- name: update website
+- name: Download website
   git: repo=git@git.slash16.local:akazian/website.git
        dest=/var/www/website accept_hostkey=yes
        version={{branch}}
@@ -26,7 +26,7 @@
 - name: collectstatic
   django_manage: virtualenv=/opt/webapp app_path=/var/www/website command=collectstatic
 
-- name: restart django
+- name: Start django
   service: name=django state=started
 
 - name: start nginx

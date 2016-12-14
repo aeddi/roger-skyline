@@ -21,14 +21,14 @@
         dest=/usr/local/bin/virtualenv3
         mode=0511
 
-- name: Install needed pip packages
-  pip: virtualenv=/opt/webapp
-       virtualenv_command=virtualenv3
-       name="{{item}}"
-  with_items:
-    - django
-    - gunicorn
-    - psycopg2
+#- name: Install needed pip packages
+#  pip: virtualenv=/opt/webapp
+#       virtualenv_command=virtualenv3
+#       name="{{item}}"
+#  with_items:
+#    - django
+#    - gunicorn
+#    - psycopg2
 
 - name: Creates static directory
   file: path=/opt/webapp/static state=directory
@@ -39,8 +39,8 @@
   notify:
     - reload systemd 
 
-- name: Start and enable Django service
-  service: name=django state=started enabled=yes
+#- name: Start and enable Django service
+#  service: name=django state=started enabled=yes
 
 - name: Setup Django virtualhost
   template: src=nginx-django
