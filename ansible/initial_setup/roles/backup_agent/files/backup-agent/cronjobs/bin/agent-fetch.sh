@@ -51,10 +51,15 @@ TASK_PIDS=()
 i=0
 while ((i < ${#TASK_TAGS[@]} ))
 do
-  /usr/bin/ansible-playbook \
-    -i $BACKUPAGENT_HOSTSFILE $BACKUPAGENT_PLAYBOOK \
-    --tags ${TASK_TAGS[${i}]} \
-    & \
+# If the ansible fetch job succeeds, ``touch'' the associated
+# folder, so that monitoring may determine the backup
+# routine went well.
+  (
+    /usr/bin/ansible-playbook \
+      -i $BACKUPAGENT_HOSTSFILE $BACKUPAGENT_PLAYBOOK \
+      --tags ${TASK_TAGS[${i}]} \
+      && touch "${PULL_DIR}/${TASK_TAGS[${i}]}"
+  ) & \
   TASK_PIDS[${i}]=$!
   let i+=1
 done

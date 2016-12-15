@@ -10,7 +10,7 @@ SERVICES:
   - [v] XMPP
   - [v] LDAP
   - [v] GoGS
-  - Webwk x2 (HTTPS.?)
+  - [v] Webwk x2 (HTTPS.?)
   - [v] Webwk DBs:
     - [v] DB1
     - [v] DB2
@@ -19,10 +19,10 @@ SERVICES:
   - [v] Monitoring
   - Preprod ?
     - ...
-  - DHCPD
-  - DNSD
+  - [v] DHCPD
+  - [v] DNSD
   - NAT rulez ? (bof)
-  - CI
+  - [v] CI
 
   - [v] rsyslog
   - [v] exim4

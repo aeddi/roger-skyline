@@ -3,14 +3,14 @@
 # Source to gain syslog logging
 
 TEMP_ERR_FILE=$(mktemp)
-EXIT_TRAP=cleanup
+EXIT_TRAP=this_atexit
 if readlink /proc/$$/fd/2 | grep -q pts; then
     exec 2> >(tee $TEMP_ERR_FILE >&2)
 else
     exec 2> $TEMP_ERR_FILE
 fi
 
-function cleanup {
+function this_atexit {
     if [ -n "$TEMP_ERR_FILE" ] && [ -f "$TEMP_ERR_FILE" ]; then
         rm -rf "$TEMP_ERR_FILE"
     fi
@@ -26,7 +26,7 @@ function this_logger {
     logger -t "$SYSLOG_TAG" -p "$facility.$severity" $@
 }
 
-function error {
+function this_onerror {
     local lineno=$1  
     local msg="$2"
     local ecode="${3:-1}"
@@ -46,4 +46,4 @@ function error {
     IFS="${save_IFS}"
 }
 
-trap 'error ${LINENO}' ERR
+trap 'this_onerror ${LINENO}' ERR
