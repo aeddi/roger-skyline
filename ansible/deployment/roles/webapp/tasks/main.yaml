@@ -3,19 +3,31 @@
 - name: stop nginx
   service: name=nginx state=stopped
 
+- name: stop django
+  service: name=django state=stopped
+  ignore_errors: yes
+
 - name: Delete former website
   file: state=absent path=/var/www/website
 
-- name: update website
+- name: Delete former virtualenv
+  file: state=absent path=/opt/webapp
+
+- name: Download website
   git: repo=git@git.slash16.local:akazian/website.git
        dest=/var/www/website accept_hostkey=yes
        version={{branch}}
 
+- name: Install needed pip packages
+  pip: virtualenv=/opt/webapp
+       virtualenv_command=/usr/local/bin/virtualenv3
+       requirements=/var/www/website/requirements.txt
+
 - name: collectstatic
   django_manage: virtualenv=/opt/webapp app_path=/var/www/website command=collectstatic
 
-- name: restart django
-  service: name=django state=restarted
+- name: Start django
+  service: name=django state=started
 
 - name: start nginx
   service: name=nginx state=started
