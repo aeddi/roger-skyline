@@ -29,7 +29,7 @@ export HOME=$BACKUPAGENT_HOME
 PULL_DIR=$BACKUPAGENT_HOME/pull
 
 if [ ! -d "$PULL_DIR" ]; then
-  mkdir -m 700 -p "$PULL_DIR"
+    mkdir -m 755 -p "$PULL_DIR"
 fi
 
 BACKUPAGENT_HOSTSFILE="$HOME/backup-agent-hosts"
@@ -40,9 +40,9 @@ BACKUPAGENT_PLAYBOOK="$HOME/backup-agent-playbook.yml"
 FD1_TARGET=$(readlink /proc/$$/fd/1)
 if grep -q pts <<< "$FD1_TARGET"
 then
-  true
+    true
 else
-  exec 1> /dev/null
+    exec 1> /dev/null
 fi
 
 # Run in parallel
@@ -51,6 +51,15 @@ TASK_PIDS=()
 i=0
 while ((i < ${#TASK_TAGS[@]} ))
 do
+# Ensure pull subdirs are not world-readable !
+  if [ ! -d "${PULL_DIR}/${TASK_TAGS[${i}]}" ]; then
+      mkdir -m 700 -p "${PULL_DIR}/${TASK_TAGS[${i}]}"
+  else
+      pullsubdir_mode=$(stat -c %a "${PULL_DIR}/${TASK_TAGS[${i}]}")
+      if [ ! "$pullsubdir_mode" == "700"  ]; then
+          chmod 700 "${PULL_DIR}/${TASK_TAGS[${i}]}"
+      fi
+  fi
 # If the ansible fetch job succeeds, ``touch'' the associated
 # folder, so that monitoring may determine the backup
 # routine went well.
