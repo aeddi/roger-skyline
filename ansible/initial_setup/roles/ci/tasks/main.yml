@@ -4,6 +4,7 @@
   with_items:
     - python-dev
     - python-openssl
+    - python-psycopg2
     - python3-pip
     - python3-venv
     - python-ldap
@@ -60,8 +61,9 @@
 - name: Buildbot master config
   copy: src=master.cfg dest=/home/buildbot/ci/master/master.cfg group=buildbot owner=buildbot
   notify:
-    - restart buildbot
-    #- restart buildbot worker
+    - stop buildbot
+    - upgrade buildbot master
+    - start buildbot
 
 - name: buildbot master service
   copy: src=buildbot.service dest=/etc/systemd/system/buildbot.service
@@ -148,6 +150,23 @@
   sudo_user: postgres
   sudo: yes
 
+- name: Create buildbot database
+  sudo_user: postgres
+  sudo: yes
+  postgresql_db: name=buildbot_db encoding=utf8
+                 template=template0
+  notify:
+    - upgrade buildbot master
+
+- name: Create buildbot user in postgres
+  sudo_user: postgres
+  sudo: yes
+  postgresql_user: name=buildbot password=buildbot
+                   db=buildbot_db priv=ALL
+  notify:
+    - stop buildbot
+    - upgrade buildbot master
+    - start buildbot
 
 # Start the daemons #
 # ################# #

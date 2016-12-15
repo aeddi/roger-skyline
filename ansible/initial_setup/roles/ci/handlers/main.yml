@@ -5,13 +5,22 @@
 - name: restart nginx
   action: service name=nginx state=restarted
 
+- name: stop buildbot
+  action: service name=buildbot state=stopped
+
+- name: upgrade buildbot master
+  command: buildbot upgrade-master /home/buildbot/ci/master
+
+- name: start buildbot
+  action: service name=buildbot state=started
+
 - name: restart buildbot
   action: service name=buildbot state=restarted
 
 - name: restart buildbot-logger
   action: service name=buildbot-logger state=restarted
 
-- name: restart buildbot slave
-  action: service name=buildslave state=restarted
+- name: restart buildbot-worker
+  action: service name=buildbot-worker state=restarted
 
 ...
