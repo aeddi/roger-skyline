@@ -135,6 +135,8 @@
   sudo_user: postgres
   postgresql_db: >
     name={{ gogs_db_name }}
+    template=template0
+    encoding=utf8
 
 - name: User has access to the database
   sudo: yes
