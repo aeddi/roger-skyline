@@ -144,9 +144,16 @@
   lineinfile: dest=/etc/hosts
               line="127.0.0.1  db_write"
 
+- name: Create webapp test database
+  sudo_user: postgres
+  sudo: yes
+  postgresql_db: name=test_django_db encoding=utf8
+                 template=template0
+ 
 - name: Create Django database user
   postgresql_user: name=django_user password=django_user
                    role_attr_flags=CREATEDB
+                   db=test_django_db priv=ALL
   sudo_user: postgres
   sudo: yes
 
