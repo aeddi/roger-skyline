@@ -51,6 +51,7 @@
   sudo: yes
   sudo_user: postgres
   postgresql_db: name=prosody_db
+                 template=template0 encoding=utf8
 
 - name: User prosody for the db
   delegate_to: 192.168.154.8
@@ -76,6 +77,11 @@
               line="listen_addresses = '*'"
   notify:
     - Restart PostgreSQL
+
+######
+- name: Prosody is started
+  service: name=prosody state=started
+
 
 # Database backup #
 ###################

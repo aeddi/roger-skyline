@@ -12,7 +12,7 @@
   pip: name=psycopg2 executable=/usr/bin/pip
 
 - name: Create Django database
-  postgresql_db: name=django_db
+  postgresql_db: name=django_db template=template0 encoding=utf8
   sudo_user: postgres
   sudo: yes
 
