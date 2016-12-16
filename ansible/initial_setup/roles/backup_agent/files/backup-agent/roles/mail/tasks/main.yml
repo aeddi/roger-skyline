@@ -1,0 +1,25 @@
+---
+
+# Save dovecot mailboxes
+- name: Rsync mailboxes
+  sudo: yes
+  notify: "[Handler] Record change"
+  synchronize:
+    mode: pull
+    dest: "{{ destdir }}"
+    src: /var/mail
+    delete: yes
+    compress: yes
+    rsync_opts:
+      - "--exclude=tmp/"
+      - "--exclude=*.lock"
+      - "--exclude=*.cache"
+
+# Save spamassassin's bayesian classifier
+- name: Save bayesian classifier
+  local_action: >
+    shell
+    ssh ansible@mail.slash16.local 'sudo sa-learn --backup | gzip'
+    > /home/backup-agent/pull/mail/spamassassin-bayes.gz
+
+...

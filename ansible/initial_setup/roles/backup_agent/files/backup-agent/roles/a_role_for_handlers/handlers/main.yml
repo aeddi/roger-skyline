@@ -1,0 +1,6 @@
+---
+
+- name: "[Handler] Record change"
+  local_action: file state=touch path={{fwd_destdir}}.mstamp
+
+...

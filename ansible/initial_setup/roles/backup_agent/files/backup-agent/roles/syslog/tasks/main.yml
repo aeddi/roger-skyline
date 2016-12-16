@@ -1,0 +1,12 @@
+---
+
+
+- sudo: yes
+  notify: "[Handler] Record change"
+  synchronize:
+    mode: pull
+    dest: "{{ destdir }}"
+    src: /var/log/centralized
+    delete: yes
+
+...

@@ -55,6 +55,15 @@
     owner=backup-agent
     group=backup-agent
     mode={{item.mode}}
+
+- name: backup-agent@srv3 roles dir-tree
+  sudo: yes
+  sudo_user: backup-agent
+  copy:
+    owner: backup-agent
+    group: backup-agent
+    src: backup-agent/roles
+    dest: /home/backup-agent/
  
 - name: Purge previous backup-agent public id
   with_items: authorized_keys_targets

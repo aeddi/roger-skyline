@@ -1,0 +1,13 @@
+---
+
+- sudo: yes
+  sudo_user: git
+  notify: "[Handler] Record change"
+  synchronize:
+    mode: pull
+    dest: "{{ destdir }}"
+    src: /home/git/gogs-dumps
+    delete: yes
+    compress: no
+
+...

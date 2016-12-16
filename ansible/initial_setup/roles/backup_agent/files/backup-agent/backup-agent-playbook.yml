@@ -1,83 +1,55 @@
 ---
 
+- roles: [ a_role_for_handlers ]
+  hosts: localhost
+
 - name: Pull-sync versioning backups
+  vars:
+    - destdir: /home/backup-agent/pull/versioning
   gather_facts: no
   hosts: versioning
   tags: versioning
   remote_user: ansible
-  tasks:
-    - sudo: yes
-      sudo_user: git
-      synchronize:
-        mode: pull
-        dest: /home/backup-agent/pull/versioning
-        src: /home/git/gogs-dumps
-        delete: yes
-        compress: no
+  roles: [ versioning ]
+
 
 - name: Pull-sync central syslogs
+  vars: 
+    destdir: /home/backup-agent/pull/syslog
   gather_facts: no
   hosts: syslog
   tags: syslog
   remote_user: ansible
-  tasks:
-    - sudo: yes
-      synchronize:
-        mode: pull
-        dest: /home/backup-agent/pull/syslog
-        src: /var/log/centralized
-        delete: yes
+  roles: [ syslog ]
+
 
 - name: Pull-sync Db_slave dump
+  vars:
+    destdir: /home/backup-agent/pull/prod_db
   gather_facts: no
   hosts: prod_db
   tags: prod_db
   remote_user: ansible
-  tasks:
-    - sudo: yes
-      synchronize:
-        mode: pull
-        dest: /home/backup-agent/pull/prod_db
-        src: /var/backups/postgres
-        delete: yes
-        compress: no
+  roles: [ prod_db ]
+
 
 - name: Pull-sync dovecot mailboxes
+  vars:
+    destdir: /home/backup-agent/pull/mail
   gather_facts: no
   hosts: mail
   tags: mail
   remote_user: ansible
-  tasks:
-# Save dovecot mailboxes
-    - sudo: yes
-      synchronize:
-        mode: pull
-        dest: /home/backup-agent/pull/mail
-        src: /var/mail
-        delete: yes
-        compress: yes
-        rsync_opts:
-          - "--exclude=tmp/"
-          - "--exclude=*.lock"
-          - "--exclude=*.cache"
-# Save spamassassin's bayesian classifier
-    - local_action: >
-        shell
-        ssh ansible@mail.slash16.local 'sudo sa-learn --backup | gzip'
-        > /home/backup-agent/pull/mail/spamassassin-bayes.gz
+  roles: [ mail ]
+
 
 - name: Pull-sync zabbix DB dumps
+  vars: 
+    destdir: /home/backup-agent/pull/monitoring
   gather_facts: no
   hosts: monitoring
   tags: monitoring
   remote_user: ansible
-  tasks:
-    - sudo: yes
-      synchronize:
-        mode: pull
-        dest: /home/backup-agent/pull/monitoring
-        src: /var/backups/zabbix
-        delete: yes
-        compress: no
+  roles: [ monitoring ]
 
 ...
