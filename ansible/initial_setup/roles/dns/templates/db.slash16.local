@@ -1,7 +1,7 @@
 $TTL 604800     ; 1 week
 $ORIGIN slash16.local.
 @       IN      SOA     ns.slash16.local. admin.slash16.local.        (
-                                       2016061401   ; Serial
+                                       2016121731   ; Serial
                                        3600         ; Refresh [1h]
                                        600          ; Retry   [10m]
                                        86400        ; Expire  [1d]
@@ -24,6 +24,7 @@ srv10.slash16.local.	IN	A	192.168.154.10
 
 ; Loadbalancers virtual IP record
 lb.slash16.local.		  IN	A	192.168.154.16
+www.slash16.local.		IN	CNAME lb
 
 
 ; Services on svr1
