@@ -19,16 +19,16 @@
 # Config Mathieu
 #
 server {
-  listen 80 default_server;
-  listen [::]:80 default_server;
-  server_name 10.17.1.154:4432;
+  listen 80;
+  listen [::]:80;
+  server_name 10.17.1.154:8082 git.slash16.local;
   #return 302 http://google.fr;
   return 302 https://10.17.1.154:4432$request_uri;
 }
 
 server {
   listen 443 ssl;
-  server_name git.slash16.local;
+  server_name git.slash16.local:443 10.17.1.154:4432;
 
   ssl_certificate /etc/ssl/certs/cert.pem;
   ssl_certificate_key /etc/ssl/private/cert.key;
