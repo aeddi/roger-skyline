@@ -71,8 +71,8 @@
 - name: Install PostgreSQL packages and pip
   apt: name={{item}} state=present
   with_items:
-    - postgresql
-    - postgresql-contrib
+    - postgresql={{postgres_version}}
+    - postgresql-contrib={{postgres_version}}
     - postgresql-server-dev-all
     - python-pip
     - python-dev
