@@ -28,11 +28,11 @@
 - name: Install buildbot
   pip: name="{{item}}" state=present
   with_items:
-    - buildbot
-    - buildbot-worker
-    - buildbot_www
-    - buildbot_waterfall_view
-    - buildbot-console-view
+    - buildbot==0.9.1
+    - buildbot-worker==0.9.1
+    - buildbot_www==0.9.1
+    - buildbot-waterfall-view==0.9.1
+    - buildbot-console-view==0.9.1
     - service_identity
 
 - name: Create ci folder
