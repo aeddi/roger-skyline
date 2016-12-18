@@ -19,7 +19,7 @@
 - name: Install virtualenv wrapper (ugly workaround)
   copy: src=virtualenv3
         dest=/usr/local/bin/virtualenv3
-        mode=0511
+        mode=0555
 
 #- name: Install needed pip packages
 #  pip: virtualenv=/opt/webapp

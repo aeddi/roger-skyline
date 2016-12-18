@@ -58,7 +58,7 @@ db1.slash16.local.		  IN	CNAME	srv6
 db2.slash16.local.		  IN	CNAME	srv7
 
 ; Services on svr8
-backup.slash16.local.		IN	CNAME	srv8
+ci.slash16.local.		    IN	CNAME	srv8
 git.slash16.local.		  IN	CNAME	srv8
 ftp.slash16.local.		  IN	CNAME	srv8
 

@@ -2,6 +2,10 @@
 - name: reload systemd
   command: systemctl daemon-reload
 
+- name: reload systemd worker
+  delegate_to: 192.168.154.10
+  command: systemctl daemon-reload
+
 - name: restart nginx
   action: service name=nginx state=restarted
 
@@ -20,7 +24,8 @@
 - name: restart buildbot-logger
   action: service name=buildbot-logger state=restarted
 
-- name: restart buildbot-worker
+- name: restart buildbot-worker preprod
+  delegate_to: 192.168.154.10
   action: service name=buildbot-worker state=restarted
 
 ...

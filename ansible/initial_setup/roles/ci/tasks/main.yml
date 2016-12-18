@@ -48,16 +48,6 @@
   command: buildbot create-master master chdir=/home/buildbot/ci
   when: master_try.stat.exists == False
 
-#- name: Buildbot worker exists
-#  stat: path=/home/buildbot/ci/worker/buildbot.tac
-#  register: worker_try
-#
-#- name: Create a worker
-#  sudo: yes
-#  sudo_user: buildbot
-#  command: buildbot-worker create-worker worker 127.0.0.1:9989 example-worker pass chdir=/home/buildbot/ci
-#  when: worker_try.stat.exists == False
-
 - name: Buildbot master config
   copy: src=master.cfg dest=/home/buildbot/ci/master/master.cfg group=buildbot owner=buildbot
   notify:
@@ -69,11 +59,6 @@
   copy: src=buildbot.service dest=/etc/systemd/system/buildbot.service
   notify:
     - reload systemd
-
-#- name: buildbot worker service
-#  copy: src=buildbot-worker.service dest=/etc/systemd/system/buildbot-worker.service
-#  notify:
-#    - reload systemd
 
 
 - name: install buildbot logger daemon
@@ -134,29 +119,58 @@
   notify:
     - reload systemd
 
-# DATABASE CONF
 ###############
-- name: Set db_read alias in /etc/hosts
-  lineinfile: dest=/etc/hosts
-              line="127.0.0.1  db_read"
+# CI's worker #
+###############
+- name: Install buildbot
+  delegate_to: 192.168.154.10
+  pip: name="{{item}}" state=present
+  with_items:
+    - buildbot==0.9.1
+    - buildbot-worker==0.9.1
 
-- name: Set db_write alias in /etc/hosts
-  lineinfile: dest=/etc/hosts
-              line="127.0.0.1  db_write"
+- name: Create ci folder (preprod worker)
+  delegate_to: 192.168.154.10
+  file: state=directory path=/root/ci
 
-- name: Create webapp test database
+- name: Buildbot worker exists (preprod worker)
+  delegate_to: 192.168.154.10
+  stat: path=/root/ci/worker/buildbot.tac
+  register: worker_try
+
+- name: Create a worker (preprod worker)
+  delegate_to: 192.168.154.10
+  command: buildbot-worker create-worker worker ci.slash16.local:9989 preprod-worker pass chdir=/root/ci
+  when: worker_try.stat.exists == False
+
+- name: buildbot worker service
+  delegate_to: 192.168.154.10
+  copy: src=buildbot-worker.service dest=/etc/systemd/system/buildbot-worker.service
+  notify:
+    - reload systemd worker
+    - restart buildbot-worker preprod
+
+- name: Create webapp test database (preprod)
+  delegate_to: 192.168.154.10
   sudo_user: postgres
   sudo: yes
   postgresql_db: name=test_django_db encoding=utf8
                  template=template0
  
 - name: Create Django database user
+  delegate_to: 192.168.154.10
   postgresql_user: name=django_user password=django_user
                    role_attr_flags=CREATEDB
                    db=test_django_db priv=ALL
   sudo_user: postgres
   sudo: yes
 
+#- name: Gogs is in known_hosts
+#  delegate_to: 192.168.154.10
+#  lineinfile: dest=/root/.ssh/known_hosts create=yes line="{{git_key.stdout}}"
+
+# DATABASE CONF
+###############
 - name: Create buildbot database
   sudo_user: postgres
   sudo: yes
@@ -179,9 +193,6 @@
 # ################# #
 - name: Buildbot is started
   service: name=buildbot state=started
-
-#- name: Buildbot worker is started
-#  service: name=buildbot-worker state=started
 
 - name: Start buildbot logger daemon
   service: name=buildbot-logger state=started

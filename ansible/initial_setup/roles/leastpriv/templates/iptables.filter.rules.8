@@ -37,6 +37,8 @@
 # Allow web traffic for buildbot (CI)
 -A INPUT -p tcp --dport 8083 -j ACCEPT
 -A INPUT -p tcp --dport 4433 -j ACCEPT
+# Allow master/worker traffic (CI)
+-A INPUT -p tcp --dport 9989 -j ACCEPT
 
 # Postgresql accessible from XMPP
 -A INPUT -s 192.168.154.3/32 -p tcp -m tcp --dport 5432 -j ACCEPT
