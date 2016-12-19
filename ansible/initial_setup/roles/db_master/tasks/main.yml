@@ -1,6 +1,11 @@
 ---
-- name: django_user can create database
+- name: Create test db (UTF-8)
+  postgresql_db: name=test_django_db encoding=utf8
+                 template=template0 owner=django_user
+
+- name: django_user can create a db and use the test db
   postgresql_user: name=django_user role_attr_flags=CREATEDB
+                   db=test_django_db priv=ALL
 
 - name: Create new user for replication role
   postgresql_user: name={{rep_user}} password={{rep_pswd}}
