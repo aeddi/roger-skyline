@@ -131,16 +131,18 @@
 
 - name: Create ci folder (preprod worker)
   delegate_to: 192.168.154.10
-  file: state=directory path=/root/ci
+  file: state=directory path=/home/django/ci group=django owner=django
 
 - name: Buildbot worker exists (preprod worker)
   delegate_to: 192.168.154.10
-  stat: path=/root/ci/worker/buildbot.tac
+  stat: path=/home/django/ci/worker/buildbot.tac
   register: worker_try
 
 - name: Create a worker (preprod worker)
   delegate_to: 192.168.154.10
-  command: buildbot-worker create-worker worker ci.slash16.local:9989 preprod-worker pass chdir=/root/ci
+  sudo: yes
+  sudo_user: django
+  command: buildbot-worker create-worker worker ci.slash16.local:9989 preprod-worker pass chdir=/home/django/ci
   when: worker_try.stat.exists == False
 
 - name: buildbot worker service

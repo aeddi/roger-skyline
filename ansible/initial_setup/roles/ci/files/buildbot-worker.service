@@ -4,11 +4,11 @@ Wants=network.target
 After=network.target
 
 [Service]
-User=root
-Group=root
+User=django
+Group=django
 Type=forking
-PIDFile=/root/ci/worker/twistd.pid
-WorkingDirectory=/root/ci
+PIDFile=/home/django/ci/worker/twistd.pid
+WorkingDirectory=/home/django/ci
 ExecStart=/usr/local/bin/buildbot-worker start worker
 ExecStop=/usr/local/bin/buildbot-worker stop worker
 Restart=always
