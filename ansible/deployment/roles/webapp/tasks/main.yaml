@@ -14,6 +14,8 @@
   file: state=absent path=/opt/webapp
 
 - name: Download website
+  sudo: yes
+  sudo_user: django
   git: repo=git@git.slash16.local:akazian/website.git
        dest=/var/www/website accept_hostkey=yes
        version={{branch}}
@@ -23,7 +25,13 @@
        virtualenv_command=/usr/local/bin/virtualenv3
        requirements=/var/www/website/requirements.txt
 
+- name: Creates static directory
+  file: path=/opt/webapp/static state=directory
+        owner=django group=django
+
 - name: collectstatic
+  sudo: yes
+  sudo_user: django
   django_manage: virtualenv=/opt/webapp app_path=/var/www/website command=collectstatic
 
 - name: Start django
