@@ -3,8 +3,8 @@ Description=Django with Gunicorn
 After=network.target
 
 [Service]
-User=root
-Group=root
+User=django
+Group=django
 WorkingDirectory=/opt/webapp
 ExecStart=/opt/webapp/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 --pythonpath /opt/webapp/bin/python3 --chdir /var/www/website roger.wsgi --log-syslog
 
