@@ -16,31 +16,29 @@
     - nginx
     - gcc
 
-- name: Install virtualenv wrapper (ugly workaround)
+- name: Install a wrapper for virtualenv (ugly workaround)
   copy: src=virtualenv3
         dest=/usr/local/bin/virtualenv3
         mode=0555
 
-#- name: Install needed pip packages
-#  pip: virtualenv=/opt/webapp
-#       virtualenv_command=virtualenv3
-#       name="{{item}}"
-#  with_items:
-#    - django
-#    - gunicorn
-#    - psycopg2
+# Django user #
+###############
+- name: Create django group
+  group: name=django state=present
 
-- name: Creates static directory
-  file: path=/opt/webapp/static state=directory
+- name: Create django user
+  user: name=django group=django shell=/bin/false
 
+# Django & nginx conf #
+#######################
 - name: Setup Django service config
   template: src=django.service
             dest=/etc/systemd/system/django.service
   notify:
     - reload systemd 
 
-#- name: Start and enable Django service
-#  service: name=django state=started enabled=yes
+- name: /var/www for django group
+  file: path=/var/www group=django mode=0775
 
 - name: Setup Django virtualhost
   template: src=nginx-django

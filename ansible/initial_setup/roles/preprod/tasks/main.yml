@@ -22,15 +22,6 @@
         dest=/usr/local/bin/virtualenv3
         mode=0555
 
-#- name: Install needed pip packages
-#  pip: virtualenv=/opt/webapp
-#       virtualenv_command=virtualenv3
-#       name="{{item}}"
-#  with_items:
-#    - django
-#    - gunicorn
-#    - psycopg2
-
 # Django user #
 ###############
 - name: Create django group
@@ -39,14 +30,14 @@
 - name: Create django user
   user: name=django group=django shell=/bin/false
 
+# Django & nginx conf #
+#######################
 - name: Setup Django service config
   template: src=django.service
             dest=/etc/systemd/system/django.service
   notify:
     - reload systemd 
 
-# Django & nginx conf #
-#######################
 - name: /var/www for django group
   file: path=/var/www group=django mode=0775
 
