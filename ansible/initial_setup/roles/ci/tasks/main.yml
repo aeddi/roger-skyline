@@ -179,7 +179,10 @@
   postgresql_db: name=buildbot_db encoding=utf8
                  template=template0
   notify:
+    - stop buildbot
     - upgrade buildbot master
+    - start buildbot
+    - restart buildbot-worker preprod
 
 - name: Create buildbot user in postgres
   sudo_user: postgres
@@ -190,11 +193,12 @@
     - stop buildbot
     - upgrade buildbot master
     - start buildbot
+    - restart buildbot-worker preprod
 
 # Start the daemons #
 # ################# #
-- name: Buildbot is started
-  service: name=buildbot state=started
+#- name: Buildbot is started
+#  service: name=buildbot state=started
 
 - name: Start buildbot logger daemon
   service: name=buildbot-logger state=started
