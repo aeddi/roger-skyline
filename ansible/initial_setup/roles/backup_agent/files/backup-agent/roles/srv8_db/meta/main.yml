@@ -1,0 +1,6 @@
+
+---
+
+dependencies:
+  - role: a_role_for_handlers
+    fwd_destdir: "{{ destdir }}"

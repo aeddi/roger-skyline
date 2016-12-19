@@ -16,7 +16,8 @@ srv7:
 V - slave DB
 srv8:
 wn- FTP filesystems
-  - XMPP???
+V - XMPP (besoin de tests)
+V - CI (besoin de tests)
 V - GoGS DB
 V - GoGS repos.
 srv9:
