@@ -18,10 +18,13 @@ backup_agent_files:
   - { src: backup-agent/backup-agent-playbook.yml, dest: "/home/backup-agent/backup-agent-playbook.yml", mode: 644 }
   - { src: backup-agent/cronjobs/bin/agent-fetch.sh, dest: "/home/backup-agent/cronjobs/bin/agent-fetch.sh", mode: 744 }
   - { src: backup-agent/cronjobs/bin/job_logger.source.sh, dest: "/home/backup-agent/cronjobs/bin/job_logger.source.sh", mode: 644 }
+  - { src: backup-agent/cronjobs/bin/logrotate_user_wrapper.sh, dest: "/home/backup-agent/cronjobs/bin/logrotate_user_wrapper.sh", mode: 744 }
+  - { src: backup-agent/cronjobs/etc/zabbix_dump_logrotate.conf, dest: "/home/backup-agent/cronjobs/etc/zabbix_dump_logrotate.conf", mode: 644 }
 backup_agent_dirtree:
   - { dir: "/home/backup-agent/.ssh", mode: 755 }
   - { dir: "/home/backup-agent/cronjobs", mode: 755 }
   - { dir: "/home/backup-agent/cronjobs/bin", mode: 755 }
+  - { dir: "/home/backup-agent/cronjobs/etc", mode: 755 }
 
 
 ...

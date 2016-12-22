@@ -1,12 +1,16 @@
 ---
 
-- sudo: yes
-  notify: "[Handler] Record change"
-  synchronize:
-    mode: pull
-    dest: "{{ destdir }}"
-    src: /var/backups/zabbix
-    delete: yes
-    compress: no
+- local_action: >
+    file
+    state=directory
+    mode=700
+    path={{destdir}}/zabbix
+
+- name: "Dump zabbix' mySQL DB"
+  notify: "Locally-rotate zabbix mySQL DB dump"
+  local_action: >
+    shell
+    ssh ansible@monitor.slash16.local 'sudo mysqldump --single-transaction --all-databases --user=zabbix --password=zabbix  | gzip -1 -' | zcat - | xz -1 -
+    > {{destdir}}/zabbix/zabbix_mysql_dump.sql.xz
 
 ...

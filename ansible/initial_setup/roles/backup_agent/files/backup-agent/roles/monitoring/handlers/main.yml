@@ -1,0 +1,9 @@
+---
+
+- name: "Locally-rotate zabbix mySQL DB dump"
+  local_action: >
+    shell
+    {{monitoring_jobs_dir}}/bin/logrotate_user_wrapper.sh
+    --force
+    {{monitoring_jobs_dir}}/etc/zabbix_dump_logrotate.conf
+...

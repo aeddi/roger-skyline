@@ -46,6 +46,7 @@
 - name: Pull-sync zabbix DB dumps
   vars: 
     destdir: /home/backup-agent/pull/monitoring
+    monitoring_jobs_dir: /home/backup-agent/cronjobs
   gather_facts: no
   hosts: monitoring
   tags: monitoring
