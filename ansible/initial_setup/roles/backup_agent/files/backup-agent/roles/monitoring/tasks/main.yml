@@ -7,7 +7,9 @@
     path={{destdir}}/zabbix
 
 - name: "Dump zabbix' mySQL DB"
-  notify: "Locally-rotate zabbix mySQL DB dump"
+  notify:
+    - "Locally-rotate zabbix mySQL DB dump"
+    - "[Handler] Record change"
   local_action: >
     shell
     ssh ansible@monitor.slash16.local 'sudo mysqldump --single-transaction --all-databases --user=zabbix --password=zabbix  | gzip -1 -' | zcat - | xz -1 -
