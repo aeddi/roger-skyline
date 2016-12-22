@@ -3,6 +3,9 @@
 [versioning]
   git.slash16.local 
 
+[ci_xmpp_db]
+  ci.slash16.local 
+
 [mail]
   mail.slash16.local
 

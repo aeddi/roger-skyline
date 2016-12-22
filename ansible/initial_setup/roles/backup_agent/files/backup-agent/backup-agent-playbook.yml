@@ -54,14 +54,14 @@
   roles: [ monitoring ]
 
 
-- name: Pull-sync XMPP and CI db dumps(srv8)
+- name: Pull-sync XMPP and CI db dumps
   vars:
-    destdir: /home/backup-agent/pull/srv8_db
+    destdir: /home/backup-agent/pull/ci_xmpp_db
   gather_facts: no
-  hosts: versioning
-  tags: srv8_db
+  hosts: ci_xmpp_db
+  tags: ci_xmpp_db
   remote_user: ansible
-  roles: [ srv8_db ]
+  roles: [ ci_xmpp_db ]
 
 
 ...
