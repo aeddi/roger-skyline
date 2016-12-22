@@ -1,0 +1,17 @@
+---
+- name: Get current production webapp commit
+  hosts: web_worker1
+  gather_facts: no
+  tasks:
+    - command: git rev-parse HEAD chdir=/var/www/website
+      register: prod_commit
+
+
+- name: deploy website on preprod
+  hosts: preprod
+  remote_user: root
+  gather_facts: no
+  roles:
+    - { role: webapp, branch: "{{ hostvars.web_worker1.prod_commit.stdout}}" }
+
+...

@@ -5,7 +5,6 @@
 
 - name: stop django
   service: name=django state=stopped
-  ignore_errors: yes
 
 - name: Delete former website
   file: state=absent path=/var/www/website
