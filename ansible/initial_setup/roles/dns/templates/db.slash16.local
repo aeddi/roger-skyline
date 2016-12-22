@@ -42,8 +42,9 @@ srv2.slash16.local.		  IN	CNAME	mail
 lb1.slash16.local.		  IN	CNAME	srv2
 
 ; Services on svr3
-xmpp.slash16.local.	  	IN	CNAME	srv3
-lb2.slash16.local.		  IN	CNAME	srv3
+xmpp.slash16.local.     IN	CNAME	srv3
+lb2.slash16.local.      IN	CNAME	srv3
+backup.slash16.local.   IN	CNAME	srv3
 
 ; Services on svr4
 web1.slash16.local.	   	IN	CNAME	srv4
