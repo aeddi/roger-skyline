@@ -12,7 +12,7 @@ fi
 
 function this_atexit {
     if [ -n "$TEMP_ERR_FILE" ] && [ -f "$TEMP_ERR_FILE" ]; then
-        rm -rf "$TEMP_ERR_FILE"
+        rm -f "$TEMP_ERR_FILE"
     fi
 }
 # EXIT manages any blockable sig and ERR.

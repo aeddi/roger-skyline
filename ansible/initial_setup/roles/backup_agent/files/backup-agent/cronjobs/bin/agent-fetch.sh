@@ -70,6 +70,7 @@ do
       && touch "${PULL_DIR}/${TASK_TAGS[${i}]}"
   ) & \
   TASK_PIDS[${i}]=$!
+  this_logger cron info "Backing ${TASK_TAGS[${i}]} data up..."
   let i+=1
 done
 
