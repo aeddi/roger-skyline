@@ -1,0 +1,9 @@
+web_worker1 ansible_ssh_host=192.168.54.4
+web_worker2 ansible_ssh_host=192.168.54.5
+
+[web_workers]
+	192.168.54.4
+	192.168.54.5
+
+[preprod]
+	192.168.54.10
