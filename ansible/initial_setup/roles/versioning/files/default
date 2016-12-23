@@ -1,34 +1,13 @@
-#server {
-#  listen 80 default_server;
-#  listen [::]:80 default_server;
-#  listen              443 ssl;
-#  ssl_certificate     /etc/ssl/certs/cert.pem;
-#  ssl_certificate_key /etc/ssl/private/cert.key;
-#  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-#  ssl_ciphers         HIGH:!aNULL:!MD5;
-#
-#  server_name _;
-#  access_log off;
-#
-#  location / {
-#        proxy_set_header X-Real-IP $remote_addr;
-#        proxy_pass http://127.0.0.1:3000;
-#  }
-#}
-
-# Config Mathieu
-#
 server {
   listen 80;
   listen [::]:80;
-  server_name 10.17.1.154:8082 git.slash16.local;
-  #return 302 http://google.fr;
+  server_name git.slash16.local;
   return 302 https://10.17.1.154:4432$request_uri;
 }
 
 server {
   listen 443 ssl;
-  server_name git.slash16.local:443 10.17.1.154:4432;
+  server_name git.slash16.local;
 
   ssl_certificate /etc/ssl/certs/cert.pem;
   ssl_certificate_key /etc/ssl/private/cert.key;
