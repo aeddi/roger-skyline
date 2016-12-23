@@ -1,15 +1,23 @@
 ---
 # So the load balancers can redirect to the other web worker
 - name: stop nginx
+  sudo: yes
+  sudo_user: root
   service: name=nginx state=stopped
 
 - name: stop django
+  sudo: yes
+  sudo_user: root
   service: name=django state=stopped
 
 - name: Delete former website
+  sudo: yes
+  sudo_user: root
   file: state=absent path=/var/www/website
 
 - name: Delete former virtualenv
+  sudo: yes
+  sudo_user: root
   file: state=absent path=/opt/webapp
 
 - name: Download website
@@ -20,11 +28,15 @@
        version={{branch}}
 
 - name: Install needed pip packages
+  sudo: yes
+  sudo_user: root
   pip: virtualenv=/opt/webapp
        virtualenv_command=/usr/local/bin/virtualenv3
        requirements=/var/www/website/requirements.txt
 
 - name: Creates static directory
+  sudo: yes
+  sudo_user: root
   file: path=/opt/webapp/static state=directory
         owner=django group=django
 
@@ -34,9 +46,13 @@
   django_manage: virtualenv=/opt/webapp app_path=/var/www/website command=collectstatic
 
 - name: Start django
+  sudo: yes
+  sudo_user: root
   service: name=django state=started
 
 - name: start nginx
+  sudo: yes
+  sudo_user: root
   service: name=nginx state=started
 
 ...

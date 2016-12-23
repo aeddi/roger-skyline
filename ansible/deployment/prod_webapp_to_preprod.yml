@@ -9,7 +9,6 @@
 
 - name: deploy website on preprod
   hosts: preprod
-  remote_user: root
   gather_facts: no
   roles:
     - { role: webapp, branch: "{{ hostvars.web_worker1.prod_commit.stdout}}" }

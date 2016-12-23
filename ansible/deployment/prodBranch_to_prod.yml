@@ -1,16 +1,9 @@
 ---
-- name: deploy website on web_worker1
-  hosts: web_worker1
-  remote_user: root
+- name: deploy website on web_workers
+  hosts: web_workers
   gather_facts: no
+  serial: 1
   roles:
     - { role: webapp, branch: prod }
 
-
-- name: deploy website on web_worker2
-  hosts: web_worker2
-  remote_user: root
-  gather_facts: no
-  roles:
-    - { role: webapp, branch: prod }
 ...

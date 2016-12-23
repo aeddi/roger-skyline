@@ -1,7 +1,6 @@
 ---
 - name: get production database
   hosts: db_slave
-  remote_user: root
   gather_facts: no
   tasks:
     - name: Dump prod db
@@ -15,7 +14,6 @@
 
 - name: prod db in preprod
   hosts: preprod
-  remote_user: root
   gather_facts: no
   tasks:
     - name: Put the fetched db in preprod's postgres
