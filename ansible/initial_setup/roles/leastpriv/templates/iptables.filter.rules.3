@@ -4,9 +4,13 @@
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [425:46725]
 
-# SSH only from 42 School and gateway (initial setup)
+# SSH only from 42 School, gateway and ansible
 -A INPUT -s 10.0.0.0/8 -p tcp -m tcp --dport 22 -j ACCEPT
+#Backup
 -A INPUT -s 192.168.54.1/32 -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -s 192.168.154.254/32 -p tcp -m tcp --dport 22 -j ACCEPT
+#Init ansible
+-A INPUT -s 192.168.54.10/32 -p tcp -m tcp --dport 22 -j ACCEPT
 
 # HAProxy HTTP/S accessible from gateway only
 -A INPUT -s 10.0.0.0/8 -p tcp -m multiport --dport 80,443 -j ACCEPT
@@ -21,9 +25,12 @@
 -A INPUT -s 192.168.154.4/32 -p tcp -m tcp --dport 5432 -j ACCEPT
 -A INPUT -s 192.168.154.5/32 -p tcp -m tcp --dport 5432 -j ACCEPT
 
-# ICMP accessible only from Zabbix server and gateway (initial setup)
+# ICMP accessible only from Zabbix server, gateway and ansible
+#Backup
 -A INPUT -s 192.168.54.1/32 -p icmp -j ACCEPT
 -A INPUT -s 192.168.154.9/32 -p icmp -j ACCEPT
+#Init ansible
+-A INPUT -s 192.168.54.10/32 -p icmp -j ACCEPT
 
 # Allow lookup responses
 -A INPUT -s 192.168.154.254/32 -p udp -m udp --sport 53 --dport 1024:65535 -j ACCEPT
@@ -34,21 +41,9 @@
 # Allow all traffic from localhost
 -A INPUT -i lo -j ACCEPT
 
-# Allow XMPP Server/Server and traffic
-#-A INPUT -p tcp --dport 5269 -j ACCEPT
-#-A OUTPUT -p tcp --sport 5269 -j ACCEPT
-
 # Allow XMPP Client/Server traffic
 -A INPUT -p tcp --dport 5222 -j ACCEPT
 -A OUTPUT -p tcp --dport 5222 -j ACCEPT
-
-# DELETE AFTER DEV
--A INPUT -s 192.168.154.254/32 -p tcp -m multiport --dport 80,443 -j ACCEPT
--A INPUT -s 192.168.54.10/32 -p tcp -m tcp --dport 22 -j ACCEPT
--A INPUT -s 192.168.154.254/32 -p tcp -m tcp --dport 22 -j ACCEPT
--A INPUT -s 192.168.54.10/32 -p icmp -j ACCEPT
--A INPUT -s 192.168.154.10/32 -p icmp -j ACCEPT
--A INPUT -s 192.168.154.254/32 -p icmp -j ACCEPT
 
 # Reject everything else
 -A INPUT -j REJECT --reject-with icmp-port-unreachable

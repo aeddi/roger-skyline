@@ -11,12 +11,13 @@ function purge_sshpass {
   exit 0
 }
 
+
 # Pull password list.
 source ./pass.ish
 
 key_path=/home/ansible/.ssh/id_rsa.pub
 
-trap purge_sshpass SIGINT SIGTERM SIGHUP SIGUSR1 SIGUSR2 QUIT ERR
+trap purge_sshpass EXIT
 sudo apt-get install -y sshpass || exit 1
 
 for i in $(seq 1 10); do
@@ -31,4 +32,3 @@ for i in $(seq 1 10); do
   echo Result: $? >&2
 done
 
-purge_sshpass
